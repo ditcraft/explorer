@@ -1,7 +1,237 @@
 doctype html
-html
+html(lang='en')
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    // Required meta tags
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    title Star Admin Free Bootstrap-4 Admin Dashboard Template
+    // plugins:css
+    link(rel='stylesheet', href='../../vendors/iconfonts/mdi/css/materialdesignicons.min.css')
+    link(rel='stylesheet', href='../../vendors/css/vendor.bundle.base.css')
+    link(rel='stylesheet', href='../../vendors/css/vendor.bundle.addons.css')
+    // endinject
+    // plugin css for this page
+    // End plugin css for this page
+    // inject:css
+    link(rel='stylesheet', href='../../css/style.css')
+    // endinject
+    link(rel='shortcut icon', href='../../images/favicon.png')
   body
-    block content
+    .container-scroller
+      // partial:../../partials/_navbar.html
+      nav.navbar.default-layout.col-lg-12.col-12.p-0.fixed-top.d-flex.flex-row
+        .text-center.navbar-brand-wrapper.d-flex.align-items-top.justify-content-center
+          a.navbar-brand.brand-logo(href='../../index.html')
+            img(src='../../images/logo.svg', alt='logo')
+          a.navbar-brand.brand-logo-mini(href='../../index.html')
+            img(src='../../images/logo-mini.svg', alt='logo')
+        .navbar-menu-wrapper.d-flex.align-items-center
+          ul.navbar-nav.navbar-nav-left.header-links.d-none.d-md-flex
+            li.nav-item
+              a.nav-link(href='#')
+                | Schedule
+                span.badge.badge-primary.ml-1 New
+            li.nav-item.active
+              a.nav-link(href='#')
+                i.mdi.mdi-elevation-rise
+                | Reports
+            li.nav-item
+              a.nav-link(href='#')
+                i.mdi.mdi-bookmark-plus-outline
+                | Score
+          ul.navbar-nav.navbar-nav-right
+            li.nav-item.dropdown
+              a#messageDropdown.nav-link.count-indicator.dropdown-toggle(href='#', data-toggle='dropdown', aria-expanded='false')
+                i.mdi.mdi-file-document-box
+                span.count 7
+              .dropdown-menu.dropdown-menu-right.navbar-dropdown.preview-list(aria-labelledby='messageDropdown')
+                .dropdown-item
+                  p.mb-0.font-weight-normal.float-left
+                    | You have 7 unread mails
+                  span.badge.badge-info.badge-pill.float-right View all
+                .dropdown-divider
+                a.dropdown-item.preview-item
+                  .preview-thumbnail
+                    img.profile-pic(src='../../images/faces/face4.jpg', alt='image')
+                  .preview-item-content.flex-grow
+                    h6.preview-subject.ellipsis.font-weight-medium.text-dark
+                      | David Grey
+                      span.float-right.font-weight-light.small-text 1 Minutes ago
+                    p.font-weight-light.small-text
+                      | The meeting is cancelled
+                .dropdown-divider
+                a.dropdown-item.preview-item
+                  .preview-thumbnail
+                    img.profile-pic(src='../../images/faces/face2.jpg', alt='image')
+                  .preview-item-content.flex-grow
+                    h6.preview-subject.ellipsis.font-weight-medium.text-dark
+                      | Tim Cook
+                      span.float-right.font-weight-light.small-text 15 Minutes ago
+                    p.font-weight-light.small-text
+                      | New product launch
+                .dropdown-divider
+                a.dropdown-item.preview-item
+                  .preview-thumbnail
+                    img.profile-pic(src='../../images/faces/face3.jpg', alt='image')
+                  .preview-item-content.flex-grow
+                    h6.preview-subject.ellipsis.font-weight-medium.text-dark
+                      | Johnson
+                      span.float-right.font-weight-light.small-text 18 Minutes ago
+                    p.font-weight-light.small-text
+                      | Upcoming board meeting
+            li.nav-item.dropdown
+              a#notificationDropdown.nav-link.count-indicator.dropdown-toggle(href='#', data-toggle='dropdown')
+                i.mdi.mdi-bell
+                span.count 4
+              .dropdown-menu.dropdown-menu-right.navbar-dropdown.preview-list(aria-labelledby='notificationDropdown')
+                a.dropdown-item
+                  p.mb-0.font-weight-normal.float-left
+                    | You have 4 new notifications
+                  span.badge.badge-pill.badge-warning.float-right View all
+                .dropdown-divider
+                a.dropdown-item.preview-item
+                  .preview-thumbnail
+                    .preview-icon.bg-success
+                      i.mdi.mdi-alert-circle-outline.mx-0
+                  .preview-item-content
+                    h6.preview-subject.font-weight-medium.text-dark Application Error
+                    p.font-weight-light.small-text
+                      | Just now
+                .dropdown-divider
+                a.dropdown-item.preview-item
+                  .preview-thumbnail
+                    .preview-icon.bg-warning
+                      i.mdi.mdi-comment-text-outline.mx-0
+                  .preview-item-content
+                    h6.preview-subject.font-weight-medium.text-dark Settings
+                    p.font-weight-light.small-text
+                      | Private message
+                .dropdown-divider
+                a.dropdown-item.preview-item
+                  .preview-thumbnail
+                    .preview-icon.bg-info
+                      i.mdi.mdi-email-outline.mx-0
+                  .preview-item-content
+                    h6.preview-subject.font-weight-medium.text-dark New user registration
+                    p.font-weight-light.small-text
+                      | 2 days ago
+            li.nav-item.dropdown.d-none.d-xl-inline-block
+              a#UserDropdown.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-expanded='false')
+                span.profile-text Hello, Richard V.Welsh !
+                img.img-xs.rounded-circle(src='../../images/faces/face1.jpg', alt='Profile image')
+              .dropdown-menu.dropdown-menu-right.navbar-dropdown(aria-labelledby='UserDropdown')
+                a.dropdown-item.p-0
+                  .d-flex.border-bottom
+                    .py-3.px-4.d-flex.align-items-center.justify-content-center
+                      i.mdi.mdi-bookmark-plus-outline.mr-0.text-gray
+                    .py-3.px-4.d-flex.align-items-center.justify-content-center.border-left.border-right
+                      i.mdi.mdi-account-outline.mr-0.text-gray
+                    .py-3.px-4.d-flex.align-items-center.justify-content-center
+                      i.mdi.mdi-alarm-check.mr-0.text-gray
+                a.dropdown-item.mt-2
+                  | Manage Accounts
+                a.dropdown-item
+                  | Change Password
+                a.dropdown-item
+                  | Check Inbox
+                a.dropdown-item
+                  | Sign Out
+          button.navbar-toggler.navbar-toggler-right.d-lg-none.align-self-center(type='button', data-toggle='offcanvas')
+            span.mdi.mdi-menu
+      // partial
+      .container-fluid.page-body-wrapper
+        // partial:../../partials/_sidebar.html
+        nav#sidebar.sidebar.sidebar-offcanvas
+          ul.nav
+            li.nav-item.nav-profile
+              .nav-link
+                .user-wrapper
+                  .profile-image
+                    img(src='../../images/faces/face1.jpg', alt='profile image')
+                  .text-wrapper
+                    p.profile-name Richard V.Welsh
+                    div
+                      small.designation.text-muted Manager
+                      span.status-indicator.online
+                button.btn.btn-success.btn-block
+                  | New Project
+                  i.mdi.mdi-plus
+            li.nav-item
+              a.nav-link(href='../../index.html')
+                i.menu-icon.mdi.mdi-television
+                span.menu-title Dashboard
+            li.nav-item
+              a.nav-link(data-toggle='collapse', href='#ui-basic', aria-expanded='false', aria-controls='ui-basic')
+                i.menu-icon.mdi.mdi-content-copy
+                span.menu-title Basic UI Elements
+                i.menu-arrow
+              #ui-basic.collapse
+                ul.nav.flex-column.sub-menu
+                  li.nav-item
+                    a.nav-link(href='../../pages/ui-features/buttons.html') Buttons
+                  li.nav-item
+                    a.nav-link(href='../../pages/ui-features/typography.html') Typography
+            li.nav-item
+              a.nav-link(href='../../pages/forms/basic_elements.html')
+                i.menu-icon.mdi.mdi-backup-restore
+                span.menu-title Form elements
+            li.nav-item
+              a.nav-link(href='../../pages/charts/chartjs.html')
+                i.menu-icon.mdi.mdi-chart-line
+                span.menu-title Charts
+            li.nav-item
+              a.nav-link(href='../../pages/tables/basic-table.html')
+                i.menu-icon.mdi.mdi-table
+                span.menu-title Tables
+            li.nav-item
+              a.nav-link(href='../../pages/icons/font-awesome.html')
+                i.menu-icon.mdi.mdi-sticker
+                span.menu-title Icons
+            li.nav-item
+              a.nav-link(data-toggle='collapse', href='#auth', aria-expanded='false', aria-controls='auth')
+                i.menu-icon.mdi.mdi-restart
+                span.menu-title User Pages
+                i.menu-arrow
+              #auth.collapse
+                ul.nav.flex-column.sub-menu
+                  li.nav-item
+                    a.nav-link(href='../../pages/samples/blank-page.html')  Blank Page 
+                  li.nav-item
+                    a.nav-link(href='../../pages/samples/login.html')  Login 
+                  li.nav-item
+                    a.nav-link(href='../../pages/samples/register.html')  Register 
+                  li.nav-item
+                    a.nav-link(href='../../pages/samples/error-404.html')  404 
+                  li.nav-item
+                    a.nav-link(href='../../pages/samples/error-500.html')  500 
+        // partial
+        .main-panel
+          .content-wrapper
+            block content
+          // content-wrapper ends
+          // partial:../../partials/_footer.html
+          footer.footer
+            .container-fluid.clearfix
+              span.text-muted.d-block.text-center.text-sm-left.d-sm-inline-block
+                | Copyright © 2018
+                a(href='http://www.bootstrapdash.com/', target='_blank') Bootstrapdash
+                | . All rights reserved.
+              span.float-none.float-sm-right.d-block.mt-1.mt-sm-0.text-center
+                | Hand-crafted & made with
+                i.mdi.mdi-heart.text-danger
+          // partial
+          // main-panel ends
+          // page-body-wrapper ends
+          // container-scroller
+          // plugins:js
+          script(src='../../vendors/js/vendor.bundle.base.js')
+          script(src='../../vendors/js/vendor.bundle.addons.js')
+          // endinject
+          // Plugin js for this page
+          // End plugin js for this page
+          // inject:js
+          script(src='../../js/off-canvas.js')
+          script(src='../../js/misc.js')
+          // endinject
+          // Custom js for this page
+          // End custom js for this page
