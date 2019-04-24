@@ -1,7 +1,28 @@
 extends layout
 
 block content
-  h1= "Address"
-  ul
-  each val, index in balance
-    li= index + ': ' + val
+  .card
+    .card-body
+      .row.mb-4
+        .col-xl-9.col-lg-9.col-md-9.col-sm-12.float-right
+          h1 Contributor
+          span.text-muted.d-block.text-center.text-sm-left.d-sm-inline-block #{address}
+        .col-xl-3.col-lg-3.col-md-3.col-sm-6.grid-margin.stretch-card.float-right
+          .card.card-statistics
+            .clearfix
+              .float-right
+                p.mb-0.text-right Total Amount
+                .fluid-container
+                  h3.font-weight-medium.text-right.mb-0 #{total}KNW
+      h4.card-title KNW Tokens
+      .table-responsive
+        table.table.table-hover
+          thead
+            tr
+              th Label
+              th Amount
+          tbody
+          each val, index in balance
+            tr
+              td= index
+              td= val

@@ -28,8 +28,18 @@ router.get('/:address', function(req, res, next){
         });
       });
     }
-    res.render('address', { balance: obj});
+    res.render('address', { address: userAddr, balance: obj, total: sum(obj).toFixed(2) });
   });
 });
+
+function sum(obj) {
+  var sum = 0;
+  for(var el in obj) {
+    if(obj.hasOwnProperty(el) ) {
+      sum += parseFloat(obj[el]);
+    }
+  }
+  return sum;
+}
 
 module.exports = router;
