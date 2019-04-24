@@ -1,0 +1,7 @@
+extends layout
+
+block content
+  h1= "Address"
+  ul
+  each val, index in balance
+    li= index + ': ' + val
