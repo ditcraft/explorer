@@ -44,7 +44,11 @@ html(lang='en')
                 span.badge.badge-primary.ml-1 New
           ul.navbar-nav.navbar-nav-right
             li.nav-item.d-none.d-xl-inline-block
-              span Search
+              .input-group
+                input.searchText.form-control(type='text', placeholder='Search address...', aria-label='Search address...', aria-describedby='colored-addon3')
+                .searchButton.input-group-append.bg-primary.border-primary
+                  span.input-group-text.bg-transparent
+                    i.mdi.mdi-magnify.text-white
             li.nav-item
                 button.btn.btn-light.btn-block
                   i.mdi.mdi-lock
@@ -106,6 +110,17 @@ html(lang='en')
           // inject:js
           script(src='../../js/off-canvas.js')
           script(src='../../js/misc.js')
+          script.
+            $('.searchText').keypress(function(event){
+              var keycode = (event.keyCode ? event.keyCode : event.which);
+              if(keycode == '13'){
+                window.location.href = '/address/' + $('.searchText').val();
+              }
+            });
+
+            $('.searchButton').on('click',function(){
+              window.location.href = '/address/' + $('.searchText').val();
+            });
           // endinject
           // Custom js for this page
           // End custom js for this page
