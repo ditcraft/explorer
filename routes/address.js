@@ -18,17 +18,19 @@ router.get('/:address', function(req, res, next){
   var obj = {};
   var label = "";
   var balance = "";
-  ditContract.methods.labelCountOfAddress(userAddr).call().then(async function(labelCount){
-    for(var i = 1; i <= parseInt(labelCount); i++){
-     await ditContract.methods.labelOfAddress(userAddr, i).call().then(async function(labelString){
-       label = labelString;
-        await ditContract.methods.balanceOfLabel(userAddr, labelString).call().then(function(labelBalance){
-          balance = web3.utils.toBN(labelBalance).toString();
-          obj[label] = web3.utils.fromWei(balance, 'ether')
-        });
-      });
-    }
-    res.render('address', { address: userAddr, balance: obj, total: sum(obj).toFixed(2) });
+  ditContract.methods.labelCountOfAddress(userAddr).call().then(async function(labelCount, error){
+      for(var i = 1; i <= parseInt(labelCount); i++){
+        await ditContract.methods.labelOfAddress(userAddr, i).call().then(async function(labelString){
+          label = labelString;
+           await ditContract.methods.balanceOfLabel(userAddr, labelString).call().then(function(labelBalance){
+             balance = web3.utils.toBN(labelBalance).toString();
+             obj[label] = web3.utils.fromWei(balance, 'ether')
+           });
+         });
+       }
+      res.render('address', { address: userAddr, balance: obj, total: sum(obj).toFixed(2) });
+  }).catch(e => {
+    res.render('error-404');
   });
 });
 
