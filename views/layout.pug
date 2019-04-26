@@ -21,10 +21,10 @@ html(lang='en')
       // partial:../../partials/_navbar.html
       nav.navbar.default-layout.col-lg-12.col-12.p-0.fixed-top.d-flex.flex-row
         .text-center.navbar-brand-wrapper.d-flex.align-items-top.justify-content-center
-          a(href='/')
+          //a(href='/')
             span ditCraft
-          //a.navbar-brand.brand-logo(href='../../index.html')
-            img(src='../../images/logo.svg', alt='logo')
+          a(href='/')
+            img.top-logo.rounded-circle(src='/images/logo.png', alt='logo')
           //a.navbar-brand.brand-logo-mini(href='../../index.html')
             img(src='../../images/logo-mini.svg', alt='logo')
         .navbar-menu-wrapper.d-flex.align-items-center
@@ -45,8 +45,8 @@ html(lang='en')
           ul.navbar-nav.navbar-nav-right
             li.nav-item.d-none.d-xl-inline-block
               .input-group
-                input.searchText.form-control(type='text', placeholder='Search address...', aria-label='Search address...', aria-describedby='colored-addon3')
-                .searchButton.input-group-append.bg-primary.border-primary
+                input#searchText.form-control(type='text', placeholder='Search address...', aria-label='Search address...', aria-describedby='colored-addon3')
+                #searchButton.input-group-append.bg-primary.border-primary
                   span.input-group-text.bg-transparent
                     i.mdi.mdi-magnify.text-white
             li.nav-item
@@ -111,15 +111,15 @@ html(lang='en')
           script(src='../../js/off-canvas.js')
           script(src='../../js/misc.js')
           script.
-            $('.searchText').keypress(function(event){
+            $('#searchText').keypress(function(event){
               var keycode = (event.keyCode ? event.keyCode : event.which);
               if(keycode == '13'){
-                window.location.href = '/address/' + $('.searchText').val();
+                window.location.href = '/address/' + $('#searchText').val();
               }
             });
 
-            $('.searchButton').on('click',function(){
-              window.location.href = '/address/' + $('.searchText').val();
+            $('#searchButton').on('click',function(){
+              window.location.href = '/address/' + $('#searchText').val();
             });
           // endinject
           // Custom js for this page
