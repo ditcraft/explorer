@@ -43,16 +43,29 @@ html(lang='en')
                 | Repository
                 span.badge.badge-primary.ml-1 New
           ul.navbar-nav.navbar-nav-right
-            li.nav-item.d-none.d-xl-inline-block
+            li
               .input-group
                 input#searchText.form-control(type='text', placeholder='Search address...', aria-label='Search address...', aria-describedby='colored-addon3')
                 #searchButton.input-group-append.bg-primary.border-primary
                   span.input-group-text.bg-transparent
                     i.mdi.mdi-magnify.text-white
             li.nav-item
-                button.btn.btn-light.btn-block
-                  i.mdi.mdi-lock
-                  | Login
+                if user
+                  li.nav-item.dropdown.d-none.d-xl-inline-block
+                    a#UserDropdown.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-expanded='false')
+                      span.profile-text #{user.displayName}
+                      img.img-xs.rounded-circle(src=''+ user.photos[0].value, alt='Twitter profile picture')
+                    .dropdown-menu.dropdown-menu-right.navbar-dropdown(aria-labelledby='UserDropdown')
+                      a.dropdown-item.mt-2
+                        i.mdi.mdi-account
+                        | Profile
+                      a.dropdown-item(href="/logout")
+                        i.mdi.mdi-logout
+                        | Sign Out
+                else
+                  a.btn.btn-light.btn-block(href="/login")
+                    i.mdi.mdi-lock
+                    | Log in
           button.navbar-toggler.navbar-toggler-right.d-lg-none.align-self-center(type='button', data-toggle='offcanvas')
             span.mdi.mdi-menu
       // partial

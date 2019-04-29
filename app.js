@@ -3,10 +3,35 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var passport = require('passport');
+var TwitterStrategy   = require('passport-twitter').Strategy;
+var sess              = require('express-session');
+var BetterMemoryStore = require('session-memory-store')(sess);
+const config = require('./config');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var addressRouter = require('./routes/address');
+var loginRouter = require('./routes/login');
+var logoutRouter = require('./routes/logout');
+
+passport.use(new TwitterStrategy({
+  consumerKey:    config.TWITTER_API_KEY,
+  consumerSecret: config.TWITTER_API_SECRET,
+  callbackURL:    "http://127.0.0.1:3000/login/twitter/callback"
+},
+  function(token, tokenSecret, profile, done) {
+    done(null, profile);
+  }
+));
+
+// Serialize and deserialize user information
+passport.serializeUser(function(user, callback){
+  callback(null, user);
+});
+passport.deserializeUser(function(object, callback){
+  callback(null, object);
+});
 
 var app = express();
 
@@ -20,9 +45,24 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+/* add session cofig */
+var store = new BetterMemoryStore({ expires: 60 * 60 * 1000, debug: true });
+app.use(sess({
+  name: 'JSESSION',
+  secret: 'MYSECRETISVERYSECRET',
+  store:  store,
+  resave: true,
+  saveUninitialized: true,
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/address', addressRouter);
+app.use('/login', loginRouter);
+app.use('/logout', logoutRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

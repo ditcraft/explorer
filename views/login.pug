@@ -1,0 +1,77 @@
+doctype html
+html(lang='en')
+  head
+    // Required meta tags
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    title Login | ditCraft
+    // plugins:css
+    link(rel='stylesheet', href='../../vendors/iconfonts/mdi/css/materialdesignicons.min.css')
+    link(rel='stylesheet', href='../../vendors/css/vendor.bundle.base.css')
+    link(rel='stylesheet', href='../../vendors/css/vendor.bundle.addons.css')
+    // endinject
+    // plugin css for this page
+    // End plugin css for this page
+    // inject:css
+    link(rel='stylesheet', href='../../css/style.css')
+    // endinject
+    link(rel='shortcut icon', href='../../images/favicon.png')
+  body
+    .container-scroller
+      .container-fluid.page-body-wrapper.full-page-wrapper.auth-page
+        .content-wrapper.d-flex.align-items-center.auth.auth-bg-1.theme-one
+          .row.w-100
+            .col-lg-4.mx-auto
+              .auto-form-wrapper
+                .text-center.navbar-brand-wrapper.d-flex.align-items-top.justify-content-center.mb-3
+                  a(href='/')
+                    img.top-logo.rounded-circle(src='/images/logo.png', alt='logo')
+                //form(action='#')
+                  .form-group
+                    label.label Username
+                    .input-group
+                      input.form-control(type='text', placeholder='Username')
+                      .input-group-append
+                        span.input-group-text
+                          i.mdi.mdi-check-circle-outline
+                  .form-group
+                    label.label Password
+                    .input-group
+                      input.form-control(type='password', placeholder='*********')
+                      .input-group-append
+                        span.input-group-text
+                          i.mdi.mdi-check-circle-outline
+                  .form-group
+                    button.btn.btn-primary.submit-btn.btn-block Login
+                  .form-group.d-flex.justify-content-between
+                    .form-check.form-check-flat.mt-0
+                      label.form-check-label
+                        input.form-check-input(type='checkbox', checked='')
+                        |  Keep me signed in
+                    a.text-small.forgot-password.text-black(href='#') Forgot Password
+                .form-group
+                  a.btn.btn-primary.btn-block(href="/login/twitter")
+                    i.mdi.mdi-twitter
+                    | Log in with Twitter
+                .text-block.text-center.my-3
+                  span.text-small.font-weight-semibold Not on Twitter? &#32;
+                  a.text-black.text-small(href='https://twitter.com/signup') Sign up
+              ul.auth-footer
+                li
+                  a(href='#') Conditions
+                li
+                  a(href='#') Help
+                li
+                  a(href='#') Terms
+              p.footer-text.text-center © 2019 ditCraft. All rights reserved.
+        // content-wrapper ends
+        // page-body-wrapper ends
+        // container-scroller
+        // plugins:js
+        script(src='../../vendors/js/vendor.bundle.base.js')
+        script(src='../../vendors/js/vendor.bundle.addons.js')
+        // endinject
+        // inject:js
+        script(src='../../js/off-canvas.js')
+        script(src='../../js/misc.js')
+        // endinject
