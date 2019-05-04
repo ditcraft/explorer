@@ -16,6 +16,7 @@ html(lang='en')
     link(rel='stylesheet', href='../../css/style.css')
     // endinject
     link(rel='shortcut icon', href='../../images/favicon.png')
+    script(src='/js/jquery-3.4.1.min.js')
   body
     .container-scroller
       // partial:../../partials/_navbar.html
@@ -56,7 +57,7 @@ html(lang='en')
                       span.profile-text #{user.displayName}
                       img.img-xs.rounded-circle(src=''+ user.photos[0].value, alt='Twitter profile picture')
                     .dropdown-menu.dropdown-menu-right.navbar-dropdown(aria-labelledby='UserDropdown')
-                      a.dropdown-item.mt-2
+                      a.dropdown-item.mt-2(href="/address/" + user.eth_address)
                         i.mdi.mdi-account
                         | Profile
                       a.dropdown-item(href="/logout")

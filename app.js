@@ -12,6 +12,7 @@ const config = require('./config');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var addressRouter = require('./routes/address');
+var contr_address = require('./controllers/contr_address');
 var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
 
@@ -21,7 +22,12 @@ passport.use(new TwitterStrategy({
   callbackURL:    "http://127.0.0.1:3000/login/twitter/callback"
 },
   function(token, tokenSecret, profile, done) {
-    done(null, profile);
+    contr_address.getAddressByTwitterID(profile.id, function(err, result){
+      if(!err){
+        profile.eth_address = result.eth_address;
+        done(null, profile);
+      }
+    });
   }
 ));
 

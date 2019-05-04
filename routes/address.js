@@ -1,10 +1,18 @@
 var express = require('express');
 var router = express.Router();
 var Web3 = require('web3');
-var contractAddr = "0x6081aa30758e9D752fd7d8E7729220A80771e835";  
+var contractAddr = "0x6081aa30758e9D752fd7d8E7729220A80771e835"; 
+var contr_address = require('../controllers/contr_address'); 
 
 router.get('/', function(req, res, next) {
   res.render('index');
+});
+
+router.post('/check', function(req, res){
+  contr_address.checkIfValidAddress(req, function(isValid){
+    console.log('route: ', isValid);
+    res.send(isValid);
+  });
 });
 
 router.get('/:address', function(req, res, next){

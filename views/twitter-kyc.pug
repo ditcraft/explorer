@@ -1,0 +1,71 @@
+extends layout
+
+block content
+  .container
+    .row
+      .col-12.grid-margin.stretch-card
+        .card
+          .card-body
+            h4.card-title Know-Your-Coder process
+            //h4.card-title Colored input groups
+            p.card-description
+              | It looks like you haven't passed the know-your-coder (KYC) process yet. No worries, you can do that right now! Just let us know your ETH address.
+            .form-group
+              .input-group
+                .input-group-prepend.bg-info
+                  span.input-group-text.bg-primary
+                    i.mdi.mdi-account-card-details.text-white
+                input.form-control#ethAddress(type='text', placeholder='0x0000000000000000000000000000000000000000', aria-label='ETH Address')
+          .card-body#correctNotice
+            hr
+            h4 You have entered a correct ETH address! Tweet the following, if you want to associate this address with your Twitter Account and thereby pass our KYC-process:
+            blockquote.blockquote.blockquote-primary
+              p#tweetText @ditcraft I want to use your client, please verify me 0x0000000000000000000000000000000000000000!
+              footer.blockquote-footer
+                a#tweetLink(href="http://twitter.com/home?status=@ditcraft I want to use your client, please verify me 0x0000000000000000000000000000000000000000!") Click this link, where the Tweet already is prepared for you.
+            
+  script.
+    var typingTimer;
+    var doneTypingInterval = 500;
+    $('#correctNotice').hide();
+
+    $('#ethAddress').on('keyup', function () {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(doneTyping, doneTypingInterval);
+    });
+
+    $('#ethAddress').on('keydown', function () {
+      clearTimeout(typingTimer);
+    });
+
+    function doneTyping () {
+      if($('#ethAddress').val()) {
+        $('#ethAddress').addClass('loading');
+        $('#tweetText').text("@ditcraft I want to use your client, please verify me " + $('#ethAddress').val() + "!");
+        $('#tweetLink').attr("href", "http://twitter.com/home?status=@ditcraft I want to use your client, please verify me " + $('#ethAddress').val() + "!");
+        $.ajax({
+          type: 'POST',
+          url: '/address/check',
+          contentType: 'application/json',
+          data: JSON.stringify({ address: $('#ethAddress').val() }),
+          dataType: 'json',
+          success: function(data){
+            if(data){
+              $('#ethAddress').addClass('bg-success text-white').removeClass('bg-danger');
+              $('#correctNotice').show();
+            } else {
+              $('#ethAddress').addClass('bg-danger text-white').removeClass('bg-success');
+              $('#correctNotice').hide();
+            }
+            $('#ethAddress').removeClass('loading');
+          },
+          error: function(){
+              console.log('Error');
+          },
+          processData: false
+        });
+      } else {
+        $('#ethAddress').removeClass('bg-danger bg-success text-white');
+        $('#correctNotice').hide();
+      }
+    }
