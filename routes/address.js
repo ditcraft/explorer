@@ -10,7 +10,6 @@ router.get('/', function(req, res, next) {
 
 router.post('/check', function(req, res){
   contr_address.checkIfValidAddress(req, function(isValid){
-    console.log('route: ', isValid);
     res.send(isValid);
   });
 });
@@ -21,7 +20,7 @@ router.get('/:address', function(req, res, next){
   var abi = [{"constant":true,"inputs":[{"name":"_address","type":"address"},{"name":"_label","type":"string"}],"name":"freeBalanceOfLabel","outputs":[{"name":"freeBalance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_contractAddress","type":"address"}],"name":"addVotingContract","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_address","type":"address"},{"name":"_labelID","type":"uint256"}],"name":"labelOfAddress","outputs":[{"name":"label","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_address","type":"address"},{"name":"_label","type":"string"},{"name":"_amount","type":"uint256"}],"name":"lockTokens","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_address","type":"address"},{"name":"_label","type":"string"}],"name":"balanceOfLabel","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_address","type":"address"},{"name":"_label","type":"string"},{"name":"_amount","type":"uint256"}],"name":"mint","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_label","type":"string"}],"name":"totalLabelSupply","outputs":[{"name":"totalSupplyOfLabel","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_address","type":"address"},{"name":"_label","type":"string"},{"name":"_amount","type":"uint256"}],"name":"burn","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_address","type":"address"},{"name":"_label","type":"string"},{"name":"_numberOfTokens","type":"uint256"}],"name":"unlockTokens","outputs":[{"name":"success","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_address","type":"address"}],"name":"labelCountOfAddress","outputs":[{"name":"labelCount","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"votingContracts","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"who","type":"address"},{"indexed":false,"name":"label","type":"string"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Mint","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"who","type":"address"},{"indexed":false,"name":"label","type":"string"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Burn","type":"event"}];
   var ditContract = new web3.eth.Contract(abi, contractAddr);
 
-  var obj = {};
+  var obj;
   var label = "";
   var balance = "";
   ditContract.methods.labelCountOfAddress(userAddr).call().then(async function(labelCount, error){
@@ -37,6 +36,13 @@ router.get('/:address', function(req, res, next){
       res.render('address', { user: req.user, address: userAddr, balance: obj, total: sum(obj).toFixed(2) });
   }).catch(e => {
     res.render('error-404');
+  });
+});
+
+router.get('/:address/twitterName', function(req, res, next){
+  var userAddr = req.params.address;
+  contr_address.getTwitterName(userAddr, function(error, result){
+    res.send(result);
   });
 });
 

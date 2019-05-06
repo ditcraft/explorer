@@ -4,8 +4,12 @@ block content
   .card
     .card-body
       .row.mb-4
-        .col-xl-9.col-lg-9.col-md-9.col-sm-12.float-right
-          h1 Contributor
+        #twitterImage.col-xl-1.col-lg-1.col-md-1.col-sm-12
+          img.img-xl.rounded-circle(src='', alt='Twitter profile picture')
+        #name.col-xl-8.col-lg-8.col-md-8.col-sm-12
+          h1
+            a(href='https://twitter.com/')#twitterName Contributor
+            span#contributorName Contributor
           span.text-muted.d-block.text-center.text-sm-left.d-sm-inline-block #{address}
         .col-xl-3.col-lg-3.col-md-3.col-sm-6.grid-margin.stretch-card.float-right
           .card.card-statistics
@@ -14,19 +18,35 @@ block content
                 p.mb-0.text-right Total Amount
                 .fluid-container
                   h3.font-weight-medium.text-right.mb-0 #{total}KNW
-      h4.card-title KNW Tokens
-      .table-responsive
-        table.table.table-hover
-          thead
-            tr
-              th Label
-              th
-              th Amount
-          tbody
-          each val, index in balance
-            tr
-              td= index
-              td
-                .progress
-                  .progress-bar.progress-bar-striped(role='progressbar', style='width: ' + (val/total)*100 + '%', aria-valuenow='' + (val/total)*100, aria-valuemin='0', aria-valuemax='100')
-              td= val
+      if balance
+        h4.card-title KNW Tokens
+        .table-responsive
+          table.table.table-hover
+            thead
+              tr
+                th Label
+                th
+                th Amount
+            tbody
+            each val, index in balance
+              tr
+                td= index
+                td
+                  .progress
+                    .progress-bar.progress-bar-striped(role='progressbar', style='width: ' + (val/total)*100 + '%', aria-valuenow='' + (val/total)*100, aria-valuemin='0', aria-valuemax='100')
+                td= val
+      else
+        blockquote.blockquote This contributor has not yet earned any knowledge tokens.
+  script.
+    $('#twitterName').hide();
+    $.get('/address/'+ '#{address}' + '/twitterName', function(data) {
+      if(data.twitter_screen_name){
+        $('#twitterName').text('@' + data.twitter_screen_name).attr('href', 'https://twitter.com/' + data.twitter_screen_name);
+        $('#twitterName').show();
+        $('#contributorName').hide();
+        $('#twitterImage img').attr('src', 'https://twitter.com/' + data.twitter_screen_name + '/profile_image?size=bigger');
+      } else {
+        var data = new Identicon('#{address}').toString();
+        $('#twitterImage img').attr('src', 'data:image/png;base64,' + data );
+      }
+    });

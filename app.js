@@ -10,7 +10,6 @@ var BetterMemoryStore = require('session-memory-store')(sess);
 const config = require('./config');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var addressRouter = require('./routes/address');
 var contr_address = require('./controllers/contr_address');
 var loginRouter = require('./routes/login');
@@ -65,7 +64,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/address', addressRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);

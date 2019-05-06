@@ -20,6 +20,11 @@ var controller = {
         } else {
             callback(false);
         }
+    },
+    getTwitterName: function(eth_address, callback){
+        models.findOne("users", { "eth_address": eth_address }, { "twitter_screen_name" : 1 }, function(error, result){
+            callback(error, result);
+        });
     }
 }
 
