@@ -25,6 +25,7 @@ router.get('/:address', function(req, res, next){
   var balance = "";
   ditContract.methods.labelCountOfAddress(userAddr).call().then(async function(labelCount, error){
       for(var i = 1; i <= parseInt(labelCount); i++){
+        obj = {};
         await ditContract.methods.labelOfAddress(userAddr, i).call().then(async function(labelString){
           label = labelString;
            await ditContract.methods.balanceOfLabel(userAddr, labelString).call().then(function(labelBalance){
