@@ -13683,6 +13683,7 @@ input:focus {
   font-family: "Poppins", sans-serif;
   padding: 0;
   width: 255px;
+  position: fixed;
   z-index: 11;
   transition: width 0.25s ease, background 0.25s ease;
   -webkit-transition: width 0.25s ease, background 0.25s ease;
@@ -14207,6 +14208,7 @@ html {
   transition: width 0.25s ease, margin 0.25s ease;
   width: calc(100% - 255px);
   min-height: calc(100vh - 63px);
+  margin-left: 255px;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
@@ -14753,10 +14755,8 @@ pre {
 
 /* Bootstrap Progress */
 .progress {
-  border-radius: 3px;
+  border-radius: 5px;
   height: 8px; }
-  .progress .progress-bar {
-    border-radius: 3px; }
   .progress.progress-sm {
     height: 0.375rem; }
   .progress.progress-md {
@@ -16316,4 +16316,35 @@ ul {
   background-size: 25px 25px;
   background-position: right center;
   background-repeat: no-repeat;
+}
+
+.requiredSeparatorClip {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.requiredSeparatorWrapper {
+  height: 100%;
+}
+
+.requiredSeparator {
+  height: 100%;
+  border-left-width: 3px;
+  border-left-style: solid;
+  border-left-color: lightgrey;
+}
+
+.summaryBar {
+  position: relative;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  height: 50px;
+  margin-top: 10px;
+  margin-right: 0px;
 }
