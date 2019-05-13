@@ -23,7 +23,8 @@ router.get('/:address', function(req, res, next){
   var obj;
   var label = "";
   var balance = "";
-  ditContract.methods.labelCountOfAddress(userAddr).call().then(async function(labelCount, error){
+  contr_address.getProposalsByAddress(userAddr, proposals => {
+    ditContract.methods.labelCountOfAddress(userAddr).call().then(async function(labelCount, error){
       for(var i = 1; i <= parseInt(labelCount); i++){
         obj = {};
         await ditContract.methods.labelOfAddress(userAddr, i).call().then(async function(labelString){
@@ -34,15 +35,23 @@ router.get('/:address', function(req, res, next){
            });
          });
        }
-      res.render('address', { user: req.user, address: userAddr, balance: obj, total: sum(obj).toFixed(2) });
-  }).catch(e => {
-    res.render('error-404');
-  });
+      res.render('address', { user: req.user, address: userAddr, balance: obj, total: sum(obj).toFixed(2), proposals: proposals });
+    }).catch(e => {
+      res.render('error-404');
+    });
+  })
 });
 
 router.get('/:address/twitterName', function(req, res, next){
   var userAddr = req.params.address;
   contr_address.getTwitterName(userAddr, function(error, result){
+    res.send(result);
+  });
+});
+
+router.get('/:address/proposals', function(req, res, next){
+  var userAddr = req.params.address;
+  contr_address.getProposalsByAddress(userAddr, function(result){
     res.send(result);
   });
 });

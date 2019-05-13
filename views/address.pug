@@ -1,42 +1,98 @@
 extends layout
 
 block content
-  .card
-    .card-body
-      .row.mb-4
-        #twitterImage.col-xl-1.col-lg-1.col-md-1.col-sm-12
-          img.img-xl.rounded-circle(src='/images/Twitter_Logo_WhiteOnImage.png', alt='Twitter profile picture')
-        #name.col-xl-8.col-lg-8.col-md-8.col-sm-12
-          h1
-            a(href='https://twitter.com/')#twitterName Contributor
-            span#contributorName Contributor
-          span.text-muted.d-block.text-center.text-sm-left.d-sm-inline-block #{address}
-        .col-xl-3.col-lg-3.col-md-3.col-sm-6.grid-margin.stretch-card.float-right
-          .card.card-statistics
-            .clearfix
-              .float-right
-                p.mb-0.text-right Total Amount
-                .fluid-container
-                  h3.font-weight-medium.text-right.mb-0 #{total}KNW
-      if balance
-        h4.card-title KNW Tokens
-        .table-responsive
-          table.table.table-hover
-            thead
-              tr
-                th Label
-                th
-                th Amount
-            tbody
-            each val, index in balance
-              tr
-                td= index
-                td
-                  .progress
-                    .progress-bar.progress-bar-striped(role='progressbar', style='width: ' + (val/total)*100 + '%', aria-valuenow='' + (val/total)*100, aria-valuemin='0', aria-valuemax='100')
-                td= val
-      else
-        blockquote.blockquote This contributor has not yet earned any knowledge tokens.
+  .row
+    .col-12.grid-margin
+      .card
+        .card-body
+          .row.mb-4
+            #twitterImage.col-xl-1.col-lg-1.col-md-1.col-sm-12
+              img.img-xl.rounded-circle(src='/images/Twitter_Logo_WhiteOnImage.png', alt='Twitter profile picture')
+            #name.col-xl-8.col-lg-8.col-md-8.col-sm-12
+              h1
+                a(href='https://twitter.com/')#twitterName Contributor
+                span#contributorName Contributor
+              span.text-muted.d-block.text-center.text-sm-left.d-sm-inline-block #{address}
+            .col-xl-3.col-lg-3.col-md-3.col-sm-6.grid-margin.stretch-card.float-right
+              .card.card-statistics
+                .clearfix
+                  .float-right
+                    p.mb-0.text-right Total Amount
+                    .fluid-container
+                      h3.font-weight-medium.text-right.mb-0 #{total}KNW
+          if !balance
+            blockquote.blockquote This contributor has not yet earned any knowledge tokens.
+  if balance
+    .row
+      .col-12.grid-margin
+        .card
+          .card-body
+            h4.card-title KNW Tokens
+            .table-responsive
+              table.table.table-hover
+                thead
+                  tr
+                    th Label
+                    th
+                    th Amount
+                tbody
+                each val, index in balance
+                  tr
+                    td= index
+                    td
+                      .progress
+                        .progress-bar.progress-bar-striped(role='progressbar', style='width: ' + (val/total)*100 + '%', aria-valuenow='' + (val/total)*100, aria-valuemin='0', aria-valuemax='100')
+                    td= val
+  if (proposals.length)
+    .row
+      .col-12.grid-margin
+        .card
+          .card-body
+            h5.card-title.mb-4 Proposals
+            .fluid-container
+              each proposal, index in proposals
+                .row.ticket-card.mt-3.pb-2.border-bottom.pb-3.mb-3
+                  .col-md-2.text-center.m-auto
+                    if proposalAccepted
+                      i.mdi.mdi-check.text-success.icon-lg
+                      br
+                      span.text-muted Accepted
+                    else
+                      i.mdi.mdi-close.text-danger.icon-lg
+                      br
+                      span.text-muted Rejected
+                  .col-md-10.ticket-details
+                    .row
+                      .col-3.d-flex
+                        //p.text-dark.font-weight-semibold.mr-2.mb-0.no-wrap VoteID:
+                        p.text-primary.mr-1.mb-0 [##{proposal.KNWVoteID}]
+                        p.mb-0.ellipsis with #{parseFloat(proposal.participantsFor) + parseFloat(proposal.participantsAgainst)} participants
+                      .col-9.text-muted.text-right
+                        small
+                          | #{moment.unix(proposal.commitEndDate).format("hh:mm:s DD.MM.YYYY ")} - #{moment.unix(proposal.openEndDate).format("hh:mm:s DD.MM.YYYY ")}
+                          i.mdi.mdi-clock
+                    if !proposalAccepted
+                      p
+                        .progress(style="height: 20px;")
+                          .progress-bar.progress-bar.bg-danger(role='progressbar', style='width: ' + (proposal.votesAgainst)*100 + '%', aria-valuenow='' + (proposal.votesAgainst)*100, aria-valuemin='0', aria-valuemax='100')
+                            span #{proposal.votesAgainst} votes against from #{proposal.participantsAgainst} participants
+                      p
+                        .progress(style="height: 20px;")
+                          .progress-bar.progress-bar.bg-success(role='progressbar', style='width: ' + (proposal.votesFor/proposal.votesAgainst)*100 + '%', aria-valuenow='' + (proposal.votesFor/proposal.votesAgainst)*100, aria-valuemin='0', aria-valuemax='100')
+                            span #{proposal.votesFor} votes for from #{proposal.participantsFor} participants
+                    else
+                      p
+                        .progress(style="height: 20px;")
+                          .progress-bar.progress-bar.bg-success(role='progressbar', style='width: ' + (proposal.votesFor)*100 + '%', aria-valuenow='' + (proposal.votesFor)*100, aria-valuemin='0', aria-valuemax='100')
+                            span #{proposal.votesFor} votes for from #{proposal.participantsFor} participants
+                      p
+                        .progress(style="height: 20px;")
+                          .progress-bar.progress-bar.bg-danger(role='progressbar', style='width: ' + (proposal.votesAgainst/proposal.votesFor)*100 + '%', aria-valuenow='' + (proposal.votesAgainst/proposal.votesFor)*100, aria-valuemin='0', aria-valuemax='100')
+                            span #{proposal.votesAgainst} votes against from #{proposal.participantsAgainst} participants
+                    p.text-right
+                      small.text-muted
+                        a.text-muted(href='https://' + proposal.repositoryName) https://#{proposal.repositoryName} 
+                          i.mdi.mdi-link(href='https://' + proposal.repositoryName)
   script.
     $('#twitterName').hide();
     $.get('/address/'+ '#{address}' + '/twitterName', function(data) {
