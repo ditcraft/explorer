@@ -1,8 +1,26 @@
 extends layout
 
 block content
-  h1 ditCraft
-  .container
+  h1.text-center.text-muted.mt-5 ditCraft Explorer
+  h5.text-center.mb-5 Decentralize — Incentivize — Democratize.
+  .container.mb-5
     .row
-       .col-sm-12
-       h4 Decentralize. Incentivize. Democratize.
+      .col-12.grid-margin
+        .input-group#addressInput
+          input#searchTextIndex.form-control(type='text', placeholder='Search address...', aria-label='Search address...', aria-describedby='colored-addon3')
+          #searchButtonIndex.input-group-append.bg-primary.border-primary
+            span.input-group-text.bg-transparent
+              i.mdi.mdi-magnify.text-white
+  h2.text-center Radically new governance for open source development.
+  
+  script.
+    $('#searchTextIndex').keypress(function(event){
+      var keycode = (event.keyCode ? event.keyCode : event.which);
+      if(keycode == '13'){
+        window.location.href = '/address/' + $('#searchTextIndex').val();
+      }
+    });
+
+    $('#searchButtonIndex').on('click',function(){
+      window.location.href = '/address/' + $('#searchTextIndex').val();
+    });

@@ -13915,8 +13915,8 @@ input:focus {
     -moz-transition: width 0.25s ease;
     -ms-transition: width 0.25s ease;
     color: #ffffff;
-    padding-left: 15px;
-    padding-right: 15px;
+    /*padding-left: 15px;
+    padding-right: 15px;*/
     width: calc(100% - 255px);
     height: 63px; }
     @media (max-width: 991px) {
@@ -13969,7 +13969,7 @@ input:focus {
             margin-right: auto; } }
       .navbar.default-layout .navbar-menu-wrapper .navbar-nav.header-links {
         height: 63px;
-        padding-left: 2%; }
+        /*padding-left: 2%;*/ }
         .navbar.default-layout .navbar-menu-wrapper .navbar-nav.header-links .nav-item {
           margin: 0; }
           .navbar.default-layout .navbar-menu-wrapper .navbar-nav.header-links .nav-item .nav-link {
@@ -16347,4 +16347,9 @@ ul {
   height: 50px;
   margin-top: 10px;
   margin-right: 0px;
+}
+
+#addressInput{
+  margin: 0 auto;
+  max-width: 400px;
 }

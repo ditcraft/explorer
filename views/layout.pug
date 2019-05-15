@@ -46,7 +46,7 @@ html(lang='en')
                 | Repository
                 span.badge.badge-primary.ml-1 New
           ul.navbar-nav.navbar-nav-right
-            li
+            li#navBarSearch.d-none.d-lg-block
               .input-group
                 input#searchText.form-control(type='text', placeholder='Search address...', aria-label='Search address...', aria-describedby='colored-addon3')
                 #searchButton.input-group-append.bg-primary.border-primary
@@ -54,7 +54,7 @@ html(lang='en')
                     i.mdi.mdi-magnify.text-white
             li.nav-item
                 if user
-                  li.nav-item.dropdown.d-none.d-xl-inline-block
+                  li.nav-item.dropdown.d-inline-block
                     a#UserDropdown.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-expanded='false')
                       span.profile-text #{user.displayName}
                       img.img-xs.rounded-circle(src=''+ user.photos[0].value, alt='Twitter profile picture')
@@ -66,8 +66,8 @@ html(lang='en')
                         i.mdi.mdi-logout
                         | Sign Out
                 else
-                  a.btn.btn-light.btn-block(href="/login")
-                    i.mdi.mdi-lock
+                  a.btn.btn-light.btn-block(href="/login/twitter")
+                    i.mdi.mdi-twitter
                     | Log in
           button.navbar-toggler.navbar-toggler-right.d-lg-none.align-self-center(type='button', data-toggle='offcanvas')
             span.mdi.mdi-menu
@@ -76,6 +76,12 @@ html(lang='en')
         // partial:../../partials/_sidebar.html
         nav#sidebar.sidebar.sidebar-offcanvas
           ul.nav
+            li#sidebarSearch.d-lg-none
+              .input-group
+                input#searchTextSidebar.form-control(type='text', placeholder='Search address...', aria-label='Search address...', aria-describedby='colored-addon3')
+                #searchButtonSidebar.input-group-append.bg-secondary
+                  span.input-group-text.bg-transparent
+                    i.mdi.mdi-magnify.text-white
             li.nav-item
               a.nav-link(data-toggle='collapse', href='#discover', aria-expanded='false', aria-controls='ui-basic')
                 i.menu-icon.mdi.mdi-compass
@@ -127,15 +133,15 @@ html(lang='en')
           script(src='../../js/off-canvas.js')
           script(src='../../js/misc.js')
           script.
-            $('#searchText').keypress(function(event){
+            $('#searchText, #searchTextSidebar').keypress(function(event){
               var keycode = (event.keyCode ? event.keyCode : event.which);
               if(keycode == '13'){
-                window.location.href = '/address/' + $('#searchText').val();
+                window.location.href = '/address/' + $('#searchText, #searchTextSidebar').val();
               }
             });
 
-            $('#searchButton').on('click',function(){
-              window.location.href = '/address/' + $('#searchText').val();
+            $('#searchButton, #searchButtonSidebar').on('click',function(){
+              window.location.href = '/address/' + $('#searchText, #searchButtonSidebar').val();
             });
           // endinject
           // Custom js for this page

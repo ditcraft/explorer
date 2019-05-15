@@ -6,14 +6,14 @@ block content
       .card
         .card-body
           .row.mb-4
-            #twitterImage.col-xl-1.col-lg-1.col-md-1.col-sm-12
+            #twitterImage.col-xl-1.col-lg-2.col-md-2.col-sm-2.d-none.d-md-block
               img.img-xl.rounded-circle(src='/images/Twitter_Logo_WhiteOnImage.png', alt='Twitter profile picture')
-            #name.col-xl-8.col-lg-8.col-md-8.col-sm-12
+            #name.col-xl-8.col-lg-7.col-md-7.col-sm-10
               h1
                 a(href='https://twitter.com/')#twitterName Contributor
                 span#contributorName Contributor
-              span.text-muted.d-block.text-center.text-sm-left.d-sm-inline-block #{address}
-            .col-xl-3.col-lg-3.col-md-3.col-sm-6.grid-margin.stretch-card.float-right
+              span.text-muted.d-block.text-sm-left.d-sm-inline-block #{address}
+            .col-xl-3.col-lg-3.col-md-3.col-sm-1.grid-margin.stretch-card.float-right.d-none.d-sm-block
               .card.card-statistics
                 .clearfix
                   .float-right
@@ -53,7 +53,7 @@ block content
               each proposal, index in proposals
                 .row.ticket-card.mt-3.pb-2.border-bottom.pb-3.mb-3
                   .col-md-2.text-center.m-auto
-                    if proposalAccepted
+                    if proposal.proposalAccepted
                       i.mdi.mdi-check.text-success.icon-lg
                       br
                       span.text-muted Accepted
@@ -63,13 +63,13 @@ block content
                       span.text-muted Rejected
                   .col-md-10.ticket-details
                     .row
-                      .col-3.d-flex
+                      .col-5.d-flex
                         //p.text-dark.font-weight-semibold.mr-2.mb-0.no-wrap VoteID:
                         p.text-primary.mr-1.mb-0 [##{proposal.KNWVoteID}]
                         p.mb-0.ellipsis with #{parseFloat(proposal.participantsFor) + parseFloat(proposal.participantsAgainst)} participants
-                      .col-9.text-muted.text-right
+                      .col-7.text-muted.text-right
                         small
-                          | #{moment.unix(proposal.commitEndDate).format("hh:mm:s DD.MM.YYYY ")} - #{moment.unix(proposal.openEndDate).format("hh:mm:s DD.MM.YYYY ")}
+                          | #{moment.unix(proposal.commitEndDate).format("HH:mm:s DD.MM.YYYY ")} - #{moment.unix(proposal.openEndDate).format("HH:mm:s DD.MM.YYYY ")}
                           i.mdi.mdi-clock
                     .progress(style="height: 20px;").summaryBar
                       - var percentageFor = (proposal.votesFor / (proposal.votesFor + proposal.votesAgainst)) * 100
