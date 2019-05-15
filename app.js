@@ -23,9 +23,11 @@ passport.use(new TwitterStrategy({
 },
   function(token, tokenSecret, profile, done) {
     contr_address.getAddressByTwitterID(profile.id, function(err, result){
-      if(!err){
+      if(result){
         profile.eth_address = result.eth_address;
         done(null, profile);
+      } else {
+        done(null, null);
       }
     });
   }
