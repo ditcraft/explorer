@@ -19,7 +19,7 @@ var proposalsRouter = require('./routes/proposals');
 passport.use(new TwitterStrategy({
   consumerKey:    config.TWITTER_API_KEY,
   consumerSecret: config.TWITTER_API_SECRET,
-  callbackURL:    "http://127.0.0.1:3000/login/twitter/callback"
+  callbackURL:    config.TWITTER_CALLBACK_URL
 },
   function(token, tokenSecret, profile, done) {
     contr_address.getAddressByTwitterID(profile.id, function(err, result){
