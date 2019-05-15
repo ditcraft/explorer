@@ -1,0 +1,47 @@
+extends layout
+
+block content
+  if (proposals.length)
+    .row
+      .col-12.grid-margin
+        .card
+          .card-body
+            h1.mb-4 Past Proposals
+              .badge.badge-pill.badge-secondary.ml-1 #{proposals.length}
+            .fluid-container
+              each proposal, index in proposals
+                .row.ticket-card.mt-3.pb-2.border-bottom.pb-3.mb-3
+                  .col-md-2.text-center.m-auto
+                    if proposal.proposalAccepted
+                      i.mdi.mdi-check.text-success.icon-lg
+                      br
+                      span.text-muted Accepted
+                    else
+                      i.mdi.mdi-close.text-danger.icon-lg
+                      br
+                      span.text-muted Rejected
+                  .col-md-10.ticket-details
+                    .row
+                      .col-5.d-flex
+                        //p.text-dark.font-weight-semibold.mr-2.mb-0.no-wrap VoteID:
+                        p.text-primary.mr-1.mb-0 [##{proposal.KNWVoteID}]
+                        p.mb-0.ellipsis with #{parseFloat(proposal.participantsFor) + parseFloat(proposal.participantsAgainst)} participants
+                      .col-7.text-muted.text-right
+                        small
+                          | #{moment.unix(proposal.commitEndDate).format("HH:mm:s DD.MM.YYYY ")} - #{moment.unix(proposal.openEndDate).format("HH:mm:s DD.MM.YYYY ")}
+                          i.mdi.mdi-clock
+                    .progress(style="height: 20px;").summaryBar
+                      - var percentageFor = (proposal.votesFor / (proposal.votesFor + proposal.votesAgainst)) * 100
+                      - var percentageAgainst = (proposal.votesAgainst / (proposal.votesFor + proposal.votesAgainst)) * 100
+                      .progress-bar.progress-bar.bg-success(role='progressbar', style='width: ' + percentageFor + '%', aria-valuenow='' + percentageFor, aria-valuemin='0', aria-valuemax='100')
+                        span #{percentageFor.toFixed(2)}%
+                      .progress-bar.progress-bar.bg-danger(role='progressbar', style='width: ' + percentageAgainst + '%', aria-valuenow='' + percentageAgainst, aria-valuemin='0', aria-valuemax='100')
+                        span #{percentageAgainst.toFixed(2)}%
+                      .requiredSeparatorClip
+                        .requiredSeparatorWrapper(style='transform: translate3d(50%, 0px, 0px) scale3d(1, 1, 1);')
+                          .requiredSeparator
+                    p.text-right
+                      small.text-muted
+                        a.text-muted.small(href='https://' + proposal.repositoryName) https://#{proposal.repositoryName} 
+                          i.mdi.mdi-link(href='https://' + proposal.repositoryName)
+  script.

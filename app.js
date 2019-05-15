@@ -14,6 +14,7 @@ var addressRouter = require('./routes/address');
 var contr_address = require('./controllers/contr_address');
 var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
+var proposalsRouter = require('./routes/proposals');
 
 passport.use(new TwitterStrategy({
   consumerKey:    config.TWITTER_API_KEY,
@@ -67,6 +68,7 @@ app.use('/', indexRouter);
 app.use('/address', addressRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
+app.use('/proposals', proposalsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
