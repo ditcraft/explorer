@@ -20,9 +20,9 @@ block content
             hr
             h4 You have entered a correct ETH address! Tweet the following, if you want to associate this address with your Twitter Account and thereby pass our KYC-process:
             blockquote.blockquote.blockquote-primary
-              p#tweetText @ditcraft I want to use your client, please verify me 0x0000000000000000000000000000000000000000!
+              p#tweetText @ditcraft I want to use dit, the decentralized git client! Please verify me 0x0000000000000000000000000000000000000000!
               footer.blockquote-footer
-                a#tweetLink(href="http://twitter.com/home?status=@ditcraft I want to use your client, please verify me 0x0000000000000000000000000000000000000000!") Click this link, where the Tweet already is prepared for you.
+                a#tweetLink(href="http://twitter.com/home?status=@ditcraft I want to use dit, the decentralized git client! Please verify me 0x0000000000000000000000000000000000000000!" target="_blank") Click this link, where the Tweet already is prepared for you.
             
   script.
     var typingTimer;
@@ -41,8 +41,8 @@ block content
     function doneTyping () {
       if($('#ethAddress').val()) {
         $('#ethAddress').addClass('loading');
-        $('#tweetText').text("@ditcraft I want to use your client, please verify me " + $('#ethAddress').val() + "!");
-        $('#tweetLink').attr("href", "http://twitter.com/home?status=@ditcraft I want to use your client, please verify me " + $('#ethAddress').val() + "!");
+        $('#tweetText').text("@ditcraft I want to use dit, the decentralized git client! Please verify me " + $('#ethAddress').val() + "!");
+        $('#tweetLink').attr("href", "http://twitter.com/home?status=@ditcraft I want to use dit, the decentralized git client! Please verify me " + $('#ethAddress').val() + "!");
         $.ajax({
           type: 'POST',
           url: '/address/check',
