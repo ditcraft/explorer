@@ -6,7 +6,7 @@ const dbName = 'twitterbot';
 
 var model = {
     findAll: function(collection, query, projection, callback){
-        MongoClient.connect(url, function(err, client) {
+        MongoClient.connect(url, { useNewUrlParser: true }, function(err, client) {
             if (err) {
                 console.error('An error occurred connecting to MongoDB: ', err);
             } else {
@@ -21,7 +21,7 @@ var model = {
         });
     },
     findOne: function(collection, query, projection, callback){
-        MongoClient.connect(url, function(err, client) {
+        MongoClient.connect(url, { useNewUrlParser: true }, function(err, client) {
             if (err) {
                 console.error('An error occurred connecting to MongoDB: ', err);
             } else {
@@ -36,7 +36,7 @@ var model = {
         });
     },
     addNew: function(collection, data, callback){
-        MongoClient.connect(url, function(err, client) {
+        MongoClient.connect(url, { useNewUrlParser: true }, function(err, client) {
             if (err) {
                 console.error('An error occurred connecting to MongoDB: ', err);
             } else {

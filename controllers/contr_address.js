@@ -13,31 +13,44 @@ var controller = {
     getAddress: function(eth_address, callback){
         web3 = new Web3(new Web3.providers.HttpProvider('https://dai.poa.network'));
         var ditContract = new web3.eth.Contract(config.ABI.KNWToken, config.CONTRACT.DEMO.KNWToken);
-      
-        var obj;
-        var label = "";
-        var balance = "";
-        controller.getProposalsByAddress(eth_address, (error, proposals) => {
-            if(!error){
-                ditContract.methods.labelCountOfAddress(eth_address).call().then(async function(labelCount, error){
-                    for(var i = 1; i <= parseInt(labelCount); i++){
-                      obj = {};
-                      await ditContract.methods.labelOfAddress(eth_address, i).call().then(async function(labelString){
-                        label = labelString;
-                         await ditContract.methods.balanceOfLabel(eth_address, labelString).call().then(function(labelBalance){
-                           balance = web3.utils.toBN(labelBalance).toString();
-                           obj[label] = web3.utils.fromWei(balance, 'ether')
-                         });
-                       });
-                     }
-                    callback(error, { address: eth_address, balance: obj, total: sum(obj).toFixed(2), proposals: proposals });
-                  }).catch(e => {
-                    callback(e);
-                });
-            } else {
-                callback(error);
-            }
-        });
+        var ditToken = new web3.eth.Contract(config.ABI.ditToken, config.CONTRACT.LIVE.ditToken);
+
+        try {
+            web3.eth.getBalance(eth_address, function (error, wei) {
+                if (!error) {
+                    var xDAIBalance = web3.utils.fromWei(wei, 'ether');
+                    ditToken.methods.balanceOf(eth_address).call().then(function (xDit, error){
+                        var xDitBalance = web3.utils.fromWei(web3.utils.toBN(xDit).toString(), 'ether');
+                        var obj;
+                        var label = "";
+                        var balance = "";
+                        controller.getProposalsByAddress(eth_address, (error, proposals) => {
+                            if(!error){
+                                ditContract.methods.labelCountOfAddress(eth_address).call().then(async function(labelCount, error){
+                                    for(var i = 1; i <= parseInt(labelCount); i++){
+                                      obj = {};
+                                      await ditContract.methods.labelOfAddress(eth_address, i).call().then(async function(labelString){
+                                        label = labelString;
+                                         await ditContract.methods.balanceOfLabel(eth_address, labelString).call().then(function(labelBalance){
+                                           balance = web3.utils.toBN(labelBalance).toString();
+                                           obj[label] = web3.utils.fromWei(balance, 'ether')
+                                         });
+                                       });
+                                     }
+                                    callback(error, { address: eth_address, balance: obj, total: sum(obj).toFixed(2), proposals: proposals, xDitBalance: parseFloat(xDitBalance).toFixed(2), xDAIBalance: parseFloat(xDAIBalance).toFixed(2) });
+                                  }).catch(e => {
+                                    callback(e);
+                                });
+                            } else {
+                                callback(error);
+                            }
+                        });
+                    });
+                }
+            });
+        } catch (err) {
+            callback(err);
+        }
     },
     getAddressByTwitterID: function(twitterID, callback){
         models.findOne("users", { "twitter_id": twitterID }, { "eth_address" : 1 }, function(error, result){

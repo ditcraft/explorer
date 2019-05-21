@@ -2,26 +2,29 @@ extends layout
 
 block content
   .row
-    .col-12.grid-margin
-      .card
+    .col-xl-8.col-lg-8.col-md-8.col-sm-8.grid-margin
+      .card(style="height: 100%;")
         .card-body
-          .row.mb-4
-            #twitterImage.col-xl-1.col-lg-2.col-md-2.col-sm-2.d-none.d-md-block
-              img.img-xl.rounded-circle(src='/images/Twitter_Logo_WhiteOnImage.png', alt='Twitter profile picture')
-            #name.col-xl-8.col-lg-7.col-md-7.col-sm-10
+          .row.text-center
+            #twitterImage.col-12.mb-2
+                img.img-xl.rounded-circle(src='/images/Twitter_Logo_WhiteOnImage.png', alt='Twitter profile picture')
+            #name.col-12
               h1
                 a(href='https://twitter.com/' target="_blank")#twitterName Contributor
                 span#contributorName Contributor
-              span.text-muted.d-block.text-sm-left.d-sm-inline-block #{address}
-            .col-xl-3.col-lg-3.col-md-3.col-sm-1.grid-margin.stretch-card.float-right.d-none.d-sm-block
-              .card.card-statistics
-                .clearfix
-                  .float-right
-                    p.mb-0.text-right Total Amount
-                    .fluid-container
-                      h3.font-weight-medium.text-right.mb-0 #{total}KNW
+              p.text-muted #{address}
           if !balance
             blockquote.blockquote This contributor has not yet earned any knowledge tokens.
+    .col-xl-4.col-lg-4.col-md-4.col-sm-4.grid-margin.stretch-card
+      .card.card-statistics(style="height: 100%;")
+        .card-body
+          .clearfix
+            .float-right
+              p.mb-0.text-right Balance
+              .fluid-container
+                h3.font-weight-medium.text-right #{xDAIBalance} xDAI
+                h3.font-weight-medium.text-right #{xDitBalance} xDit
+                h3.font-weight-medium.text-right #{total} KNW
   if balance
     .row
       .col-12.grid-margin
@@ -89,7 +92,7 @@ block content
     $('#twitterName').hide();
     $.get('/address/'+ '#{address}' + '/twitterName', function(data) {
       if(data.twitter_screen_name){
-        $('#twitterName').text('@' + data.twitter_screen_name).attr('href', 'https://twitter.com/' + data.twitter_screen_name);
+        $('#twitterName').text(data.twitter_screen_name).attr('href', 'https://twitter.com/' + data.twitter_screen_name);
         $('#twitterName').show();
         $('#contributorName').hide();
         $('#twitterImage img').attr('src', 'https://twitter.com/' + data.twitter_screen_name + '/profile_image?size=bigger');

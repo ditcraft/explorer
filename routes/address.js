@@ -21,6 +21,7 @@ router.get('/:address', function(req, res, next){
       result.user = req.user;
       res.render('address', result);
     } else {
+      console.log('error: ', error);
       res.render('error-404');
     }
   });
