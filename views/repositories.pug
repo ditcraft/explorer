@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  if (repositories.length)
+    .row
+      .col-12.grid-margin
+        .card
+          .card-body
+            h1.mb-4 Initialized Repositories
+              .badge.badge-pill.badge-secondary.ml-1 #{repositories.length}
+            .fluid-container
+                .table-responsive
+                  table.table.table-bordered
+                    thead
+                      tr
+                        th
+                          | #
+                        th
+                          | Name
+                        th
+                          | Contributors
+                        th
+                          | Combined Knowledge
+                        th
+                          | Topicality
+                    tbody
+                      each repository, index in repositories
+                        tr
+                          td= index+1
+                          td= repository.name
+                          td
+                            .badge.badge-pill.badge-info #{repository.contributors.length}
+                          td #{repository.combinedKNW} KNW
+                          td #{moment.unix(repository.topicality).format("HH:mm:s DD.MM.YYYY ")}
+  script.

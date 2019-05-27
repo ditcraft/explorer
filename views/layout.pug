@@ -82,7 +82,7 @@ html(lang='en')
                 #searchButtonSidebar.input-group-append.bg-secondary
                   span.input-group-text.bg-transparent
                     i.mdi.mdi-magnify.text-white
-            //li.nav-item
+            li.nav-item
               a.nav-link(data-toggle='collapse', href='#discover', aria-expanded='false', aria-controls='ui-basic')
                 i.menu-icon.mdi.mdi-compass
                 span.menu-title Discover
@@ -90,10 +90,10 @@ html(lang='en')
               #discover.collapse
                 ul.nav.flex-column.sub-menu
                   li.nav-item
-                    a.nav-link(href='/discover/projects')
+                    a.nav-link(href='/repositories')
                       i.menu-icon.mdi.mdi-folder
-                      span.menu-title Projects    
-                  li.nav-item
+                      span.menu-title Repositories    
+                  //li.nav-item
                     a.nav-link(href='/discover/contributors')
                       i.menu-icon.mdi.mdi-account-multiple
                       span.menu-title Contributors

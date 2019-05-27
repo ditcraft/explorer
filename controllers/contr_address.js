@@ -1,4 +1,5 @@
 var models = require('../models/mdl_generics');
+var contr_proposals = require('./contr_proposals');
 var Web3 = require('web3');
 const BigNumber = require('bignumber.js');
 var config = require('../config.json');
@@ -8,11 +9,11 @@ web3 = new Web3(new Web3.providers.WebsocketProvider('wss://node.ditcraft.io/ws'
 
 var coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_DEMO, config.CONTRACT.DEMO.ditCoordinator);
 var votingContract = new web3.eth.Contract(config.ABI.KNWVoting, config.CONTRACT.DEMO.KNWVoting);
+var ditContract = new web3.eth.Contract(config.ABI.KNWToken, config.CONTRACT.DEMO.KNWToken);
 
 var controller = {
     getAddress: function(eth_address, callback){
         web3 = new Web3(new Web3.providers.HttpProvider('https://dai.poa.network'));
-        var ditContract = new web3.eth.Contract(config.ABI.KNWToken, config.CONTRACT.DEMO.KNWToken);
         var ditToken = new web3.eth.Contract(config.ABI.ditToken, config.CONTRACT.LIVE.ditToken);
 
         try {
@@ -21,25 +22,14 @@ var controller = {
                     var xDAIBalance = web3.utils.fromWei(wei, 'ether');
                     ditToken.methods.balanceOf(eth_address).call().then(function (xDit, error){
                         var xDitBalance = web3.utils.fromWei(web3.utils.toBN(xDit).toString(), 'ether');
-                        var obj;
-                        var label = "";
-                        var balance = "";
-                        controller.getProposalsByAddress(eth_address, (error, proposals) => {
+                        contr_proposals.getProposals(eth_address, null).then((proposals) => {
                             if(!error){
-                                ditContract.methods.labelCountOfAddress(eth_address).call().then(async function(labelCount, error){
-                                    for(var i = 1; i <= parseInt(labelCount); i++){
-                                      obj = {};
-                                      await ditContract.methods.labelOfAddress(eth_address, i).call().then(async function(labelString){
-                                        label = labelString;
-                                         await ditContract.methods.balanceOfLabel(eth_address, labelString).call().then(function(labelBalance){
-                                           balance = web3.utils.toBN(labelBalance).toString();
-                                           obj[label] = web3.utils.fromWei(balance, 'ether')
-                                         });
-                                       });
-                                     }
-                                    callback(error, { address: eth_address, balance: obj, total: sum(obj).toFixed(2), proposals: proposals, xDitBalance: parseFloat(xDitBalance).toFixed(2), xDAIBalance: parseFloat(xDAIBalance).toFixed(2) });
-                                  }).catch(e => {
-                                    callback(e);
+                                controller.getAddressTokens(eth_address).then(function(tokens){
+                                    if(!error){
+                                        callback(error, { address: eth_address, balance: tokens, total: sum(tokens).toFixed(2), proposals: proposals, xDitBalance: parseFloat(xDitBalance).toFixed(2), xDAIBalance: parseFloat(xDAIBalance).toFixed(2) });
+                                    } else {
+                                        callback(error);
+                                    }
                                 });
                             } else {
                                 callback(error);
@@ -75,53 +65,26 @@ var controller = {
             callback(error, result);
         });
     },
-    getProposalsByAddress: function(eth_address, callback){
-        var proposals = [];
-        coordinatorContract.getPastEvents('ProposeCommit', {
-            filter: {who: eth_address},
-            fromBlock: 0,
-            toBlock: 'latest'
-        }, async function(error, events) {
-            if(error){
-                console.error(error);
-            } else {
-                for(var i = 0; i < events.length; i++){
-                    var proposal = {
-                        repository: events[i].returnValues.repository,
-                        proposal: new BigNumber(events[i].returnValues.proposal._hex),
-                        who: events[i].returnValues.who,
-                        label: events[i].returnValues.label,
-                        numberOfKNW: new BigNumber(events[i].returnValues.numberOfKNW._hex) / Math.pow(10, 18)
-                    };
-                    await coordinatorContract.methods.proposalsOfRepository(events[i].returnValues.repository, parseInt(events[i].returnValues.proposal._hex)).call().then(async function(result){
-                        proposal.KNWVoteID = new BigNumber(result.KNWVoteID._hex);
-                        proposal.isFinalized = result.isFinalized;
-                        proposal.proposalAccepted = result.proposalAccepted;
-                        proposal.individualStake = new BigNumber(result.individualStake._hex) / Math.pow(10, 18);
-                        //proposal.totalStake = new BigNumber(result.totalStake._hex);
-                        await votingContract.methods.votes(parseInt(result.KNWVoteID._hex)).call().then(async function(result){
-                            proposal.commitEndDate = new BigNumber(result.commitEndDate._hex);
-                            proposal.openEndDate = new BigNumber(result.openEndDate._hex);
-                            proposal.neededMajority = new BigNumber(result.neededMajority._hex);
-                            proposal.winningPercentage = new BigNumber(result.winningPercentage._hex);
-                            proposal.votesFor = new BigNumber(result.votesFor._hex) / Math.pow(10, 18);
-                            proposal.votesAgainst = new BigNumber(result.votesAgainst._hex) / Math.pow(10, 18);
-                            proposal.votesUnrevealed = new BigNumber(result.votesUnrevealed._hex);
-                            proposal.participantsFor = new BigNumber(result.participantsFor._hex);
-                            proposal.participantsAgainst = new BigNumber(result.participantsAgainst._hex);
-                            proposal.participantsUnrevealed = new BigNumber(result.participantsUnrevealed._hex);
-                            proposal.isResolved = result.isResolved;
-                            await coordinatorContract.methods.repositories(events[i].returnValues.repository).call().then(function(result){
-                                proposal.repositoryName = result.name;
-                                proposals.push(proposal);
-                            });
+    getAddressTokens: function(eth_address){
+        return new Promise(function(resolve, reject){
+            var obj;
+            var label = "";
+            var balance = "";
+            ditContract.methods.labelCountOfAddress(eth_address).call().then(async function(labelCount, error){
+                for(var i = 1; i <= parseInt(labelCount); i++){
+                obj = {};
+                await ditContract.methods.labelOfAddress(eth_address, i).call().then(async function(labelString){
+                    label = labelString;
+                        await ditContract.methods.balanceOfLabel(eth_address, labelString).call().then(function(labelBalance){
+                            balance = web3.utils.toBN(labelBalance).toString();
+                            obj[label] = web3.utils.fromWei(balance, 'ether');
                         });
                     });
-                };
-            }
-            callback(error, proposals);
-        }).catch(e => {
-            callback(e, proposals);
+                }
+                resolve(obj);
+            }).catch(e => {
+                reject(e);
+            });
         });
     }
 }

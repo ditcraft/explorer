@@ -1,8 +1,8 @@
 {
   "name": "ditcraft",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "private": true,
-  "description": "Webapp to display and interact with the ditCraft ecosystem",
+  "description": "Webapp (ditExplorer) to deliver insights and interact with the ditCraft ecosystem",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ditcraft/frontend.git"
+    "url": "git+https://github.com/ditcraft/explorer.git"
   },
   "keywords": [
     "ethereum",
@@ -23,9 +23,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ditcraft/frontend/issues"
+    "url": "https://github.com/ditcraft/explorer/issues"
   },
-  "homepage": "https://github.com/ditcraft/frontend#readme",
+  "homepage": "https://github.com/ditcraft/explorer#readme",
   "dependencies": {
     "bignumber.js": "^8.1.1",
     "cookie-parser": "~1.4.3",

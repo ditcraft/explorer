@@ -3,6 +3,7 @@ var router = express.Router();
 var Web3 = require('web3');
 var config = require('../config');
 var contr_address = require('../controllers/contr_address'); 
+var contr_proposals = require('../controllers/contr_proposals'); 
 
 router.get('/', function(req, res, next) {
   res.render('index');
@@ -35,8 +36,7 @@ router.get('/:address/twitterName', function(req, res, next){
 });
 
 router.get('/:address/proposals', function(req, res, next){
-  var userAddr = req.params.address;
-  contr_address.getProposalsByAddress(userAddr, function(error, result){
+  contr_proposals.getProposals(req.params.address, null).then(function(result){
     res.send(result);
   });
 });
