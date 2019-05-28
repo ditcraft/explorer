@@ -6,14 +6,23 @@ block content
       .card(style="height: 100%;")
         .card-body
           .row.text-center
-            #twitterImage.col-12.mb-2
-                img.img-xl.rounded-circle(src='/images/Twitter_Logo_WhiteOnImage.png', alt='Twitter profile picture')
-            #name.col-12
+            .col-12.mb-2
+                - var generateIdenticon = function(eth_address){  
+                -   var data = new identicon(eth_address).toString();
+                -   return 'data:image/png;base64,' + data;
+                - }
+                if twitter
+                  img.img-xl.rounded-circle(src='https://twitter.com/' + twitter + '/profile_image?size=bigger', alt='Twitter profile picture')
+                else
+                  img.img-xl.rounded-circle(src='' + generateIdenticon(address), alt='User identicon')
+            .col-12
               h1
-                a(href='https://twitter.com/' target="_blank")#twitterName Contributor
-                span#contributorName Contributor
+                if twitter 
+                  a(href='https://twitter.com/' + twitter target="_blank") #{twitter}
+                else
+                  span Contributor
               p.text-muted #{address}
-          if !balance
+          if (Object.entries(balance).length === 0 && balance.constructor === Object)
             blockquote.blockquote This contributor has not yet earned any knowledge tokens.
     .col-xl-4.col-lg-4.col-md-4.col-sm-4.grid-margin.stretch-card
       .card.card-statistics(style="height: 100%;")
@@ -25,7 +34,7 @@ block content
                 h3.font-weight-medium.text-right.mb-4 #{xDAIBalance} xDAI
                 h3.font-weight-medium.text-right.mb-4 #{xDitBalance} xDIT
                 h3.font-weight-medium.text-right #{total} KNW
-  if balance
+  if !(Object.entries(balance).length === 0 && balance.constructor === Object)
     .row
       .col-12.grid-margin
         .card
@@ -89,15 +98,3 @@ block content
                         a.text-muted.small(href='https://' + proposal.repositoryName) https://#{proposal.repositoryName} 
                           i.mdi.mdi-link(href='https://' + proposal.repositoryName)
   script.
-    $('#twitterName').hide();
-    $.get('/address/'+ '#{address}' + '/twitterName', function(data) {
-      if(data.twitter_screen_name){
-        $('#twitterName').text(data.twitter_screen_name).attr('href', 'https://twitter.com/' + data.twitter_screen_name);
-        $('#twitterName').show();
-        $('#contributorName').hide();
-        $('#twitterImage img').attr('src', 'https://twitter.com/' + data.twitter_screen_name + '/profile_image?size=bigger');
-      } else {
-        var data = new Identicon('#{address}').toString();
-        $('#twitterImage img').attr('src', 'data:image/png;base64,' + data );
-      }
-    });

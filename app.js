@@ -44,6 +44,7 @@ passport.deserializeUser(function(object, callback){
 
 var app = express();
 app.locals.moment = require('moment');
+app.locals.identicon = require('identicon.js');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

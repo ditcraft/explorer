@@ -30,7 +30,7 @@ router.get('/:address', function(req, res, next){
 
 router.get('/:address/twitterName', function(req, res, next){
   var userAddr = req.params.address;
-  contr_address.getTwitterName(userAddr, function(error, result){
+  contr_address.getTwitterName(userAddr).then(function(result){
     res.send(result);
   });
 });

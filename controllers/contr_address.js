@@ -23,18 +23,24 @@ var controller = {
                     ditToken.methods.balanceOf(eth_address).call().then(function (xDit, error){
                         var xDitBalance = web3.utils.fromWei(web3.utils.toBN(xDit).toString(), 'ether');
                         contr_proposals.getProposals(eth_address, null).then((proposals) => {
-                            if(!error){
-                                controller.getAddressTokens(eth_address).then(function(tokens){
-                                    if(!error){
-                                        callback(error, { address: eth_address, balance: tokens, total: sum(tokens).toFixed(2), proposals: proposals, xDitBalance: parseFloat(xDitBalance).toFixed(2), xDAIBalance: parseFloat(xDAIBalance).toFixed(2) });
+                            controller.getAddressTokens(eth_address).then(function(tokens){
+                                controller.getTwitterName(eth_address).then(function(result){
+                                    if(result){
+                                        callback(null, { address: eth_address, twitter: result.twitter_screen_name, balance: tokens, total: sum(tokens).toFixed(2), proposals: proposals, xDitBalance: parseFloat(xDitBalance).toFixed(2), xDAIBalance: parseFloat(xDAIBalance).toFixed(2) });
                                     } else {
-                                        callback(error);
+                                        callback(null, { address: eth_address, twitter: null, balance: tokens, total: sum(tokens).toFixed(2), proposals: proposals, xDitBalance: parseFloat(xDitBalance).toFixed(2), xDAIBalance: parseFloat(xDAIBalance).toFixed(2) });
                                     }
+                                }).catch(e => {
+                                    callback(e);
                                 });
-                            } else {
-                                callback(error);
-                            }
+                            }).catch(e => {
+                                callback(e);
+                            });
+                        }).catch(e => {
+                            callback(e);
                         });
+                    }).catch(e => {
+                        callback(e);
                     });
                 }
             });
@@ -60,9 +66,15 @@ var controller = {
             callback(false);
         }
     },
-    getTwitterName: function(eth_address, callback){
-        models.findOne("users", { "eth_address": eth_address }, { "twitter_screen_name" : 1 }, function(error, result){
-            callback(error, result);
+    getTwitterName: function(eth_address){
+        return new Promise(function(resolve, reject){
+            models.findOne("users", { "eth_address": eth_address }, { "twitter_screen_name" : 1 }, function(error, result){
+                if(!error){
+                    resolve(result);
+                } else {
+                    reject(error);
+                }
+            });
         });
     },
     getAddressTokens: function(eth_address){
@@ -70,6 +82,7 @@ var controller = {
             var obj;
             var label = "";
             var balance = "";
+            var tokens = [];
             ditContract.methods.labelCountOfAddress(eth_address).call().then(async function(labelCount, error){
                 for(var i = 1; i <= parseInt(labelCount); i++){
                 obj = {};
@@ -78,10 +91,11 @@ var controller = {
                         await ditContract.methods.balanceOfLabel(eth_address, labelString).call().then(function(labelBalance){
                             balance = web3.utils.toBN(labelBalance).toString();
                             obj[label] = web3.utils.fromWei(balance, 'ether');
+                            tokens.push(obj);
                         });
                     });
                 }
-                resolve(obj);
+                resolve(Object.assign({}, ...tokens));
             }).catch(e => {
                 reject(e);
             });
