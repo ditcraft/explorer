@@ -15,11 +15,11 @@ block content
                       tr
                         th
                           | Name
-                        th.text-center
+                        th.text-center.d-none.d-md-table-cell
                           | Contributors
-                        th.text-center
+                        th.text-center.d-none.d-xl-table-cell
                           | Combined knowledge
-                        th.text-right
+                        th.text-right.d-none.d-sm-table-cell
                           | Latest proposal
                           i.mdi.mdi-clock.mr-1.text-secondary(aria-hidden='true')
                     tbody
@@ -27,10 +27,10 @@ block content
                         tr.clickable-row(data-href='/repositories/' + repository.hex, style='cursor: pointer;')
                           td
                             h6 #{repository.name}
-                          td.text-center
+                          td.text-center.d-none.d-md-table-cell
                             .badge.badge-pill.badge-dark #{repository.contributors.length}
-                          td.text-center #{repository.combinedKNW} KNW
-                          td.text-right
+                          td.text-center.d-none.d-xl-table-cell #{repository.combinedKNW} KNW
+                          td.text-right.d-none.d-sm-table-cell
                             .text-muted #{moment.unix(repository.topicality).format("HH:mm:s DD.MM.YYYY ")}
                               
   script.

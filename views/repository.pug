@@ -45,7 +45,7 @@ block content
                       | 
                     th
                       | Address
-                    th
+                    th.d-none.d-md-table-cell
                       | KNW
                     th
                       | Contributions
@@ -68,7 +68,7 @@ block content
                       else
                         td
                           | #{Object.keys(contributor)[index]}
-                      td= contributor.KNW
+                      td.d-none.d-md-table-cell= contributor.KNW
                       td
                         | #{Object.values(contributor)[index]}
   if (repository.proposals.length)
