@@ -10,26 +10,30 @@ block content
               .badge.badge-pill.badge-secondary.ml-1 #{repositories.length}
             .fluid-container
                 .table-responsive
-                  table.table.table-bordered
+                  table.table.table-bordered.table-hover
                     thead
                       tr
                         th
-                          | #
-                        th
                           | Name
-                        th
+                        th.text-center
                           | Contributors
-                        th
-                          | Combined Knowledge
-                        th
-                          | Topicality
+                        th.text-center
+                          | Combined knowledge
+                        th.text-right
+                          | Latest proposal
+                          i.mdi.mdi-clock.mr-1.text-secondary(aria-hidden='true')
                     tbody
                       each repository, index in repositories
-                        tr
-                          td= index+1
-                          td= repository.name
+                        tr.clickable-row(data-href='/repositories/' + repository.hex, style='cursor: pointer;')
                           td
-                            .badge.badge-pill.badge-info #{repository.contributors.length}
-                          td #{repository.combinedKNW} KNW
-                          td #{moment.unix(repository.topicality).format("HH:mm:s DD.MM.YYYY ")}
+                            h6 #{repository.name}
+                          td.text-center
+                            .badge.badge-pill.badge-dark #{repository.contributors.length}
+                          td.text-center #{repository.combinedKNW} KNW
+                          td.text-right
+                            .text-muted #{moment.unix(repository.topicality).format("HH:mm:s DD.MM.YYYY ")}
+                              
   script.
+    $(".clickable-row").click(function() {
+        window.location = $(this).data("href");
+    });

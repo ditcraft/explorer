@@ -10,10 +10,10 @@ var coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_DEMO, 
 var votingContract = new web3.eth.Contract(config.ABI.KNWVoting, config.CONTRACT.DEMO.KNWVoting);
 
 var controller = {
-    getAllRepositories: function(callback){
+    getRepositories: function(id, details, callback){
         var repositories = [];
         coordinatorContract.getPastEvents('InitializeRepository', {
-            filter: {},
+            filter: {repository: id},
             fromBlock: 0,
             toBlock: 'latest'
         }, async function(error, events) {
@@ -25,7 +25,7 @@ var controller = {
                         hex: events[i].returnValues.repository
                     };
                     await coordinatorContract.methods.repositories(events[i].returnValues.repository).call().then(async function(result){
-                        repository.name = result.name;
+                        repository.name = result.name.replace(/^(github\.com\/)/,"");
 
                         await contr_proposals.getProposals(null, events[i].returnValues.repository).then(async function(result){
                             
@@ -48,19 +48,23 @@ var controller = {
 
                             repository.topicality = latest.openEndDate;
                             
-                            //repository.proposals = result;
+                            if(details){
+                                repository.proposals = result;
+                            }
 
                             for(var j = 0; j < repository.contributors.length; j++){
                                 await contr_address.getAddressTokens(Object.keys(repository.contributors[j])[0]).then(async function(tokens){
                                     repository.contributors[j].KNW = sum(tokens).toFixed(2);
-
-                                    var total = 0;
-                                    repository.contributors.forEach(item => {
-                                        total += item.KNW;
+                                    await contr_address.getTwitterName(Object.keys(repository.contributors[j])[0]).then(async function(result){
+                                        repository.contributors[j].twitter = result.twitter_screen_name;
+                                        var total = 0;
+                                        repository.contributors.forEach(item => {
+                                            total += item.KNW;
+                                        });
+                                        
+                                        repository.combinedKNW = total;
+                                        await repositories.push(repository);
                                     });
-                                    
-                                    repository.combinedKNW = total;
-                                    await repositories.push(repository);
                                 });
                             }
                         });

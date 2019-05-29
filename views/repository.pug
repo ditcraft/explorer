@@ -1,0 +1,127 @@
+extends layout
+
+block content
+  .row
+    .col-xl-8.col-lg-8.col-md-8.col-sm-8.grid-margin
+      .card(style="height: 100%;")
+        .card-body
+          .row
+            .col-xl-2.col-lg-2.col-md-2.col-sm-2.d-none.d-lg-inline
+              i.mdi.mdi-git.mr-1.text-secondary.icon-lg(aria-hidden='true')
+            .col-xl-10.col-lg-10.col-md-12.col-sm-12.text-right
+              h1
+                a(href='https://github.com/' + repository.name target="_blank").font-weight-medium.text-right.mb-0#repositoryName #{repository.name}
+                  span.line(style="display: inline-block;")
+                  span.line(style="display: inline-block;")
+              p.text-muted.mb-3
+                | #{repository.hex}
+          .row.float-right
+            each label, index in repository.labels[0]
+              button.btn.btn-inverse-light.btn-rounded.ml-1.btn-sm(type='button', style='cursor: default;') #{index}
+          if !repository.proposals
+            blockquote.blockquote This repository has only been initialized so far. Start to contribute by opening a proposal!
+    .col-xl-4.col-lg-4.col-md-4.col-sm-4.grid-margin.stretch-card
+      .card.card-statistics(style="height: 100%;")
+        .card-body
+          .clearfix
+            .float-right
+              p.mb-0.text-right Latest proposal
+              .fluid-container
+                h3.font-weight-medium.text-right.mb-4 #{moment.unix(repository.topicality).format("HH:mm:s DD.MM.YYYY ")}
+              p.mb-0.text-right Combined
+              .fluid-container
+                h3.font-weight-medium.text-right #{repository.combinedKNW} KNW
+  if repository.contributors
+    .row
+      .col-12.grid-margin
+        .card
+          .card-body
+            h4.card-title Contributors
+            .table-responsive
+              table.table.table-hover
+                thead
+                  tr
+                    th
+                      | 
+                    th
+                      | Address
+                    th
+                      | KNW
+                    th
+                      | Contributions
+                tbody
+                  each contributor, index in repository.contributors
+                    - address = Object.keys(contributor)[index]
+                    tr.clickable-row(data-href='/address/' + address, style='cursor: pointer;')
+                      td.py-1#twitterImage
+                        - var generateIdenticon = function(eth_address){  
+                        -   var data = new identicon(eth_address).toString();
+                        -   return 'data:image/png;base64,' + data;
+                        - }
+                        if contributor.twitter
+                          img(src='https://twitter.com/' + contributor.twitter + '/profile_image?size=normal', alt='Twitter profile picture')
+                        else
+                          img(src='' + generateIdenticon(Object.keys(contributor)[index]), alt='User identicon')
+                      if contributor.twitter
+                        td
+                          | #{contributor.twitter}
+                      else
+                        td
+                          | #{Object.keys(contributor)[index]}
+                      td= contributor.KNW
+                      td
+                        | #{Object.values(contributor)[index]}
+  if (repository.proposals.length)
+    .row
+      .col-12.grid-margin
+        .card
+          .card-body
+            h5.card-title.mb-4 Proposals
+            .fluid-container
+              each proposal, index in repository.proposals
+                .row.ticket-card.mt-3.pb-2.border-bottom.pb-3.mb-3
+                  .col-md-2.text-center.m-auto
+                    if proposal.proposalAccepted
+                      i.mdi.mdi-check.text-success.icon-lg
+                      br
+                      span.text-muted Accepted
+                    else
+                      i.mdi.mdi-close.text-danger.icon-lg
+                      br
+                      span.text-muted Rejected
+                  .col-md-10.ticket-details
+                    .row
+                      .col-5.d-flex
+                        //p.text-dark.font-weight-semibold.mr-2.mb-0.no-wrap VoteID:
+                        p.text-primary.mr-1.mb-0 [##{proposal.KNWVoteID}]
+                        p.mb-0.ellipsis with #{parseFloat(proposal.participantsFor) + parseFloat(proposal.participantsAgainst)} participants
+                      .col-7.text-muted.text-right
+                        small
+                          | #{moment.unix(proposal.commitEndDate).format("HH:mm:s DD.MM.YYYY ")} - #{moment.unix(proposal.openEndDate).format("HH:mm:s DD.MM.YYYY ")}
+                          i.mdi.mdi-clock
+                    .progress(style="height: 20px;").summaryBar
+                      - var percentageFor = (proposal.votesFor / (proposal.votesFor + proposal.votesAgainst)) * 100
+                      - var percentageAgainst = (proposal.votesAgainst / (proposal.votesFor + proposal.votesAgainst)) * 100
+                      .progress-bar.progress-bar.bg-success(role='progressbar', style='width: ' + percentageFor + '%', aria-valuenow='' + percentageFor, aria-valuemin='0', aria-valuemax='100')
+                        span #{percentageFor.toFixed(2)}%
+                      .progress-bar.progress-bar.bg-danger(role='progressbar', style='width: ' + percentageAgainst + '%', aria-valuenow='' + percentageAgainst, aria-valuemin='0', aria-valuemax='100')
+                        span #{percentageAgainst.toFixed(2)}%
+                      .requiredSeparatorClip
+                        .requiredSeparatorWrapper(style='transform: translate3d(50%, 0px, 0px) scale3d(1, 1, 1);')
+                          .requiredSeparator
+                    p.text-right
+                      small.text-muted
+                        a.text-muted.small(href='https://' + proposal.repositoryName) https://#{proposal.repositoryName} 
+                          i.mdi.mdi-link(href='https://' + proposal.repositoryName)
+  script.
+    $(".clickable-row").click(function() {
+      window.location = $(this).data("href");
+    });
+
+    var fields = $('#repositoryName').text().split('/');
+    $('span.line:nth-child(1)').text(fields[0]);
+    $('span.line:nth-child(2)').text('/' + fields[1]);
+
+    $("#repositoryName").contents().filter(function(){
+        return (this.nodeType == 3);
+    }).remove();
