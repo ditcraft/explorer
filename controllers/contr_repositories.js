@@ -73,6 +73,46 @@ var controller = {
                 callback(repositories);
             }
         });
+    },
+    getAssociatedRepositories: function(id, callback){
+        var repositories = [];
+        var repository = {};
+        coordinatorContract.getPastEvents('InitializeRepository', {
+            filter: {who: id},
+            fromBlock: 0,
+            toBlock: 'latest'
+        }, async function(error, events) {
+            if(error){
+                console.error(error);
+            } else {
+                for(var i = 0; i < events.length; i++){
+                    repository.hex = events[i].returnValues.repository;          
+                    await coordinatorContract.methods.repositories(events[i].returnValues.repository).call().then(async function(result){
+                        repository.name = result.name.replace(/^(github\.com\/)/,"");
+                        repositories.push(repository);
+                    });
+                }
+                
+                coordinatorContract.getPastEvents('ProposeCommit', {
+                    filter: {who: id},
+                    fromBlock: 0,
+                    toBlock: 'latest'
+                }, async function(error, events) {
+                    if(error){
+                        console.error(error);
+                    } else {
+                        for(var i = 0; i < events.length; i++){
+                            repository.hex = events[i].returnValues.repository;
+                            await coordinatorContract.methods.repositories(events[i].returnValues.repository).call().then(async function(result){
+                                repository.name = result.name.replace(/^(github\.com\/)/,"");
+                                repositories.push(repository);
+                            });
+                        }
+                        callback(getUnique(repositories));
+                    }
+                });
+            }
+        });
     }
 }
 
@@ -84,6 +124,15 @@ function sum(obj) {
         }
     }
     return sum;
+}
+
+function getUnique(arr, comp) {
+    const unique = arr
+         .map(e => e[comp])
+      .map((e, i, final) => final.indexOf(e) === i && i)
+      .filter(e => arr[e]).map(e => arr[e]);
+  
+     return unique;
 }
 
 module.exports = controller;
