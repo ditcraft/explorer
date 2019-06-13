@@ -17,18 +17,23 @@ router.post('/check', function(req, res){
 });
 
 router.get('/:address', function(req, res, next){
-  contr_repositories.getAssociatedRepositories(req.params.address, function(repositories){
-    contr_address.getAddress(req.params.address, function(error, result){
-      if(!error){
-        result.user = req.user;
-        result.repositories = repositories;
-        res.render('address', result);
-        console.log('address: ', result);
-      } else {
-        console.log('error: ', error);
-        res.render('error-404');
-      }
+  contr_proposals.getProposals(req.params.address, null).then((proposals) => {                        
+    contr_repositories.getAssociatedRepositories(req.params.address, function(repositories){
+      contr_address.getAddress(req.params.address, function(error, result){
+        if(!error){
+          result.user = req.user;
+          result.repositories = repositories;
+          result.proposals = proposals;
+          res.render('address', result);
+          console.log('address: ', result);
+        } else {
+          console.log('error: ', error);
+          res.render('error-404');
+        }
+      });
     });
+  }).catch(e => {
+      callback(e);
   });
 });
 

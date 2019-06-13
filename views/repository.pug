@@ -18,7 +18,7 @@ block content
           .row.float-right
             each label, index in repository.labels[0]
               button.btn.btn-inverse-light.btn-rounded.ml-1.btn-sm(type='button', style='cursor: default;') #{index}
-          if !repository.proposals
+          if !proposals
             blockquote.blockquote This repository has only been initialized so far. Start to contribute by opening a proposal!
     .col-xl-4.col-lg-4.col-md-4.col-sm-4.grid-margin.stretch-card
       .card.card-statistics(style="height: 100%;")
@@ -71,48 +71,14 @@ block content
                       td.d-none.d-md-table-cell= contributor.KNW
                       td
                         | #{Object.values(contributor)[index]}
-  if (repository.proposals.length)
+  if (proposals.length)
     .row
       .col-12.grid-margin
         .card
           .card-body
             h5.card-title.mb-4 Proposals
             .fluid-container
-              each proposal, index in repository.proposals
-                .row.ticket-card.mt-3.pb-2.border-bottom.pb-3.mb-3
-                  .col-md-2.text-center.m-auto
-                    if proposal.proposalAccepted
-                      i.mdi.mdi-check.text-success.icon-lg
-                      br
-                      span.text-muted Accepted
-                    else
-                      i.mdi.mdi-close.text-danger.icon-lg
-                      br
-                      span.text-muted Rejected
-                  .col-md-10.ticket-details
-                    .row
-                      .col-5.d-flex
-                        //p.text-dark.font-weight-semibold.mr-2.mb-0.no-wrap VoteID:
-                        p.text-primary.mr-1.mb-0 [##{proposal.KNWVoteID}]
-                        p.mb-0.ellipsis with #{parseFloat(proposal.participantsFor) + parseFloat(proposal.participantsAgainst)} participants
-                      .col-7.text-muted.text-right
-                        small
-                          | #{moment.unix(proposal.commitEndDate).format("HH:mm:s DD.MM.YYYY ")} - #{moment.unix(proposal.openEndDate).format("HH:mm:s DD.MM.YYYY ")}
-                          i.mdi.mdi-clock
-                    .progress(style="height: 20px;").summaryBar
-                      - var percentageFor = (proposal.votesFor / (proposal.votesFor + proposal.votesAgainst)) * 100
-                      - var percentageAgainst = (proposal.votesAgainst / (proposal.votesFor + proposal.votesAgainst)) * 100
-                      .progress-bar.progress-bar.bg-success(role='progressbar', style='width: ' + percentageFor + '%', aria-valuenow='' + percentageFor, aria-valuemin='0', aria-valuemax='100')
-                        span #{percentageFor.toFixed(2)}%
-                      .progress-bar.progress-bar.bg-danger(role='progressbar', style='width: ' + percentageAgainst + '%', aria-valuenow='' + percentageAgainst, aria-valuemin='0', aria-valuemax='100')
-                        span #{percentageAgainst.toFixed(2)}%
-                      .requiredSeparatorClip
-                        .requiredSeparatorWrapper(style='transform: translate3d(50%, 0px, 0px) scale3d(1, 1, 1);')
-                          .requiredSeparator
-                    p.text-right
-                      small.text-muted
-                        a.text-muted.small(href='https://' + proposal.repositoryName) https://#{proposal.repositoryName} 
-                          i.mdi.mdi-link(href='https://' + proposal.repositoryName)
+              include ./comp-proposals.pug
   script.
     $(".clickable-row").click(function() {
       window.location = $(this).data("href");

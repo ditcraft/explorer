@@ -1,5 +1,4 @@
 var models = require('../models/mdl_generics');
-var contr_proposals = require('./contr_proposals');
 var Web3 = require('web3');
 const BigNumber = require('bignumber.js');
 var config = require('../config.json');
@@ -22,17 +21,13 @@ var controller = {
                     var xDAIBalance = web3.utils.fromWei(wei, 'ether');
                     ditToken.methods.balanceOf(eth_address).call().then(function (xDit, error){
                         var xDitBalance = web3.utils.fromWei(web3.utils.toBN(xDit).toString(), 'ether');
-                        contr_proposals.getProposals(eth_address, null).then((proposals) => {
-                            controller.getAddressTokens(eth_address).then(function(tokens){
-                                controller.getTwitterName(eth_address).then(function(result){
-                                    if(result){
-                                        callback(null, { address: eth_address, twitter: result.twitter_screen_name, balance: tokens, total: sum(tokens).toFixed(2), proposals: proposals, xDitBalance: parseFloat(xDitBalance).toFixed(2), xDAIBalance: parseFloat(xDAIBalance).toFixed(2) });
-                                    } else {
-                                        callback(null, { address: eth_address, twitter: null, balance: tokens, total: sum(tokens).toFixed(2), proposals: proposals, xDitBalance: parseFloat(xDitBalance).toFixed(2), xDAIBalance: parseFloat(xDAIBalance).toFixed(2) });
-                                    }
-                                }).catch(e => {
-                                    callback(e);
-                                });
+                        controller.getAddressTokens(eth_address).then(function(tokens){
+                            controller.getTwitterName(eth_address).then(function(result){
+                                if(result){
+                                    callback(null, { address: eth_address, twitter: result.twitter_screen_name, balance: tokens, total: sum(tokens).toFixed(2), xDitBalance: parseFloat(xDitBalance).toFixed(2), xDAIBalance: parseFloat(xDAIBalance).toFixed(2) });
+                                } else {
+                                    callback(null, { address: eth_address, twitter: null, balance: tokens, total: sum(tokens).toFixed(2), xDitBalance: parseFloat(xDitBalance).toFixed(2), xDAIBalance: parseFloat(xDAIBalance).toFixed(2) });
+                                }
                             }).catch(e => {
                                 callback(e);
                             });
