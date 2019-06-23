@@ -97,17 +97,17 @@ if (proposals.length)
                   .float-left
                     i.mdi.mdi-chart-bubble.icon-lg
                   .float-right
-                    p.mb-0.text-right Stake
+                    p.mb-0.text-right#stakeText Stake
                     .fluid-container
                       h3.font-weight-medium.text-right.mb-0#stake 0
           .col-xl-6.col-lg-6.col-md-6.col-sm-12.grid-margin.stretch-card
-            .card.card-statistics
+            .card.card-statistics.text-light#earnedBG
               .card-body
                 .clearfix
                   .float-left
-                    i.mdi.mdi-finance.icon-lg
+                    i.mdi.mdi-finance.icon-lg#earnedIcon
                   .float-right
-                    p.mb-0.text-right Earned
+                    p.mb-0.text-right#earnedText Earned
                     .fluid-container
                       h3.font-weight-medium.text-right.mb-0#earned 0
         .row
@@ -173,10 +173,18 @@ script.
         $('#outcomeIcon').removeClass('mdi-close text-danger');
         $('#outcomeIcon').addClass('mdi-check text-success');
         $('#outcome').text("Accepted");
+        $('#earnedIcon').removeClass('mdi-fire').addClass('mdi-finance');
+        $('#earnedBG').addClass('bg-success').removeClass('bg-danger');
+        $('#earnedText').text('Earned');
+        $('#stakeText').text('Stake increased');
       } else {
         $('#outcomeIcon').removeClass('mdi-check text-success');
         $('#outcomeIcon').addClass('mdi-close text-danger');
         $('#outcome').text("Rejected");
+        $('#earnedIcon').removeClass('mdi-finance').addClass('mdi-fire');
+        $('#earnedBG').addClass('bg-danger').removeClass('bg-success');
+        $('#earnedText').text('Burned');
+        $('#stakeText').text('Stake slashed');
       }
 
       $('#proposerLink').attr("href", "/address/" + proposal.who);
