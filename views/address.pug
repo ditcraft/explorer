@@ -2,21 +2,7 @@ extends layout
 
 block content
   .row
-    .col-xl-3.col-lg-3.col-md-3.col-sm-3.grid-margin.stretch-card
-      .card.card-statistics(style="height: 100%;")
-        .card-body
-          .clearfix
-            p Repositories
-            if (repositories.length)
-              ul
-                each repository, index in repositories
-                  li
-                    a(href='/repositories/' + repository.hex)#repositoryName #{repository.name}
-                      span.line(style="display: inline-block;")
-                      span.line(style="display: inline-block;")
-            else
-              p.text-muted This contributor has not yet contributed to any repositories.
-    .col-xl-6.col-lg-6.col-md-6.col-sm-6.grid-margin
+    .col-xl-8.col-lg-8.col-md-8.col-sm-8.grid-margin
       .card(style="height: 100%;")
         .card-body
           .row.text-center
@@ -36,9 +22,7 @@ block content
                 else
                   span Contributor
               p.text-muted #{address}
-          if (Object.entries(balance).length === 0 && balance.constructor === Object)
-            blockquote.blockquote This contributor has not yet earned any knowledge tokens.
-    .col-xl-3.col-lg-3.col-md-3.col-sm-3.grid-margin.stretch-card
+    .col-xl-4.col-lg-4.col-md-4.col-sm-4.grid-margin.stretch-card
       .card.card-statistics(style="height: 100%;")
         .card-body
           .clearfix
@@ -48,35 +32,54 @@ block content
                 h3.font-weight-medium.text-right.mb-4 #{xDAIBalance} xDAI
                 h3.font-weight-medium.text-right.mb-4 #{xDitBalance} xDIT
                 h3.font-weight-medium.text-right #{total} KNW
-  if !(Object.entries(balance).length === 0 && balance.constructor === Object)
-    .row
-      .col-12.grid-margin
-        .card
-          .card-body
-            h4.card-title KNW Tokens
-            .table-responsive
-              table.table.table-hover
-                thead
-                  tr
-                    th Label
-                    th
-                    th.text-right Amount
-                tbody
-                each val, index in balance
-                  tr
-                    td= index
-                    td(style="width: 50%;")
-                      .progress
-                        .progress-bar.progress-bar-striped(role='progressbar', style='width: ' + (val/total)*100 + '%', aria-valuenow='' + (val/total)*100, aria-valuemin='0', aria-valuemax='100')
-                    td.font-weight-bold.text-right= val
-  if (proposals.length)
-    .row
-      .col-12.grid-margin
-        .card
-          .card-body
-            h5.card-title.mb-4 Proposals
-            .fluid-container
-              include ./comp-proposals.pug
+  .row
+    .col-12.grid-margin
+      .card(style="border-top-left-radius: 0.25rem;")
+        ul.nav.nav-tabs#profileNAV(role='tablist')
+          li.nav-item
+            a#tokens-tab.nav-link.card-title.active(style="border-top-left-radius: 0.25rem;", data-toggle='tab', href='#tokens', role='tab', aria-controls='tokens', aria-selected='true') KNW Tokens
+          li.nav-item
+            a#proposals-tab.nav-link.card-title(data-toggle='tab', href='#proposals', role='tab', aria-controls='proposals', aria-selected='false') Proposals
+          li.nav-item
+            a#repositories-tab.nav-link.card-title(data-toggle='tab', href='#repositories', role='tab', aria-controls='repositories', aria-selected='false') Repositories
+        .card-body
+          .tab-content
+            #tokens.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='tokens-tab')
+              if !(Object.entries(balance).length === 0 && balance.constructor === Object)
+                .table-responsive
+                  table.table.table-hover
+                    thead
+                      tr
+                        th Label
+                        th
+                        th.text-right Amount
+                    tbody
+                    each val, index in balance
+                      tr
+                        td= index
+                        td(style="width: 50%;")
+                          .progress
+                            .progress-bar.progress-bar-striped(role='progressbar', style='width: ' + (val/total)*100 + '%', aria-valuenow='' + (val/total)*100, aria-valuemin='0', aria-valuemax='100')
+                        td.font-weight-bold.text-right= val
+              else
+                blockquote.blockquote This contributor has not yet earned any knowledge tokens.
+            #proposals.tab-pane.fade(role='tabpanel', aria-labelledby='proposals-tab')
+              if (proposals.length)
+                .fluid-container
+                  include ./comp-proposals.pug
+              else
+                blockquote.blockquote This contributor has not yet interacted with any proposals.
+            #repositories.tab-pane.fade(role='tabpanel', aria-labelledby='repositories-tab')
+              if (repositories.length)
+                ul
+                  each repository, index in repositories
+                    li
+                      a(href='/repositories/' + repository.hex)#repositoryName #{repository.name}
+                        span.line(style="display: inline-block;")
+                        span.line(style="display: inline-block;")
+              else
+                blockquote.blockquote This contributor has not yet contributed to any repositories.
+
   script.
     var fields = $('#repositoryName').text().split('/');
     $('span.line:nth-child(1)').text(fields[0]);

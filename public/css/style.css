@@ -16725,3 +16725,28 @@ ul {
   display: flex;
   justify-content: center;
 }
+
+#profileNAV > li {
+  line-height: 1.8 !important;
+  margin-bottom: 0;
+}
+
+#profileNAV > li > a {
+  border-radius: 0;
+  margin-bottom: -1px;
+  border: none;
+}
+
+#profileNAV > li > a:hover:not(.active) {
+  color: #308ee0;
+  background-color: rgba(48, 142, 224, 0.2);
+  background-image: none;
+  border-color: rgba(48, 142, 224, 0);
+  cursor: pointer;
+}
+
+#profileNAV > li > .active{
+  background-color: #308ee0;
+  color: #fff;
+  cursor: default;
+}
