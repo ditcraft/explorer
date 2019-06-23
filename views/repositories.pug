@@ -1,13 +1,13 @@
 extends layout
 
 block content
-  if (repositories.length)
-    .row
-      .col-12.grid-margin
-        .card
-          .card-body
-            h1.mb-4 Initialized Repositories
-              .badge.badge-pill.badge-secondary.ml-1 #{repositories.length}
+  .row
+    .col-12.grid-margin
+      .card
+        .card-body
+          h1.mb-4 Initialized Repositories
+            .badge.badge-pill.badge-secondary.ml-1 #{repositories.length}
+          if (repositories.length)
             .fluid-container
                 .table-responsive
                   table.table.table-bordered.table-hover
@@ -32,7 +32,7 @@ block content
                           td.text-center.d-none.d-xl-table-cell #{repository.combinedKNW} KNW
                           td.text-right.d-none.d-sm-table-cell
                             .text-muted #{moment.unix(repository.topicality).format("HH:mm:s DD.MM.YYYY ")}
-                              
+                            
   script.
     $(".clickable-row").click(function() {
         window.location = $(this).data("href");

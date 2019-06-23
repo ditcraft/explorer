@@ -76,6 +76,16 @@ app.use('/logout', logoutRouter);
 app.use('/proposals', proposalsRouter);
 app.use('/repositories', repositoriesRouter);
 
+app.get('/toggleMode',function(req, res){
+  if(req.cookies.mode && req.cookies.mode === "demo"){
+    res.cookie("mode" , "live", {maxAge : 9999}).send("live");
+  } else if(req.cookies.mode && req.cookies.mode === "live") {
+    res.cookie("mode" , "demo", {maxAge : 9999}).send("demo");
+  } else if(!req.cookies.mode){
+    res.cookie("mode" , "demo", {maxAge : 9999}).send("demo");
+  }
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

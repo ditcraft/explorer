@@ -4,7 +4,7 @@ var contr_proposals = require('../controllers/contr_proposals');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  contr_proposals.getProposals(null, null).then(function(proposals){
+  contr_proposals.getProposals(req.cookies.mode, null, null).then(function(proposals){
     res.render('proposals', { user: req.user, proposals: proposals });
   });
 });

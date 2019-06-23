@@ -104,6 +104,9 @@ html(lang='en')
               a.nav-link(href='/labels')
                 i.menu-icon.mdi.mdi-tag
                 span.menu-title Labels
+          .mode
+            button.btn.btn-toggle.active(type='button', onclick="toggleMode()", data-toggle='button', aria-pressed='true', autocomplete='demo')
+              .handle
         // partial
         .main-panel
           .content-wrapper
@@ -145,3 +148,52 @@ html(lang='en')
           // endinject
           // Custom js for this page
           // End custom js for this page
+  script.
+    if(!readCookie("mode")){
+      createCookie("mode", "demo");
+    }
+    
+    if(readCookie("mode") === "live"){
+      $('.mode button').removeClass('active');
+    } else if (readCookie("mode") === "demo"){
+      $('.mode button').addClass('active');
+    }
+    
+    function toggleMode(){
+      /*$.get( "/toggleMode", function(data) {
+        console.log('data: ', data);
+      });*/
+
+      if(readCookie("mode") === "live"){
+        createCookie("mode", "demo");
+      } else if (readCookie("mode") === "demo"){
+        createCookie("mode", "live");
+      }
+      location.reload();
+    }
+
+    function createCookie(name, value, days) {
+      if (days) {
+          var date = new Date();
+          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+          var expires = "; expires=" + date.toGMTString();
+      }
+      else var expires = "";               
+
+      document.cookie = name + "=" + value + expires + "; path=/";
+    }
+
+    function readCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    function eraseCookie(name) {
+      createCookie(name, "", -1);
+    }

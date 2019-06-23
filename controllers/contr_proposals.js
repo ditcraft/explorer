@@ -9,8 +9,15 @@ var coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_DEMO, 
 var votingContract = new web3.eth.Contract(config.ABI.KNWVoting, config.CONTRACT.DEMO.KNWVoting);
 
 var controller = {
-    getProposals: function(who, repository){
+    getProposals: function(mode, who, repository){
         return new Promise(function(resolve, reject){
+            if(mode === "live"){
+                coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_LIVE, config.CONTRACT.LIVE.ditCoordinator);
+                votingContract = new web3.eth.Contract(config.ABI.KNWVoting, config.CONTRACT.LIVE.KNWVoting);
+            } else if (mode === "demo") {
+                coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_DEMO, config.CONTRACT.DEMO.ditCoordinator);
+                votingContract = new web3.eth.Contract(config.ABI.KNWVoting, config.CONTRACT.DEMO.KNWVoting);
+            }
             var proposals = [];
             coordinatorContract.getPastEvents('ProposeCommit', {
                 filter: {who: who, repository: repository},

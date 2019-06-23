@@ -7,10 +7,14 @@ var contr_address = require('./contr_address');
 web3 = new Web3(new Web3.providers.WebsocketProvider('wss://node.ditcraft.io/ws') || new Web3.providers.WebsocketProvider('wss://dai-trace-ws.blockscout.com/ws'));
 
 var coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_DEMO, config.CONTRACT.DEMO.ditCoordinator);
-var votingContract = new web3.eth.Contract(config.ABI.KNWVoting, config.CONTRACT.DEMO.KNWVoting);
 
 var controller = {
-    getRepositories: function(id, details, callback){
+    getRepositories: function(mode, id, details, callback){
+        if(mode === "live"){
+            coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_LIVE, config.CONTRACT.LIVE.ditCoordinator);
+        } else if (mode === "demo") {
+            coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_DEMO, config.CONTRACT.DEMO.ditCoordinator);
+        }
         var repositories = [];
         coordinatorContract.getPastEvents('InitializeRepository', {
             filter: {repository: id},
@@ -27,7 +31,7 @@ var controller = {
                     await coordinatorContract.methods.repositories(events[i].returnValues.repository).call().then(async function(result){
                         repository.name = result.name.replace(/^(github\.com\/)/,"");
 
-                        await contr_proposals.getProposals(null, events[i].returnValues.repository).then(async function(result){
+                        await contr_proposals.getProposals(mode, null, events[i].returnValues.repository).then(async function(result){
                             
                             var countContributors = {};
                             var countLabels = {};
@@ -53,7 +57,7 @@ var controller = {
                             }
 
                             for(var j = 0; j < repository.contributors.length; j++){
-                                await contr_address.getAddressTokens(Object.keys(repository.contributors[j])[0]).then(async function(tokens){
+                                await contr_address.getAddressTokens(mode, Object.keys(repository.contributors[j])[0]).then(async function(tokens){
                                     repository.contributors[j].KNW = sum(tokens).toFixed(2);
                                     await contr_address.getTwitterName(Object.keys(repository.contributors[j])[0]).then(async function(result){
                                         repository.contributors[j].twitter = result.twitter_screen_name;
@@ -74,7 +78,12 @@ var controller = {
             }
         });
     },
-    getAssociatedRepositories: function(id, callback){
+    getAssociatedRepositories: function(mode, id, callback){
+        if(mode === "live"){
+            coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_LIVE, config.CONTRACT.LIVE.ditCoordinator);
+        } else if (mode === "demo") {
+            coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_DEMO, config.CONTRACT.DEMO.ditCoordinator);
+        }
         var repositories = [];
         var repository = {};
         coordinatorContract.getPastEvents('InitializeRepository', {

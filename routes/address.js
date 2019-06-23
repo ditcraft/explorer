@@ -17,9 +17,9 @@ router.post('/check', function(req, res){
 });
 
 router.get('/:address', function(req, res, next){
-  contr_proposals.getProposals(req.params.address, null).then((proposals) => {                        
-    contr_repositories.getAssociatedRepositories(req.params.address, function(repositories){
-      contr_address.getAddress(req.params.address, function(error, result){
+  contr_proposals.getProposals(req.cookies.mode, req.params.address, null).then((proposals) => {                        
+    contr_repositories.getAssociatedRepositories(req.cookies.mode, req.params.address, function(repositories){
+      contr_address.getAddress(req.cookies.mode, req.params.address, function(error, result){
         if(!error){
           result.user = req.user;
           result.repositories = repositories;
@@ -45,13 +45,13 @@ router.get('/:address/twitterName', function(req, res, next){
 });
 
 router.get('/:address/proposals', function(req, res, next){
-  contr_proposals.getProposals(req.params.address, null).then(function(result){
+  contr_proposals.getProposals(req.cookies.mode, req.params.address, null).then(function(result){
     res.send(result);
   });
 });
 
 router.get('/:address/repositories', function(req, res, next){
-  contr_repositories.getAssociatedRepositories(req.params.address, function(result){
+  contr_repositories.getAssociatedRepositories(req.cookies.mode, req.params.address, function(result){
     res.send(result);
   });
 });

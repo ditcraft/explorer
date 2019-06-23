@@ -6,22 +6,28 @@ var config = require('../config.json');
 web3 = new Web3(new Web3.providers.WebsocketProvider('wss://node.ditcraft.io/ws') || new Web3.providers.WebsocketProvider('wss://dai-trace-ws.blockscout.com/ws'));
 //web3 = new Web3(new Web3.providers.WebsocketProvider('wss://dai-trace-ws.blockscout.com/ws'));
 
-var coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_DEMO, config.CONTRACT.DEMO.ditCoordinator);
-var votingContract = new web3.eth.Contract(config.ABI.KNWVoting, config.CONTRACT.DEMO.KNWVoting);
+
 var ditContract = new web3.eth.Contract(config.ABI.KNWToken, config.CONTRACT.DEMO.KNWToken);
+var ditToken = new web3.eth.Contract(config.ABI.ditToken, config.CONTRACT.DEMO.ditToken);
 
 var controller = {
-    getAddress: function(eth_address, callback){
+    getAddress: function(mode, eth_address, callback){
         web3 = new Web3(new Web3.providers.HttpProvider('https://dai.poa.network'));
-        var ditToken = new web3.eth.Contract(config.ABI.ditToken, config.CONTRACT.LIVE.ditToken);
 
+        if(mode === "live"){
+            ditContract = new web3.eth.Contract(config.ABI.KNWToken, config.CONTRACT.LIVE.KNWToken);
+            ditToken = new web3.eth.Contract(config.ABI.ditToken, config.CONTRACT.LIVE.ditToken);
+        } else if (mode === "demo") {
+            ditContract = new web3.eth.Contract(config.ABI.KNWToken, config.CONTRACT.DEMO.KNWToken);
+            ditToken = new web3.eth.Contract(config.ABI.ditToken, config.CONTRACT.LIVE.ditToken);
+        }
         try {
             web3.eth.getBalance(eth_address, function (error, wei) {
                 if (!error) {
                     var xDAIBalance = web3.utils.fromWei(wei, 'ether');
                     ditToken.methods.balanceOf(eth_address).call().then(function (xDit, error){
                         var xDitBalance = web3.utils.fromWei(web3.utils.toBN(xDit).toString(), 'ether');
-                        controller.getAddressTokens(eth_address).then(function(tokens){
+                        controller.getAddressTokens(mode, eth_address).then(function(tokens){
                             controller.getTwitterName(eth_address).then(function(result){
                                 if(result){
                                     callback(null, { address: eth_address, twitter: result.twitter_screen_name, balance: tokens, total: sum(tokens).toFixed(2), xDitBalance: parseFloat(xDitBalance).toFixed(2), xDAIBalance: parseFloat(xDAIBalance).toFixed(2) });
@@ -72,8 +78,15 @@ var controller = {
             });
         });
     },
-    getAddressTokens: function(eth_address){
+    getAddressTokens: function(mode, eth_address){
         return new Promise(function(resolve, reject){
+            if(mode === "live"){
+                ditContract = new web3.eth.Contract(config.ABI.KNWToken, config.CONTRACT.LIVE.KNWToken);
+                ditToken = new web3.eth.Contract(config.ABI.ditToken, config.CONTRACT.LIVE.ditToken);
+            } else if (mode === "demo") {
+                ditContract = new web3.eth.Contract(config.ABI.KNWToken, config.CONTRACT.DEMO.KNWToken);
+                ditToken = new web3.eth.Contract(config.ABI.ditToken, config.CONTRACT.DEMO.ditToken);
+            }
             var obj;
             var label = "";
             var balance = "";
