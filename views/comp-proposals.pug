@@ -84,7 +84,7 @@ if (proposals.length)
                   .clearfix
                     .float-left#proposerImage
                       i.mdi.mdi-account.icon-lg
-                      img.rounded-circle(src="https://twitter.com/yannikgold/profile_image?size=bigger")
+                      img.rounded-circle(src="" width="48")
                     .float-right.w-75
                       p.mb-0.text-right Contributor
                       .fluid-container
@@ -193,7 +193,7 @@ script.
       if(proposal.twitter){
         $('#proposer').text(proposal.twitter);
         $('#proposerImage > i').removeClass('mdi mdi-account icon-lg');
-        $('#proposerImage > img').attr('src', 'https://twitter.com/' + proposal.twitter + '/profile_image?size=normal');
+        $('#proposerImage > img').attr('src', 'https://avatars.io/twitter/' + proposal.twitter);
       } else {
         $('#proposer').text(proposal.who);
         $('#proposerImage > i').addClass('mdi mdi-account icon-lg');
