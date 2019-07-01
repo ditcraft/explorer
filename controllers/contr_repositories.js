@@ -46,30 +46,34 @@ var controller = {
                             repository.labels.push(countLabels);
                             repository.contributors.push(countContributors);
 
-                            var latest = result.reduce(function (r, a) {
-                                return r.openEndDate > a.openEndDate ? r : a;
-                            });
-
-                            repository.topicality = latest.openEndDate;
+                            if(result && result.length) {
+                                var latest = result.reduce(function (r, a) {
+                                    return r.openEndDate > a.openEndDate ? r : a;
+                                });
+                                repository.topicality = latest.openEndDate;
+                            }
                             
                             if(details){
                                 repository.proposals = result;
                             }
 
                             for(var j = 0; j < repository.contributors.length; j++){
-                                await contr_address.getAddressTokens(mode, Object.keys(repository.contributors[j])[0]).then(async function(tokens){
-                                    repository.contributors[j].KNW = sum(tokens).toFixed(2);
-                                    await contr_address.getTwitterName(Object.keys(repository.contributors[j])[0]).then(async function(result){
-                                        repository.contributors[j].twitter = result.twitter_screen_name;
-                                        var total = 0;
-                                        repository.contributors.forEach(item => {
-                                            total += item.KNW;
+                                if(Object.keys(repository.contributors[j])[0]){
+                                    await contr_address.getAddressTokens(mode, Object.keys(repository.contributors[j])[0]).then(async function(tokens){
+                                        repository.contributors[j].KNW = sum(tokens).toFixed(2);
+                                        await contr_address.getTwitterName(Object.keys(repository.contributors[j])[0]).then(async function(result){
+                                            repository.contributors[j].twitter = result.twitter_screen_name;
+                                            var total = 0;
+                                            repository.contributors.forEach(item => {
+                                                total += item.KNW;
+                                            });
+                                            
+                                            repository.combinedKNW = total;
+                                            await repositories.push(repository);
                                         });
-                                        
-                                        repository.combinedKNW = total;
-                                        await repositories.push(repository);
                                     });
-                                });
+                                }
+
                             }
                         });
                     });
