@@ -1,0 +1,46 @@
+extends layout
+
+block content
+  .container
+    .row
+      .col-12.grid-margin.stretch-card
+        .card
+          .card-body
+            h4.card-title Success
+            p.card-description
+              | You succesfully created the repository 
+              mark #{name}
+              |  on 
+              span.font-weight-bold #{provider}
+              | . Please use the ditCLI with the command 
+            .text-center
+              code dit clone #{cloneURL}
+            p.card-description to initiate the repository on the blockchain.
+    .row
+      .col-12.grid-margin.stretch-card
+        .card
+          .card-body
+            h4.card-title#title Waiting for initialization...
+            p.card-description
+            .text-center
+              i.mdi.mdi-loading.text-info.icon-xl.mdi-spin#waiting
+              .display-3#confirmation Your repository is now ready to use! 
+            p.text-muted#hint Hint: Start developing on a sidebranch and merge the changes into the mainbranch with 
+              code dit merge &lt;BRANCH&gt;
+              | . This will initiate a new proposal to gain community approval and could possibly earn you your first knowledge tokens! Also note that your repository will only be actively listed on the ditExplorer after this first proposal.
+
+  script.
+    $('#confirmation, #hint').hide();
+    var socket = io.connect(window.location.hostname + ':3000/');
+    socket.emit('checkRepoInit', '#{cloneURL}');
+
+    socket.on('repoInitialized', function (data) {
+        var name = '#{cloneURL}';
+        name = name.replace(/^(https?:|)\/\//, '');
+        if(data.name === name){
+          console.log('success');
+          $('#confirmation, #hint').show();
+          $('#waiting').hide();
+          $('#title').text('Initialized');
+        }
+    });

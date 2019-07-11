@@ -14170,6 +14170,9 @@ small,
 .new-accounts ul.chats li.chat-persons a p.joined-date {
   font-size: 12px; }
 
+.icon-xl {
+  font-size: 5rem; }
+
 .icon-lg {
   font-size: 2.5rem; }
 

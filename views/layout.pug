@@ -6,30 +6,31 @@ html(lang='en')
     meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
     title ditExplorer
     // plugins:css
-    link(rel='stylesheet', href='../../vendors/iconfonts/mdi/css/materialdesignicons.min.css')
-    link(rel='stylesheet', href='../../vendors/css/vendor.bundle.base.css')
-    link(rel='stylesheet', href='../../vendors/css/vendor.bundle.addons.css')
+    link(rel='stylesheet', href='/vendors/iconfonts/mdi/css/materialdesignicons.min.css')
+    link(rel='stylesheet', href='/vendors/css/vendor.bundle.base.css')
+    link(rel='stylesheet', href='/vendors/css/vendor.bundle.addons.css')
     // endinject
     // plugin css for this page
     // End plugin css for this page
     // inject:css
-    link(rel='stylesheet', href='../../css/style.css')
+    link(rel='stylesheet', href='/css/style.css')
     // endinject
-    link(rel='shortcut icon', href='../../images/favicon.png')
+    link(rel='shortcut icon', href='/images/favicon.png')
     script(src='/js/jquery-3.4.1.min.js')
+    script(src='/js/socket.io.js')
     //script(src='/js/pnglib.js')
     //script(src='/js/identicon.js')
   body
     .container-scroller
-      // partial:../../partials/_navbar.html
+      // partial:/partials/_navbar.html
       nav.navbar.default-layout.col-lg-12.col-12.p-0.fixed-top.d-flex.flex-row
         .text-center.navbar-brand-wrapper.d-flex.align-items-top.justify-content-center
           //a(href='/')
             span ditCraft
           a(href='/')
             img.top-logo.rounded-circle(src='/images/logo.png', alt='logo')
-          //a.navbar-brand.brand-logo-mini(href='../../index.html')
-            img(src='../../images/logo-mini.svg', alt='logo')
+          //a.navbar-brand.brand-logo-mini(href='/index.html')
+            img(src='/images/logo-mini.svg', alt='logo')
         .navbar-menu-wrapper.d-flex.align-items-center
           ul.navbar-nav.navbar-nav-left.header-links.d-none.d-md-flex
             li.nav-item
@@ -48,7 +49,7 @@ html(lang='en')
                   span.input-group-text.bg-transparent
                     i.mdi.mdi-magnify.text-white
             li.nav-item
-                if user
+                if user && user.provider === 'twitter'
                   li.nav-item.dropdown.d-inline-block
                     a#UserDropdown.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-expanded='false')
                       span.profile-text #{user.displayName}
@@ -68,7 +69,7 @@ html(lang='en')
             span.mdi.mdi-menu
       // partial
       .container-fluid.page-body-wrapper
-        // partial:../../partials/_sidebar.html
+        // partial:/partials/_sidebar.html
         nav#sidebar.sidebar.sidebar-offcanvas
           ul.nav
             li#sidebarSearch.d-lg-none
@@ -93,6 +94,10 @@ html(lang='en')
                       i.menu-icon.mdi.mdi-account-multiple
                       span.menu-title Contributors
             li.nav-item
+              a.nav-link(href='/start')
+                i.menu-icon.mdi.mdi-play-circle
+                span.menu-title Start 
+            li.nav-item
               a.nav-link(href='/repositories')
                 i.menu-icon.mdi.mdi-folder
                 span.menu-title Repositories 
@@ -112,7 +117,7 @@ html(lang='en')
           .content-wrapper
             block content
           // content-wrapper ends
-          // partial:../../partials/_footer.html
+          // partial:/partials/_footer.html
           footer.footer
             .container-fluid.clearfix
               span.text-muted.d-block.text-center.text-sm-left.d-sm-inline-block
@@ -126,14 +131,14 @@ html(lang='en')
           // page-body-wrapper ends
           // container-scroller
           // plugins:js
-          script(src='../../vendors/js/vendor.bundle.base.js')
-          script(src='../../vendors/js/vendor.bundle.addons.js')
+          script(src='/vendors/js/vendor.bundle.base.js')
+          script(src='/vendors/js/vendor.bundle.addons.js')
           // endinject
           // Plugin js for this page
           // End plugin js for this page
           // inject:js
-          script(src='../../js/off-canvas.js')
-          script(src='../../js/misc.js')
+          script(src='/js/off-canvas.js')
+          script(src='/js/misc.js')
           script.
             $('#searchText, #searchTextSidebar').keypress(function(event){
               var keycode = (event.keyCode ? event.keyCode : event.which);

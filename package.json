@@ -1,6 +1,6 @@
 {
   "name": "ditcraft",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "Webapp (ditExplorer) to deliver insights and interact with the ditCraft ecosystem",
   "main": "index.js",
@@ -27,6 +27,8 @@
   },
   "homepage": "https://github.com/ditcraft/explorer#readme",
   "dependencies": {
+    "@octokit/oauth-login-url": "^2.1.2",
+    "@octokit/rest": "^16.28.2",
     "bignumber.js": "^8.1.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
@@ -38,9 +40,11 @@
     "mongodb": "^3.2.3",
     "morgan": "~1.9.0",
     "passport": "^0.4.0",
+    "passport-github2": "^0.1.11",
     "passport-twitter": "^1.0.4",
     "pug": "^2.0.3",
     "session-memory-store": "^1.0.0",
+    "socket.io": "^2.2.0",
     "web3": "^1.0.0-beta.52"
   },
   "devDependencies": {

@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  .content-wrapper
+    .display-3.mb-3.text-center What do you want to do today?
+    .row
+      .col-xl-4.col-lg-4.col-md-4.col-sm-6.grid-margin.stretch-card(style="cursor: pointer;" onclick="location.href='repositories/new';")
+        .card
+          .card-body
+            .text-center
+              i.mdi.mdi-folder-plus.text-primary.icon-lg
+              p.mt-3.mb-0 Create new project
+      .col-xl-4.col-lg-4.col-md-4.col-sm-6.grid-margin.stretch-card
+        .card
+          .card-body
+            .text-center
+              i.mdi.mdi-eye.text-secondary.icon-lg
+              p.mt-3.mb-0.text-muted Validate project
+      .col-xl-4.col-lg-4.col-md-4.col-sm-6.grid-margin.stretch-card
+        .card
+          .card-body
+            .text-center
+              i.mdi.mdi-folder-account.text-secondary.icon-lg
+              p.mt-3.mb-0.text-muted My projects
+  
+  script.

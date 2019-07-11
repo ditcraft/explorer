@@ -5,17 +5,21 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var passport = require('passport');
 var TwitterStrategy   = require('passport-twitter').Strategy;
+var GitHubStrategy   = require('passport-github2').Strategy;
 var sess              = require('express-session');
 var BetterMemoryStore = require('session-memory-store')(sess);
 const config = require('./config');
 
+
 var indexRouter = require('./routes/index');
 var addressRouter = require('./routes/address');
 var contr_address = require('./controllers/contr_address');
+var contr_repositories = require('./controllers/contr_repositories');
 var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
 var proposalsRouter = require('./routes/proposals');
 var repositoriesRouter = require('./routes/repositories');
+var startRouter = require('./routes/start');
 
 passport.use(new TwitterStrategy({
   consumerKey:    config.TWITTER_API_KEY,
@@ -41,6 +45,23 @@ passport.serializeUser(function(user, callback){
 passport.deserializeUser(function(object, callback){
   callback(null, object);
 });
+
+passport.use(new GitHubStrategy({
+  clientID: config.GITHUB_API_KEY,
+  clientSecret: config.GITHUB_API_SECRET,
+  callbackURL: config.GITHUB_CALLBACK_URL,
+  passReqToCallback: true
+},
+  function(req, accessToken, refreshToken, profile, done) {
+    if(req.user && req.user.provider === 'twitter'){
+      req.user.gitToken = accessToken;
+      done(null, req.user);
+    } else {
+      profile.gitToken = accessToken;
+      done(null, profile);
+    }
+  }
+));
 
 var app = express();
 app.locals.moment = require('moment');
@@ -75,6 +96,7 @@ app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 app.use('/proposals', proposalsRouter);
 app.use('/repositories', repositoriesRouter);
+app.use('/start', startRouter);
 
 app.get('/toggleMode',function(req, res){
   if(req.cookies.mode && req.cookies.mode === "demo"){
