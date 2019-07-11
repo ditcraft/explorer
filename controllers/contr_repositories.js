@@ -79,8 +79,6 @@ var controller = {
                                 }
 
                             }
-                            console.log('repository: ', repository);
-                            console.log('result: ', result);
                         });
                     });
                 }
