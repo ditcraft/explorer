@@ -31,7 +31,8 @@ block content
 
   script.
     $('#confirmation, #hint').hide();
-    var socket = io.connect(window.location.hostname + ':3000/');
+    var origin = window.location.origin;
+    var socket = io.connect(origin);
     socket.emit('checkRepoInit', '#{cloneURL}');
 
     socket.on('repoInitialized', function (data) {
