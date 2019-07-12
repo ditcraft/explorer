@@ -32,16 +32,19 @@ block content
   script.
     $('#confirmation, #hint').hide();
     var origin = window.location.origin;
+    console.log(origin);
     var socket = io.connect(origin);
     socket.emit('checkRepoInit', '#{cloneURL}');
+    console.log('emitted checkRepoInit for #{cloneURL}');
 
     socket.on('repoInitialized', function (data) {
-        var name = '#{cloneURL}';
-        name = name.replace(/^(https?:|)\/\//, '');
-        if(data.name === name){
-          console.log('success');
-          $('#confirmation, #hint').show();
-          $('#waiting').hide();
-          $('#title').text('Initialized');
-        }
+      console.log('repoInitialized');
+      var name = '#{cloneURL}';
+      name = name.replace(/^(https?:|)\/\//, '');
+      console.log(name, data.name);
+      if(data.name === name){
+        $('#confirmation, #hint').show();
+        $('#waiting').hide();
+        $('#title').text('Initialized');
+      }
     });

@@ -12,8 +12,6 @@ var ditToken = new web3.eth.Contract(config.ABI.ditToken, config.CONTRACT.DEMO.d
 
 var controller = {
     getAddress: function(mode, eth_address, callback){
-        web3 = new Web3(new Web3.providers.HttpProvider('https://dai.poa.network'));
-
         if(mode === "live"){
             ditContract = new web3.eth.Contract(config.ABI.KNWToken, config.CONTRACT.LIVE.KNWToken);
             ditToken = new web3.eth.Contract(config.ABI.ditToken, config.CONTRACT.LIVE.ditToken);

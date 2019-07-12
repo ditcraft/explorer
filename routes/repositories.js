@@ -32,23 +32,25 @@ router.get('/new/success', function(req, res, next) {
   let socket_id = [];
   const io = req.app.get('socketio');
 
-  io.emit('hi!');
   io.on('connection', socket => {
-      socket_id.push(socket.id);
-      if (socket_id[0] === socket.id) {
-        // remove the connection listener for any subsequent 
-        // connections with the same ID
-        io.removeAllListeners('connection');
-      }
+    console.log('new socket connection');
+    socket_id.push(socket.id);
+    if (socket_id[0] === socket.id) {
+      // remove the connection listener for any subsequent 
+      // connections with the same ID
+      io.removeAllListeners('connection');
+    }
 
-      socket.on('checkRepoInit', name => {
-        name = name.replace(/^(https?:|)\/\//, '');
-        contr_repositories.checkRepoInit(req.cookies.mode, name, function(hex, name){
-          if(hex && name){
-            socket.emit('repoInitialized', { hex: hex, name: name });
-          }
-        });
+    socket.on('checkRepoInit', name => {
+      console.log('triggered checkRepoInit for ', name);
+      name = name.replace(/^(https?:|)\/\//, '');
+      contr_repositories.checkRepoInit(req.cookies.mode, name, function(hex, name){
+        if(hex && name){
+          console.log('emitting repoInitialized: ', hex, name);
+          socket.emit('repoInitialized', { hex: hex, name: name });
+        }
       });
+    });
   });
 });
 
