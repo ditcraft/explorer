@@ -93,10 +93,11 @@ html(lang='en')
                     a.nav-link(href='/discover/contributors')
                       i.menu-icon.mdi.mdi-account-multiple
                       span.menu-title Contributors
-            li.nav-item
-              a.nav-link(href='/start')
-                i.menu-icon.mdi.mdi-play-circle
-                span.menu-title Start 
+            if user && user.provider === 'twitter'
+              li.nav-item
+                a.nav-link(href='/start')
+                  i.menu-icon.mdi.mdi-play-circle
+                  span.menu-title Start 
             li.nav-item
               a.nav-link(href='/repositories')
                 i.menu-icon.mdi.mdi-folder
