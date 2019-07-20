@@ -5,6 +5,7 @@ var contr_proposals = require('./contr_proposals');
 var contr_address = require('./contr_address');
 var passport = require('passport');
 const Octokit = require('@octokit/rest');
+const { Gitlab } = require('gitlab');
 
 const { oauthLoginUrl } = require('@octokit/oauth-login-url');
 
@@ -138,6 +139,18 @@ var controller = {
         octokit.repos.createForAuthenticatedUser({
             name
         }).then(function (result){
+            callback(null, result);
+        }).catch(function (error){
+            console.error(error);
+            callback(error, null);
+        });
+    },
+    createGitlabRepository: async function(name, accessToken, callback){
+        const api = new Gitlab({
+            oauthToken: accessToken,
+        });
+        
+        api.Projects.create({ name: name, visibility: 'public' }).then(function (result){
             callback(null, result);
         }).catch(function (error){
             console.error(error);

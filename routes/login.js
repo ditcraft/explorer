@@ -39,6 +39,19 @@ router.get('/github/callback', passport.authenticate('github', {
     });
 });
 
+router.get('/gitlab/callback', passport.authenticate('gitlab', {
+  failureRedirect : '/repositories/new/fail'
+}), 
+  function(req, res){
+    contr_repositories.createGitlabRepository(req.query.state, req.user.labToken, function(err, result){
+      if(!err){
+        res.redirect('/repositories/new/success?provider=Gitlab&name=' + req.query.state + '&cloneURL=' + result.http_url_to_repo);
+      } else {
+        res.redirect('/repositories/new/fail');
+      }
+    });
+});
+
 router.get('/twitter/kyc', function(req, res, next) {
   res.render('twitter-kyc');
 });

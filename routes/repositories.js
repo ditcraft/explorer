@@ -71,6 +71,23 @@ router.get('/new/github/:name', function(req, res, next){
   }
 }); 
 
+router.get('/new/gitlab/:name', function(req, res, next){
+  if(req.user && req.user.labToken){
+    contr_repositories.createGitlabRepository(req.params.name, req.user.labToken, function(err, result){
+      if(!err){
+        res.redirect('/repositories/new/success?provider=Gitlab&name=' + req.params.name + '&cloneURL=' + result.http_url_to_repo);
+      } else {
+        res.redirect('/repositories/new/fail');
+      }
+    });
+  } else {
+    passport.authenticate('gitlab', { scope: ['api'], state: req.params.name }, function(err, user, info) {
+      if (err) return next(err);
+      next('route');
+    })(req, res, next);
+  }
+}); 
+
 router.get('/:repository', function(req, res, next){
   contr_repositories.getRepositories(req.cookies.mode, req.params.repository, true, function(repository){
     if(repository[0] && repository[0].proposals){

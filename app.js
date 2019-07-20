@@ -6,6 +6,7 @@ var logger = require('morgan');
 var passport = require('passport');
 var TwitterStrategy   = require('passport-twitter').Strategy;
 var GitHubStrategy   = require('passport-github2').Strategy;
+var GitLabStrategy   = require('passport-gitlab2').Strategy;
 var sess              = require('express-session');
 var BetterMemoryStore = require('session-memory-store')(sess);
 const config = require('./config');
@@ -58,6 +59,23 @@ passport.use(new GitHubStrategy({
       done(null, req.user);
     } else {
       profile.gitToken = accessToken;
+      done(null, profile);
+    }
+  }
+));
+
+passport.use(new GitLabStrategy({
+  clientID: config.GITLAB_API_KEY,
+  clientSecret: config.GITLAB_API_SECRET,
+  callbackURL: config.GITLAB_CALLBACK_URL,
+  passReqToCallback: true
+},
+  function(req, accessToken, refreshToken, profile, done) {    
+    if(req.user && req.user.provider === 'twitter'){
+      req.user.labToken = accessToken;
+      done(null, req.user);
+    } else {
+      profile.labToken = accessToken;
       done(null, profile);
     }
   }
