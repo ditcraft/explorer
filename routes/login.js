@@ -52,6 +52,19 @@ router.get('/gitlab/callback', passport.authenticate('gitlab', {
     });
 });
 
+router.get('/bitbucket/callback', passport.authenticate('bitbucket', {
+  failureRedirect : '/repositories/new/fail'
+}), 
+  function(req, res){
+    contr_repositories.createBitbucketRepository(req.query.state, req.user.bucketUser, req.user.bucketToken, function(err, result){
+      if(!err){
+        res.redirect('/repositories/new/success?provider=Bitbucket&name=' + req.query.state + '&cloneURL=' + result.links.clone[0].href);
+      } else {
+        res.redirect('/repositories/new/fail');
+      }
+    });
+});
+
 router.get('/twitter/kyc', function(req, res, next) {
   res.render('twitter-kyc');
 });

@@ -6,6 +6,7 @@ var contr_address = require('./contr_address');
 var passport = require('passport');
 const Octokit = require('@octokit/rest');
 const { Gitlab } = require('gitlab');
+const Bitbucket = require('bitbucket');
 
 const { oauthLoginUrl } = require('@octokit/oauth-login-url');
 
@@ -152,6 +153,22 @@ var controller = {
         
         api.Projects.create({ name: name, visibility: 'public' }).then(function (result){
             callback(null, result);
+        }).catch(function (error){
+            console.error(error);
+            callback(error, null);
+        });
+    },
+    createBitbucketRepository: async function(name, username, accessToken, callback){
+        console.log(name, accessToken);
+        const bitbucket = new Bitbucket()
+        bitbucket.authenticate({
+            type: 'token',
+            token: accessToken
+        });
+
+        bitbucket.repositories.create({ repo_slug: name, username: username }).then(({ data, headers }) => {
+            console.log('data: ', data.links.clone[0].href);
+            callback(null, data);
         }).catch(function (error){
             console.error(error);
             callback(error, null);

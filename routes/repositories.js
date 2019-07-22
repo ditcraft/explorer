@@ -88,6 +88,23 @@ router.get('/new/gitlab/:name', function(req, res, next){
   }
 }); 
 
+router.get('/new/bitbucket/:name', function(req, res, next){
+  if(req.user && req.user.bucketToken){
+    contr_repositories.createBitbucketRepository(req.params.name, req.user.bucketUser, req.user.bucketToken, function(err, result){
+      if(!err){
+        res.redirect('/repositories/new/success?provider=Bitbucket&name=' + req.params.name + '&cloneURL=' + result.links.clone[0].href);
+      } else {
+        res.redirect('/repositories/new/fail');
+      }
+    });
+  } else {
+    passport.authenticate('bitbucket', { state: req.params.name }, function(err, user, info) {
+      if (err) return next(err);
+      next('route');
+    })(req, res, next);
+  }
+}); 
+
 router.get('/:repository', function(req, res, next){
   contr_repositories.getRepositories(req.cookies.mode, req.params.repository, true, function(repository){
     if(repository[0] && repository[0].proposals){

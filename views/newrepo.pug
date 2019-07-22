@@ -28,12 +28,12 @@ block content
             .text-center
               i.mdi.mdi-git.text-primary.icon-lg
               p.mt-3.mb-0 Gitlab
-      .col-xl-4.col-lg-4.col-md-4.col-sm-6.grid-margin.stretch-card
+      .col-xl-4.col-lg-4.col-md-4.col-sm-6.grid-margin.stretch-card(style="cursor: pointer;", onclick="createBitbucket()")
         .card
           .card-body
             .text-center
-              i.mdi.mdi-bitbucket.text-secondary.icon-lg
-              p.mt-3.mb-0.text-muted Bitbucket
+              i.mdi.mdi-bitbucket.text-primary.icon-lg
+              p.mt-3.mb-0 Bitbucket
   script.
     function createGithub(){
       if($('#projectName').val()){
@@ -43,5 +43,10 @@ block content
     function createGitlab(){
       if($('#projectName').val()){
         location.href = "/repositories/new/gitlab/" + $('#projectName').val();
+      }
+    }
+    function createBitbucket(){
+      if($('#projectName').val()){
+        location.href = "/repositories/new/bitbucket/" + $('#projectName').val();
       }
     }

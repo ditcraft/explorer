@@ -7,6 +7,7 @@ var passport = require('passport');
 var TwitterStrategy   = require('passport-twitter').Strategy;
 var GitHubStrategy   = require('passport-github2').Strategy;
 var GitLabStrategy   = require('passport-gitlab2').Strategy;
+var BitbucketStrategy   = require('passport-bitbucket-oauth2').Strategy;
 var sess              = require('express-session');
 var BetterMemoryStore = require('session-memory-store')(sess);
 const config = require('./config');
@@ -76,6 +77,28 @@ passport.use(new GitLabStrategy({
       done(null, req.user);
     } else {
       profile.labToken = accessToken;
+      done(null, profile);
+    }
+  }
+));
+
+passport.use(new BitbucketStrategy({
+  clientID: config.BITBUCKET_API_KEY,
+  clientSecret: config.BITBUCKET_API_SECRET,
+  callbackURL: config.BITBUCKET_CALLBACK_URL,
+  passReqToCallback: true
+},
+  function(req, accessToken, refreshToken, profile, done) {    
+    console.log('req.user: ', req.user);
+    console.log('accesToken: ', accessToken);
+    console.log('profile: ', profile);
+    if(req.user && req.user.provider === 'twitter'){
+      req.user.bucketToken = accessToken;
+      req.user.bucketUser = profile.username;
+      done(null, req.user);
+    } else {
+      profile.bucketToken = accessToken;
+      profile.bucketUser = profile.username;
       done(null, profile);
     }
   }
