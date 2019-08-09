@@ -46,86 +46,8 @@ var controller = {
                 console.log(error, result);
                 callback(result);
             });
-            /*models.findAll("repositories_" + mode, {}, {}, function(error, result){
-                console.log(error, result);
-                callback(result);
-            });*/
         }
-        
     },
-    /*getRepositories: function(mode, id, details, callback){
-        if(mode === "live"){
-            coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_LIVE, config.CONTRACT.LIVE.ditCoordinator);
-        } else if (mode === "demo") {
-            coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_DEMO, config.CONTRACT.DEMO.ditCoordinator);
-        }
-        var repositories = [];
-        coordinatorContract.getPastEvents('InitializeRepository', {
-            filter: {repository: id},
-            fromBlock: 0,
-            toBlock: 'latest'
-        }, async function(error, events) {
-            if(error){
-                console.error(error);
-            } else {
-                for(var i = 0; i < events.length; i++){
-                    var repository = {
-                        hex: events[i].returnValues.repository
-                    };
-                    await coordinatorContract.methods.repositories(events[i].returnValues.repository).call().then(async function(result){
-                        repository.name = result.name.replace(/^(github\.com\/)/,"");
-
-                        await contr_proposals.getProposals(mode, null, events[i].returnValues.repository).then(async function(result){
-                            
-                            var countContributors = {};
-                            var countLabels = {};
-
-                            repository.contributors = [];
-                            repository.labels = [];
-
-                            for(var h = 0; h < result.length; h++){
-                                countContributors[result[h].who] = (countContributors[result[h].who] || 0) + 1;
-                                countLabels[result[h].label] = (countLabels[result[h].label] || 0) + 1;
-                            }
-                            repository.labels.push(countLabels);
-                            repository.contributors.push(countContributors);
-
-                            if(result && result.length) {
-                                var latest = result.reduce(function (r, a) {
-                                    return r.openEndDate > a.openEndDate ? r : a;
-                                });
-                                repository.topicality = latest.openEndDate;
-                            }
-                            
-                            if(details){
-                                repository.proposals = result;
-                            }
-
-                            for(var j = 0; j < repository.contributors.length; j++){
-                                if(Object.keys(repository.contributors[j])[0]){
-                                    await contr_address.getAddressTokens(mode, Object.keys(repository.contributors[j])[0]).then(async function(tokens){
-                                        repository.contributors[j].KNW = sum(tokens).toFixed(2);
-                                        await contr_address.getTwitterName(Object.keys(repository.contributors[j])[0]).then(async function(result){
-                                            repository.contributors[j].twitter = result.twitter_screen_name;
-                                            var total = 0;
-                                            repository.contributors.forEach(item => {
-                                                total += item.KNW;
-                                            });
-                                            
-                                            repository.combinedKNW = total;
-                                            await repositories.push(repository);
-                                        });
-                                    });
-                                }
-
-                            }
-                        });
-                    });
-                }
-                callback(repositories);
-            }
-        });
-    },*/
     getAssociatedRepositories: function(mode, id, callback){
         if(mode === "live"){
             coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_LIVE, config.CONTRACT.LIVE.ditCoordinator);
