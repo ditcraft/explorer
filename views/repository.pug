@@ -10,16 +10,14 @@ block content
               i.mdi.mdi-git.mr-1.text-secondary.icon-lg(aria-hidden='true')
             .col-xl-10.col-lg-10.col-md-12.col-sm-12.text-right
               h1
-                a(href='https://github.com/' + repository.name target="_blank").font-weight-medium.text-right.mb-0#repositoryName #{repository.name}
+                a(href='' + repository.url target="_blank").font-weight-medium.text-right.mb-0#repositoryName #{repository.name}
                   span.line(style="display: inline-block;")
                   span.line(style="display: inline-block;")
               p.text-muted.mb-3
-                | #{repository.hex}
+                | #{repository.hash}
           .row.float-right
-            each label, index in repository.labels[0]
-              button.btn.btn-inverse-light.btn-rounded.ml-1.btn-sm(type='button', style='cursor: default;') #{index}
-          if !proposals
-            blockquote.blockquote This repository has only been initialized so far. Start to contribute by opening a proposal!
+            each label, index in repository.knw_labels
+              button.btn.btn-inverse-light.btn-rounded.ml-1.btn-sm(type='button', style='cursor: default;') #{label}
     .col-xl-4.col-lg-4.col-md-4.col-sm-4.grid-margin.stretch-card
       .card.card-statistics(style="height: 100%;")
         .card-body
@@ -27,11 +25,11 @@ block content
             .float-right
               p.mb-0.text-right Latest proposal
               .fluid-container
-                h3.font-weight-medium.text-right.mb-4 #{moment.unix(repository.topicality).format("HH:mm:s DD.MM.YYYY ")}
+                h3.font-weight-medium.text-right.mb-4 #{moment(repository.last_activity_date).format("HH:mm:ss DD.MM.YYYY ")}
               p.mb-0.text-right Combined
               .fluid-container
-                h3.font-weight-medium.text-right #{repository.combinedKNW} KNW
-  if repository.contributors
+                h3.font-weight-medium.text-right #{parseFloat(repository.combinedKNW).toFixed(2)} KNW
+  if (repository.contributors.length > 0)
     .row
       .col-12.grid-margin
         .card
@@ -46,32 +44,38 @@ block content
                     th
                       | Address
                     th.d-none.d-md-table-cell
-                      | KNW
+                      | Earned
                     th
                       | Contributions
                 tbody
                   each contributor, index in repository.contributors
-                    - address = Object.keys(contributor)[index]
-                    tr.clickable-row(data-href='/address/' + address, style='cursor: pointer;')
+                    - address = contributor.address
+                    tr.clickable-row(data-href='/address/' + contributor.address, style='cursor: pointer;')
                       td.py-1#twitterImage
                         - var generateIdenticon = function(eth_address){  
                         -   var data = new identicon(eth_address).toString();
                         -   return 'data:image/png;base64,' + data;
                         - }
-                        if contributor.twitter
-                          img(src='https://twitter.com/' + contributor.twitter + '/profile_image?size=normal', alt='Twitter profile picture')
+                        if contributor.twitter_handle
+                          img(src='https://avatars.io/twitter/' + contributor.twitter_handle, alt='Twitter profile picture' width="37")
                         else
-                          img(src='' + generateIdenticon(Object.keys(contributor)[index]), alt='User identicon')
-                      if contributor.twitter
+                          img(src='' + generateIdenticon(contributor.address), alt='User identicon')
+                      if contributor.twitter_handle
                         td
-                          | #{contributor.twitter}
+                          | #{contributor.twitter_handle}
                       else
                         td
-                          | #{Object.keys(contributor)[index]}
-                      td.d-none.d-md-table-cell= contributor.KNW
-                      td
-                        | #{Object.values(contributor)[index]}
-  if (proposals.length)
+                          | #{contributor.address}
+                      td.d-none.d-md-table-cell= parseFloat(contributor.earned_knw).toFixed(2)
+                       |  KNW
+                      td= contributor.amount_of_proposals
+  if !proposals[0]._id
+    .row
+      .col-12.grid-margin
+        .card
+          .card-body
+            blockquote.blockquote This repository has only been initialized so far. Start to contribute by opening a proposal!
+  if (proposals[0]._id)
     .row
       .col-12.grid-margin
         .card

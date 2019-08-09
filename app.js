@@ -89,9 +89,6 @@ passport.use(new BitbucketStrategy({
   passReqToCallback: true
 },
   function(req, accessToken, refreshToken, profile, done) {    
-    console.log('req.user: ', req.user);
-    console.log('accesToken: ', accessToken);
-    console.log('profile: ', profile);
     if(req.user && req.user.provider === 'twitter'){
       req.user.bucketToken = accessToken;
       req.user.bucketUser = profile.username;

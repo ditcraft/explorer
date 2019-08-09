@@ -2,7 +2,7 @@ var MongoClient = require('mongodb').MongoClient;
 const config = require('../config');
 
 const url = config.MONGODB_CONNECTION;
-const dbName = 'twitterbot';
+const dbName = 'ditIndex';
 
 var model = {
     findAll: function(collection, query, projection, callback){
@@ -44,6 +44,21 @@ var model = {
                 const col = db.collection(collection);
                 
                 col.insertOne(data, function(err, result) {
+                    client.close();
+                    callback(err, result);
+                });
+            }
+        });
+    },
+    aggregate: function (collection, queryArray, callback) {
+        MongoClient.connect(url, { useNewUrlParser: true }, function(err, client) {
+            if (err) {
+                console.error('An error occurred connecting to MongoDB: ', err);
+            } else {
+                const db = client.db(dbName);
+                const col = db.collection(collection);
+                
+                col.aggregate(queryArray, { allowDiskUse: true }).toArray(function(err, result) {
                     client.close();
                     callback(err, result);
                 });

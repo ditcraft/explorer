@@ -106,14 +106,8 @@ router.get('/new/bitbucket/:name', function(req, res, next){
 }); 
 
 router.get('/:repository', function(req, res, next){
-  contr_repositories.getRepositories(req.cookies.mode, req.params.repository, true, function(repository){
-    if(repository[0] && repository[0].proposals){
-      var proposals = repository[0].proposals;
-      delete repository[0].proposals;
-      res.render('repository', { user: req.user, repository: repository[0], proposals: proposals});
-    } else {
-      res.render('error-404');
-    }
+  contr_repositories.getRepositories(req.cookies.mode, req.params.repository, true, function(repository, proposals){
+      res.render('repository', { user: req.user, repository: repository, proposals: proposals});
   });
 });
 

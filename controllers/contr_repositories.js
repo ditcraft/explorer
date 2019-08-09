@@ -1,14 +1,13 @@
 var Web3 = require('web3');
-const BigNumber = require('bignumber.js');
 var config = require('../config.json');
 var contr_proposals = require('./contr_proposals');
 var contr_address = require('./contr_address');
-var passport = require('passport');
 const Octokit = require('@octokit/rest');
 const { Gitlab } = require('gitlab');
 const Bitbucket = require('bitbucket');
-
-const { oauthLoginUrl } = require('@octokit/oauth-login-url');
+var models = require('../models/mdl_generics');
+var mdl_repo = require('../models/mdl_repositories');
+const _ = require('lodash');
 
 web3 = new Web3(new Web3.providers.WebsocketProvider('wss://node.ditcraft.io/ws') || new Web3.providers.WebsocketProvider('wss://dai-trace-ws.blockscout.com/ws'));
 
@@ -16,6 +15,45 @@ var coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_DEMO, 
 
 var controller = {
     getRepositories: function(mode, id, details, callback){
+        if(id){
+            var stages = mdl_repo.querySingleRepoWithUsersAndProposals(mode, id);
+            models.aggregate("repositories_" + mode, stages, function(error, result){
+                console.log(result);
+                if(!error){
+                    if (result.length > 0) {
+                        var res = _(result[0].contributors).concat(result[0].users).groupBy('address').map(_.spread(_.assign)).value();       
+                        delete result[0].contributors;
+                        delete result[0].users;
+                        result[0].contributors = res;    
+                        console.log('proposals: ', result[0].proposals);
+                        callback(result[0], result[0].proposals);
+                    } else {
+                        callback(null, null);
+                    }
+                } else {
+                    console.log('error: ', error);
+                }
+            });
+        } else {
+            var stages = mdl_repo.queryRepoWithUsers(mode);
+            models.aggregate("repositories_" + mode, stages, function(error, result){
+                result.forEach(repo => {
+                    var res = _(repo.contributors).concat(repo.users).groupBy('address').map(_.spread(_.assign)).value();       
+                    delete repo.contributors;
+                    delete repo.users;
+                    repo.contributors = res;    
+                });
+                console.log(error, result);
+                callback(result);
+            });
+            /*models.findAll("repositories_" + mode, {}, {}, function(error, result){
+                console.log(error, result);
+                callback(result);
+            });*/
+        }
+        
+    },
+    /*getRepositories: function(mode, id, details, callback){
         if(mode === "live"){
             coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_LIVE, config.CONTRACT.LIVE.ditCoordinator);
         } else if (mode === "demo") {
@@ -87,7 +125,7 @@ var controller = {
                 callback(repositories);
             }
         });
-    },
+    },*/
     getAssociatedRepositories: function(mode, id, callback){
         if(mode === "live"){
             coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_LIVE, config.CONTRACT.LIVE.ditCoordinator);
@@ -159,15 +197,13 @@ var controller = {
         });
     },
     createBitbucketRepository: async function(name, username, accessToken, callback){
-        console.log(name, accessToken);
-        const bitbucket = new Bitbucket()
+        const bitbucket = new Bitbucket();
         bitbucket.authenticate({
             type: 'token',
             token: accessToken
         });
 
         bitbucket.repositories.create({ repo_slug: name, username: username }).then(({ data, headers }) => {
-            console.log('data: ', data.links.clone[0].href);
             callback(null, data);
         }).catch(function (error){
             console.error(error);

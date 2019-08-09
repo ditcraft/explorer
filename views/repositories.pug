@@ -24,14 +24,14 @@ block content
                           i.mdi.mdi-clock.mr-1.text-secondary(aria-hidden='true')
                     tbody
                       each repository, index in repositories
-                        tr.clickable-row(data-href='/repositories/' + repository.hex, style='cursor: pointer;')
+                        tr.clickable-row(data-href='/repositories/' + repository.hash, style='cursor: pointer;')
                           td
                             h6 #{repository.name}
                           td.text-center.d-none.d-md-table-cell
                             .badge.badge-pill.badge-dark #{repository.contributors.length}
-                          td.text-center.d-none.d-xl-table-cell #{repository.combinedKNW} KNW
+                          td.text-center.d-none.d-xl-table-cell #{parseFloat(repository.combinedKNW).toFixed(2)} KNW
                           td.text-right.d-none.d-sm-table-cell
-                            .text-muted #{moment.unix(repository.topicality).format("HH:mm:s DD.MM.YYYY ")}
+                            .text-muted #{moment.unix(repository.last_activity_date).format("HH:mm:s DD.MM.YYYY ")}
                             
   script.
     $(".clickable-row").click(function() {
