@@ -6,7 +6,11 @@ var controller = {
         var stages = mdl_addr.querySingleAddress(mode, eth_address);
         models.aggregate("users_" + mode, stages, function(error, result){
             console.log(error, result);
-            callback(error, result);
+            if(result.length > 0){
+                callback(error, result);
+            } else {
+                callback("Address not found", null);
+            }
         });
     },
     getAddressByTwitterID: function(mode, twitterID, callback){
