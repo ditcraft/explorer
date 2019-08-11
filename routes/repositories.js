@@ -107,7 +107,11 @@ router.get('/new/bitbucket/:name', function(req, res, next){
 
 router.get('/:repository', function(req, res, next){
   contr_repositories.getRepositories(req.cookies.mode, req.params.repository, true, function(repository, proposals){
+    if(repository){
       res.render('repository', { user: req.user, repository: repository, proposals: proposals});
+    } else {
+      res.render('error-404');
+    }
   });
 });
 
