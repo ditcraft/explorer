@@ -26,12 +26,13 @@ var startRouter = require('./routes/start');
 passport.use(new TwitterStrategy({
   consumerKey:    config.TWITTER_API_KEY,
   consumerSecret: config.TWITTER_API_SECRET,
-  callbackURL:    config.TWITTER_CALLBACK_URL
+  callbackURL:    config.TWITTER_CALLBACK_URL,
+  passReqToCallback: true
 },
-  function(token, tokenSecret, profile, done) {
-    contr_address.getAddressByTwitterID(profile.id, function(err, result){
+  function(req, token, tokenSecret, profile, done) {
+    contr_address.getAddressByTwitterID(req.cookies.mode, profile.id, function(err, result){
       if(result){
-        profile.eth_address = result.eth_address;
+        profile.eth_address = result.address;
         done(null, profile);
       } else {
         done(null, null);

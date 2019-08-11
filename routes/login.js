@@ -9,16 +9,16 @@ router.get('/', function(req, res, next) {
   res.render('login');
 });
 
-/** Add twitter login and return methoods */
 router.get('/twitter', passport.authenticate('twitter'));
 
 router.get('/twitter/callback', passport.authenticate('twitter', {
   failureRedirect : '/login/twitter/kyc'
 }), 
   function(req, res){
-    contr_address.getAddressByTwitterID(req.user.id, function(err, result){
-      if(result && result.eth_address){
-        res.redirect('/address/' + result.eth_address);
+    contr_address.getAddressByTwitterID(req.cookies.mode, req.user.id, function(err, result){
+      if(result && result.address){
+        //res.redirect('/address/' + result.address);
+        res.redirect('/start');
       } else {
         req.logout();
         res.redirect('/login/twitter/kyc');
