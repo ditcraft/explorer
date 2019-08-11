@@ -1,4 +1,4 @@
-if (proposals[0]._id)
+if (proposals.length > 0 && proposals[0]._id)
   each proposal, index in proposals
     .row.ticket-card.mt-3.pt-3.pb-3.mb-3(onclick=`details(${JSON.stringify(proposal)})`, style="box-shadow: 0 .125rem .75rem rgba(0,0,0,.075); cursor: pointer;")
       .col-md-2.text-center.m-auto

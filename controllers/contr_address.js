@@ -1,4 +1,5 @@
 var models = require('../models/mdl_generics');
+var mdl_addr = require('../models/mdl_address');
 var Web3 = require('web3');
 const BigNumber = require('bignumber.js');
 var config = require('../config.json');
@@ -12,6 +13,13 @@ var ditToken = new web3.eth.Contract(config.ABI.ditToken, config.CONTRACT.DEMO.d
 
 var controller = {
     getAddress: function(mode, eth_address, callback){
+        var stages = mdl_addr.querySingleAddress(mode, eth_address);
+        models.aggregate("users_" + mode, stages, function(error, result){
+            console.log(error, result);
+            callback(error, result);
+        });
+    },
+    /*getAddress: function(mode, eth_address, callback){
         if(mode === "live"){
             ditContract = new web3.eth.Contract(config.ABI.KNWToken, config.CONTRACT.LIVE.KNWToken);
             ditToken = new web3.eth.Contract(config.ABI.ditToken, config.CONTRACT.LIVE.ditToken);
@@ -46,7 +54,7 @@ var controller = {
         } catch (err) {
             callback(err);
         }
-    },
+    },*/
     getAddressByTwitterID: function(twitterID, callback){
         models.findOne("users", { "twitter_id": twitterID }, { "eth_address" : 1 }, function(error, result){
             callback(error, result);

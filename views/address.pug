@@ -11,14 +11,14 @@ block content
                 -   var data = new identicon(eth_address).toString();
                 -   return 'data:image/png;base64,' + data;
                 - }
-                if twitter
-                  img.img-xl.rounded-circle(src='https://avatars.io/twitter/' + twitter, alt='Twitter profile picture' width="73")
+                if twitter_handle
+                  img.img-xl.rounded-circle(src='https://avatars.io/twitter/' + twitter_handle, alt='Twitter profile picture' width="73")
                 else
                   img.img-xl.rounded-circle(src='' + generateIdenticon(address), alt='User identicon')
             .col-12
               h1
-                if twitter 
-                  a(href='https://twitter.com/' + twitter target="_blank") #{twitter}
+                if twitter_handle 
+                  a(href='https://twitter.com/' + twitter_handle target="_blank") #{twitter_handle}
                 else
                   span Contributor
               p.text-muted #{address}
@@ -29,9 +29,9 @@ block content
             .float-right
               p.mb-0.text-right Balance
               .fluid-container
-                h3.font-weight-medium.text-right.mb-4 #{xDAIBalance} xDAI
-                h3.font-weight-medium.text-right.mb-4 #{xDitBalance} xDIT
-                h3.font-weight-medium.text-right #{total} KNW
+                h3.font-weight-medium.text-right.mb-4 #{parseFloat(xdai_balance).toFixed(2)} xDAI
+                h3.font-weight-medium.text-right.mb-4 #{parseFloat(xdit_balance).toFixed(2)} xDIT
+                h3.font-weight-medium.text-right #{parseFloat(totalKNW).toFixed(2)} KNW
   .row
     .col-12.grid-margin
       .card(style="border-top-left-radius: 0.25rem;")
@@ -45,7 +45,7 @@ block content
         .card-body
           .tab-content
             #tokens.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='tokens-tab')
-              if !(Object.entries(balance).length === 0 && balance.constructor === Object)
+              if knw_tokens.length > 0
                 .table-responsive
                   table.table.table-hover
                     thead
@@ -54,17 +54,17 @@ block content
                         th
                         th.text-right Amount
                     tbody
-                    each val, index in balance
+                    each token, index in knw_tokens
                       tr
-                        td= index
+                        td= token.label
                         td(style="width: 50%;")
                           .progress
-                            .progress-bar.progress-bar-striped(role='progressbar', style='width: ' + (val/total)*100 + '%', aria-valuenow='' + (val/total)*100, aria-valuemin='0', aria-valuemax='100')
-                        td.font-weight-bold.text-right= val
+                            .progress-bar.progress-bar-striped(role='progressbar', style='width: ' + (token.balance/totalKNW)*100 + '%', aria-valuenow='' + (token.balance/totalKNW)*100, aria-valuemin='0', aria-valuemax='100')
+                        td.font-weight-bold.text-right= token.balance
               else
                 blockquote.blockquote This contributor has not yet earned any knowledge tokens.
             #proposals.tab-pane.fade(role='tabpanel', aria-labelledby='proposals-tab')
-              if (proposals.length)
+              if (proposals[0]._id)
                 .fluid-container
                   include ./comp-proposals.pug
               else
@@ -74,17 +74,10 @@ block content
                 ul
                   each repository, index in repositories
                     li
-                      a(href='/repositories/' + repository.hex)#repositoryName #{repository.name}
+                      a(href='/repositories/' + repository.hash)#repositoryName #{repository.name}
                         span.line(style="display: inline-block;")
                         span.line(style="display: inline-block;")
               else
                 blockquote.blockquote This contributor has not yet contributed to any repositories.
 
   script.
-    var fields = $('#repositoryName').text().split('/');
-    $('span.line:nth-child(1)').text(fields[0]);
-    $('span.line:nth-child(2)').text('/' + fields[1]);
-
-    $("#repositoryName").contents().filter(function(){
-        return (this.nodeType == 3);
-    }).remove();

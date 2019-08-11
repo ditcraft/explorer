@@ -17,24 +17,22 @@ router.post('/check', function(req, res){
 });
 
 router.get('/:address', function(req, res, next){
-  contr_proposals.getProposals(req.cookies.mode, req.params.address, null).then((proposals) => {                        
-    contr_repositories.getAssociatedRepositories(req.cookies.mode, req.params.address, function(repositories){
+  //contr_proposals.getProposals(req.cookies.mode, req.params.address, null).then((proposals) => {                        
+    //contr_repositories.getAssociatedRepositories(req.cookies.mode, req.params.address, function(repositories){
       contr_address.getAddress(req.cookies.mode, req.params.address, function(error, result){
         if(!error){
           result.user = req.user;
-          result.repositories = repositories;
-          result.proposals = proposals;
-          res.render('address', result);
+          res.render('address', result[0]);
           console.log('address: ', result);
         } else {
           console.log('error: ', error);
           res.render('error-404');
         }
       });
-    });
-  }).catch(e => {
-      callback(e);
-  });
+    //});
+  //}).catch(e => {
+  //    callback(e);
+  //});
 });
 
 router.get('/:address/twitterName', function(req, res, next){
