@@ -31,7 +31,7 @@ block content
                             .badge.badge-pill.badge-dark #{repository.contributors.length}
                           td.text-center.d-none.d-xl-table-cell #{parseFloat(repository.combinedKNW).toFixed(2)} KNW
                           td.text-right.d-none.d-sm-table-cell
-                            .text-muted #{moment.unix(repository.last_activity_date).format("HH:mm:s DD.MM.YYYY ")}
+                            .text-muted #{moment(repository.last_activity_date).format("HH:mm:ss DD.MM.YYYY ")}
                             
   script.
     $(".clickable-row").click(function() {
