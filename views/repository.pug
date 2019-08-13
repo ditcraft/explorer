@@ -23,9 +23,13 @@ block content
         .card-body
           .clearfix
             .float-right
+              if user
+                .text-right.mb-2
+                  button.btn.btn-icons.btn-rounded.btn-light#subscribe(type='button', onclick='toggleSubscribe(true)')
+                    i.mdi.mdi-bell-off
               p.mb-0.text-right Latest proposal
               .fluid-container
-                h3.font-weight-medium.text-right.mb-4 #{moment(repository.last_activity_date).format("HH:mm:ss DD.MM.YYYY ")}
+                h3.font-weight-medium.text-right.mb-2 #{moment(repository.last_activity_date).format("HH:mm:ss DD.MM.YYYY ")}
               p.mb-0.text-right Combined
               .fluid-container
                 h3.font-weight-medium.text-right #{parseFloat(repository.combinedKNW).toFixed(2)} KNW
@@ -95,3 +99,30 @@ block content
     $("#repositoryName").contents().filter(function(){
         return (this.nodeType == 3);
     }).remove();
+
+    var toggleSubscribe = function(update) {
+      $.ajax({
+          type: 'POST',
+          url: '/repositories/#{repository.hash}/notify',
+          contentType: 'application/json',
+          data: JSON.stringify({ update: update }),
+          dataType: 'json',
+          success: function(data){
+            if(data){
+              $('#subscribe').addClass('btn-secondary').removeClass('btn-light');
+              $('#subscribe').children().addClass('mdi-bell').removeClass('mdi-bell-off');
+            } else {
+              $('#subscribe').addClass('btn-light').removeClass('btn-secondary');
+              $('#subscribe').children().addClass('mdi-bell-off').removeClass('mdi-bell');
+            }
+          },
+          error: function(error){
+              console.log('Error: ', error);
+          },
+          processData: false
+        });
+    }
+
+    if('#{user}'){
+      toggleSubscribe(false);
+    }

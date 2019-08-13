@@ -163,6 +163,32 @@ var controller = {
             console.log('changed: ', event);
             // remove event from local database
         }).on('error', console.error);
+    },
+    subscribeToRepository: function(update, mode, id, user, callback){
+        var repository = { hash: id, notifications: true };
+
+        if(update){
+            models.findOne("users_" + mode, { address: user.eth_address, "repositories.hash" : id }, { "repositories.$.notifications": 1 }, function(error, result){
+                if(result && result.repositories && result.repositories.length === 1){
+                    var notify = !result.repositories[0].notifications;
+                    models.update("users_" + mode, { address: user.eth_address, "repositories.hash" : id }, { "repositories.$.notifications": notify }, function(error, result){
+                        callback(notify);
+                    });
+                } else {
+                    models.updateAddToSet("users_" + mode, { address: user.eth_address }, { repositories: repository }, function(error, result){
+                        callback(true);
+                    });
+                }
+            });
+        } else {
+            models.findOne("users_" + mode, { address: user.eth_address, "repositories.hash" : id }, { "repositories.$.notifications": 1 }, function(error, result){
+                if(result && result.repositories && result.repositories.length === 1){
+                    callback(result.repositories[0].notifications);
+                } else {
+                    callback(false);
+                }
+            });
+        }
     }
 }
 

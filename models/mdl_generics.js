@@ -64,6 +64,48 @@ var model = {
                 });
             }
         });
+    },
+    update: function (collection, query, data, callback) {
+        MongoClient.connect(url, { useNewUrlParser: true }, function(err, client) {
+            if (err) {
+                console.error('An error occurred connecting to MongoDB: ', err);
+            } else {
+                const db = client.db(dbName);
+                const col = db.collection(collection);
+                col.updateOne(query, { $set: data }, function (err, result) {
+                    client.close();
+                    callback(err, result);
+                });
+            }
+        });
+    },
+    updateAddToArray: function (collection, query, data, callback) {
+        MongoClient.connect(url, { useNewUrlParser: true }, function(err, client) {
+            if (err) {
+                console.error('An error occurred connecting to MongoDB: ', err);
+            } else {
+                const db = client.db(dbName);
+                const col = db.collection(collection);
+                col.updateOne(query, { $push: data }, function (err, result) {
+                    client.close();
+                    callback(err, result);
+                });
+            }
+        });
+    },
+    updateAddToSet: function (collection, query, data, callback) {
+        MongoClient.connect(url, { useNewUrlParser: true }, function(err, client) {
+            if (err) {
+                console.error('An error occurred connecting to MongoDB: ', err);
+            } else {
+                const db = client.db(dbName);
+                const col = db.collection(collection);
+                col.updateOne(query, { $addToSet: data }, function (err, result) {
+                    client.close();
+                    callback(err, result);
+                });
+            }
+        });
     }
 }
 

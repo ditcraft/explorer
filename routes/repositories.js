@@ -115,4 +115,10 @@ router.get('/:repository', function(req, res, next){
   });
 });
 
+router.post('/:repository/notify', function(req, res, next){
+  contr_repositories.subscribeToRepository(req.body.update, req.cookies.mode, req.params.repository, req.user, function(notifications){
+    res.send(notifications);
+  });
+});
+
 module.exports = router;
