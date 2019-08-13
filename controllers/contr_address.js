@@ -7,6 +7,12 @@ var controller = {
         models.aggregate("users_" + mode, stages, function(error, result){
             console.log(error, result);
             if(result.length > 0){
+                for(var i = 0; i < result[0].repositories.length; i++){ 
+                    if (!result[0].repositories[i].name) {
+                        result[0].repositories.splice(i, 1); 
+                        i--;
+                    }
+                }
                 callback(error, result);
             } else {
                 callback("Address not found", null);
