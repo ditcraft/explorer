@@ -8,7 +8,7 @@ var controller = {
             console.log(error, result);
             if(result.length > 0){
                 for(var i = 0; i < result[0].repositories.length; i++){ 
-                    if (!result[0].repositories[i].name) {
+                    if (result[0].repositories[i].amount_of_proposals === 0 && result[0].repositories[i].amount_of_validations === 0) {
                         result[0].repositories.splice(i, 1); 
                         i--;
                     }
