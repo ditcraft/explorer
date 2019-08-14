@@ -56,6 +56,12 @@ if (proposals.length > 0 && proposals[0]._id)
       .modal-body
         .text-center
         .row
+          .col-xl-12.col-lg-12.col-md-12.col-sm-12.grid-margin.stretch-card
+            .card
+              .card-body
+                .clearfix
+                  .lead#topic Topic
+        .row
           .col-xl-6.col-lg-6.col-md-6.col-sm-12.grid-margin.stretch-card
             .card.card-statistics
               .card-body
@@ -166,11 +172,8 @@ script.
     }
   });
   function details(id){
-    console.log('id: ', id);
     var proposals = !{JSON.stringify(proposals)};
     var proposal = proposals[proposals.findIndex(p => p.knw_vote_id == id)]
-    console.log('proposals: ', proposals);
-    console.log('single: ', proposal);
     window.location.hash = proposal.knw_vote_id;
 
     if(proposal.finalized){
@@ -183,6 +186,7 @@ script.
       $('#participantsFor').text(proposal.votes.participants_for);
       $('#votesAgainst').text(parseFloat(proposal.votes.votes_against).toFixed(2));
       $('#participantsAgainst').text(proposal.votes.participants_against);
+      $('#topic').text(proposal.topic);
     
       if(proposal.accepted){
         $('#outcomeIcon').removeClass('mdi-close text-danger');
