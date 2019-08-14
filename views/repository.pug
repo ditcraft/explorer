@@ -101,11 +101,18 @@ block content
     }).remove();
 
     var toggleSubscribe = function(update) {
+      var repository = {
+        hash: '#{repository.hash}',
+        name: '#{repository.name}',
+        provider: '#{repository.provider}',
+        url: '#{repository.url}'
+      }
+      
       $.ajax({
           type: 'POST',
           url: '/repositories/#{repository.hash}/notify',
           contentType: 'application/json',
-          data: JSON.stringify({ update: update }),
+          data: JSON.stringify({ update: update, repository: repository }),
           dataType: 'json',
           success: function(data){
             if(data){

@@ -8,6 +8,7 @@ const Bitbucket = require('bitbucket');
 var models = require('../models/mdl_generics');
 var mdl_repo = require('../models/mdl_repositories');
 const _ = require('lodash');
+var mongo = require('mongodb');
 
 web3 = new Web3(new Web3.providers.WebsocketProvider('wss://node.ditcraft.io/ws') || new Web3.providers.WebsocketProvider('wss://dai-trace-ws.blockscout.com/ws'));
 
@@ -164,8 +165,12 @@ var controller = {
             // remove event from local database
         }).on('error', console.error);
     },
-    subscribeToRepository: function(update, mode, id, user, callback){
-        var repository = { hash: id, notifications: true };
+    subscribeToRepository: function(repository, update, mode, id, user, callback){
+        repository.notifications = true;
+        repository.last_activity_date = new Date();
+        repository.earned_knw = new mongo.Double(0.0);
+        repository.amount_of_proposals = parseInt(0);
+        repository.amount_of_validations = parseInt(0);
 
         if(update){
             models.findOne("users_" + mode, { address: user.eth_address, "repositories.hash" : id }, { "repositories.$.notifications": 1 }, function(error, result){
