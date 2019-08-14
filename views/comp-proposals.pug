@@ -39,10 +39,11 @@ if (proposals.length > 0 && proposals[0]._id)
           .progress(style="height: 20px;").summaryBar
             .progress-bar.progress-bar-striped.progress-bar-animated.bg-info(role='progressbar', style='width: 100%', aria-valuenow='100', aria-valuemin='0', aria-valuemax='100')
               span Vote is still in progress... Ending at #{moment(proposal.reveal_phase_end).format("HH:mm:ss DD.MM.YYYY ")}
-        //p.text-right
+        .text-right
           small.text-muted
-            a.text-muted.small(href='https://github.com/' + proposal.repositoryName target="_blank") https://github.com/#{proposal.repositoryName} 
-              i.mdi.mdi-link(href='https://github.com/' + proposal.repositoryName target="_blank")
+            a.text-muted.small(href='' + proposal.repository[0].url target="_blank") #{proposal.repository[0].url} 
+              i.mdi.mdi-link(href='' + proposal.repository[0].url target="_blank")
+        //.text-dark.text-left #{proposal.topic}
 .modal(tabindex='-1', role='dialog')
   .modal-dialog(role='document')
     .modal-content
@@ -61,6 +62,8 @@ if (proposals.length > 0 && proposals[0]._id)
               .card-body
                 .clearfix
                   .lead#topic Topic
+                  .text-center.mt-3
+                    a#commitLink(href='') Commit
         .row
           .col-xl-6.col-lg-6.col-md-6.col-sm-12.grid-margin.stretch-card
             .card.card-statistics
@@ -209,6 +212,14 @@ script.
       $('#proposerLink').attr("href", "/address/" + proposal.proposer[0].address);
       $('#repositoryLink').attr("href", "/repositories/" + proposal.repository[0].hash);
 
+      if(proposal.repository[0].provider === "GitHub"){
+        var identifier = proposal.identifier;
+        var commithash = identifier.substring(identifier.indexOf(":") + 1);
+        $('#commitLink').text(identifier).attr("href", proposal.repository[0].url + '/commit/' + commithash);
+      } else {
+        $('#commitLink').text("");
+      }
+      
       if(proposal.proposer[0].twitter_handle){
         $('#proposer').text(proposal.proposer[0].twitter_handle);
         $('#proposerImage > i').removeClass('mdi mdi-account icon-lg');
