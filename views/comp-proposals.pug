@@ -1,6 +1,6 @@
 if (proposals.length > 0 && proposals[0]._id)
   each proposal, index in proposals
-    .row.ticket-card.mt-3.pt-3.pb-3.mb-3(onclick=`details(${JSON.stringify(proposal)})`, style="box-shadow: 0 .125rem .75rem rgba(0,0,0,.075); cursor: pointer;")
+    .row.ticket-card.mt-3.pt-3.pb-3.mb-3(id= proposal.knw_vote_id onclick='details(' + proposal.knw_vote_id + ')', style="box-shadow: 0 .125rem .75rem rgba(0,0,0,.075); cursor: pointer;")
       .col-md-2.text-center.m-auto
         if proposal.accepted && proposal.finalized
           i.mdi.mdi-check.text-success.icon-lg
@@ -157,7 +157,22 @@ if (proposals.length > 0 && proposals[0]._id)
         button.btn.btn-primary(type='button') Save changes
         button.btn.btn-secondary(type='button', data-dismiss='modal') Close
 script.
-  function details(proposal){
+  var shiftWindow = function() { scrollBy(0, -80) };
+  window.addEventListener("hashchange", shiftWindow);
+  $(window).on('load',function(){
+    if (window.location.hash){
+      shiftWindow();
+      details(window.location.hash.substring(1));
+    }
+  });
+  function details(id){
+    console.log('id: ', id);
+    var proposals = !{JSON.stringify(proposals)};
+    var proposal = proposals[proposals.findIndex(p => p.knw_vote_id == id)]
+    console.log('proposals: ', proposals);
+    console.log('single: ', proposal);
+    window.location.hash = proposal.knw_vote_id;
+
     if(proposal.finalized){
       $('#proposalID').text(proposal.knw_vote_id);
       $('#repository').text(proposal.repository[0].name);

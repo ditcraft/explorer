@@ -81,3 +81,8 @@ block content
                 blockquote.blockquote This contributor has not yet contributed to any repositories.
 
   script.
+    $(window).on('load',function(){
+      if (window.location.hash){
+        $("#proposals-tab").tab('show');
+      }
+    });
