@@ -21,6 +21,11 @@ var mdlProposals = {
                         foreignField: "hash",
                         as: "repository"
                     }
+                },
+                {
+                    $sort: {
+                        creation_date: -1
+                    }
                 }
         ]
         return stages;

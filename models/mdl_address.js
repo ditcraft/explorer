@@ -35,6 +35,12 @@ var mdlAddress = {
                 }
             },
 
+            {
+                $sort: {
+                    "proposals.creation_date": -1
+                }
+            },
+
             // Stage 10
             {
                 $lookup: // Equality Match
