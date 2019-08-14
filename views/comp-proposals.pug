@@ -212,12 +212,12 @@ script.
       $('#proposerLink').attr("href", "/address/" + proposal.proposer[0].address);
       $('#repositoryLink').attr("href", "/repositories/" + proposal.repository[0].hash);
 
-      if(proposal.repository[0].provider === "GitHub"){
-        var identifier = proposal.identifier;
-        var commithash = identifier.substring(identifier.indexOf(":") + 1);
+      var identifier = proposal.identifier;
+      var commithash = identifier.substring(identifier.indexOf(":") + 1);
+      if(proposal.repository[0].provider === "GitHub" || proposal.repository[0].provider === "GitLab"){
         $('#commitLink').text(identifier).attr("href", proposal.repository[0].url + '/commit/' + commithash);
-      } else {
-        $('#commitLink').text("");
+      } else if(proposal.repository[0].provider === "Bitbucket") {
+        $('#commitLink').text(identifier).attr("href", proposal.repository[0].url + '/commits/' + commithash);
       }
       
       if(proposal.proposer[0].twitter_handle){
