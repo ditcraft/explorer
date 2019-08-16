@@ -50,13 +50,16 @@ html(lang='en')
                         |  Keep me signed in
                     a.text-small.forgot-password.text-black(href='#') Forgot Password
                 .form-group
+                  a.btn.btn-secondary.btn-block(href="https://github.com/ditcraft/cli#installation")
+                    i.mdi.mdi-download
+                    | Download the ditCLI
                   a.btn.btn-primary.btn-block(href="/login/twitter")
                     i.mdi.mdi-twitter
                     | Log in with Twitter
                 .text-block.text-center.my-3
                   span.text-small.font-weight-semibold Not on Twitter? &#32;
-                  a.text-black.text-small(href='https://twitter.com/signup') Sign up
-              ul.auth-footer
+                  a.text-black.text-small(href='/welcome') Explore without logging in
+              //ul.auth-footer
                 li
                   a(href='#') Conditions
                 li
