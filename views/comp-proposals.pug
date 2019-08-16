@@ -63,7 +63,7 @@ if (proposals.length > 0 && proposals[0]._id)
                 .clearfix
                   .lead#topic Topic
                   .text-center.mt-3
-                    a#commitLink(href='') Commit
+                      button.btn.btn-inverse-info.btn-rounded.btn-fw#commitLink(type='button', href='') Commit
         .row
           .col-xl-6.col-lg-6.col-md-6.col-sm-12.grid-margin.stretch-card
             .card.card-statistics
@@ -72,7 +72,7 @@ if (proposals.length > 0 && proposals[0]._id)
                   .float-left
                     i.mdi.icon-lg#outcomeIcon
                   .float-right
-                    p.mb-0.text-right Outcome
+                    p.mb-0.text-right#outcomeText Outcome
                     .fluid-container
                       h3.font-weight-medium.text-right.mb-0#outcome 0
           .col-xl-6.col-lg-6.col-md-6.col-sm-12.grid-margin.stretch-card
@@ -85,6 +85,38 @@ if (proposals.length > 0 && proposals[0]._id)
                     p.mb-0.text-right Label
                     .fluid-container
                       h6.font-weight-medium.text-right.mb-0#label 0
+        .row#timer
+          .col-xl-12.col-lg-12.col-md-12.col-sm-12.grid-margin.stretch-card
+            .card.card-statistics
+              .card-body
+                .clearfix
+                  .float-left
+                    i.mdi.mdi-clock.icon-lg.text-warning
+                  .float-right
+                    p.mb-0.text-right Ending in
+                    .fluid-container
+                      h3.font-weight-medium.text-right.mb-0#timeleft 0
+        .row#totalStake
+          .col-xl-6.col-lg-6.col-md-6.col-sm-12.grid-margin.stretch-card
+            .card.card-statistics
+              .card-body
+                .clearfix
+                  .float-left
+                    i.mdi.mdi-chart-bubble.icon-lg
+                  .float-right
+                    p.mb-0.text-right Current stake
+                    .fluid-container
+                      h3.font-weight-medium.text-right.mb-0#total_stake 0
+          .col-xl-6.col-lg-6.col-md-6.col-sm-12.grid-margin.stretch-card
+            .card.card-statistics
+              .card-body
+                .clearfix
+                  .float-left
+                    i.mdi.mdi-account-multiple.icon-lg
+                  .float-right
+                    p.mb-0.text-right Participants
+                    .fluid-container
+                      h3.font-weight-medium.text-right.mb-0#current_participants 0
         .row
           .col-xl-12.col-lg-12.col-md-12.col-sm-12.grid-margin.stretch-card
             .card.card-statistics
@@ -98,7 +130,7 @@ if (proposals.length > 0 && proposals[0]._id)
                       p.mb-0.text-right Contributor
                       .fluid-container
                         h6.font-weight-medium.text-right.mb-0#proposer 0
-        .row
+        .row#stakes
           .col-xl-6.col-lg-6.col-md-6.col-sm-12.grid-margin.stretch-card
             .card.card-statistics
               .card-body
@@ -131,7 +163,7 @@ if (proposals.length > 0 && proposals[0]._id)
                       p.mb-0.text-right Repository
                       .fluid-container
                         h6.font-weight-medium.text-right.mb-0#repository 0
-        .row
+        .row#votes
           .col-xl-6.col-lg-6.col-md-6.col-sm-12.grid-margin.stretch-card.mb-0
             .card.card-statistics
               .card-body
@@ -174,62 +206,103 @@ script.
       details(window.location.hash.substring(1));
     }
   });
+
+  var interval;
+  function startTimer(end) {
+    interval = setInterval(function(end){
+      setCountdown(end);
+    }, 1000, end);
+  }
+
+  function setCountdown(end){
+    var eventTime = moment(end).format("X"); 
+    var currentTime = moment().format("X");
+    var diffTime = eventTime - currentTime;
+    var duration = moment.duration(diffTime*1000, 'milliseconds');
+    duration = moment.duration(duration - 1000, 'milliseconds');
+    $('#timeleft').text(duration.days() + " days " + duration.hours() + ":" + duration.minutes() + ":" + duration.seconds());
+  }
+
   function details(id){
+    clearInterval(interval);
+    $('#timeleft').text("");
     var proposals = !{JSON.stringify(proposals)};
     var proposal = proposals[proposals.findIndex(p => p.knw_vote_id == id)]
     window.location.hash = proposal.knw_vote_id;
+    setCountdown(proposal.commit_phase_end);
 
-    if(proposal.finalized){
-      $('#proposalID').text(proposal.knw_vote_id);
-      $('#repository').text(proposal.repository[0].name);
-      $('#label').text(proposal.knw_label);
-      $('#stake').text(parseFloat(proposal.total_stake).toFixed(2) + " xDIT");
-      $('#earned').text(parseFloat(proposal.total_minted_knw).toFixed(2) + " KNW");
-      $('#votesFor').text(parseFloat(proposal.votes.votes_for).toFixed(2));
-      $('#participantsFor').text(proposal.votes.participants_for);
-      $('#votesAgainst').text(parseFloat(proposal.votes.votes_against).toFixed(2));
-      $('#participantsAgainst').text(proposal.votes.participants_against);
-      $('#topic').text(proposal.topic);
-    
-      if(proposal.accepted){
-        $('#outcomeIcon').removeClass('mdi-close text-danger');
-        $('#outcomeIcon').addClass('mdi-check text-success');
-        $('#outcome').text("Accepted");
-        $('#earnedIcon').removeClass('mdi-fire').addClass('mdi-finance');
-        $('#earnedBG').addClass('bg-success').removeClass('bg-danger');
-        $('#earnedText').text('Earned');
-        $('#stakeText').text('Stake increased');
-      } else {
-        $('#outcomeIcon').removeClass('mdi-check text-success');
-        $('#outcomeIcon').addClass('mdi-close text-danger');
-        $('#outcome').text("Rejected");
-        $('#earnedIcon').removeClass('mdi-finance').addClass('mdi-fire');
-        $('#earnedBG').addClass('bg-danger').removeClass('bg-success');
-        $('#earnedText').text('Burned');
-        $('#stakeText').text('Stake slashed');
-      }
 
-      $('#proposerLink').attr("href", "/address/" + proposal.proposer[0].address);
-      $('#repositoryLink').attr("href", "/repositories/" + proposal.repository[0].hash);
+    $('#proposalID').text(proposal.knw_vote_id);
+    $('#repository').text(proposal.repository[0].name);
+    $('#label').text(proposal.knw_label.substring(proposal.knw_label.indexOf("/") + 1));
+    $('#stake, #total_stake').text(parseFloat(proposal.total_stake).toFixed(2) + " xDIT");
+    $('#current_participants').text(proposal.participants.length);
+    $('#earned').text(parseFloat(proposal.total_minted_knw).toFixed(2) + " KNW");
+    $('#votesFor').text(parseFloat(proposal.votes.votes_for).toFixed(2));
+    $('#participantsFor').text(proposal.votes.participants_for);
+    $('#votesAgainst').text(parseFloat(proposal.votes.votes_against).toFixed(2));
+    $('#participantsAgainst').text(proposal.votes.participants_against);
+    $('#topic').text(proposal.topic);
 
-      var identifier = proposal.identifier;
-      var commithash = identifier.substring(identifier.indexOf(":") + 1);
-      if(proposal.repository[0].provider === "GitHub" || proposal.repository[0].provider === "GitLab"){
-        $('#commitLink').text(identifier).attr("href", proposal.repository[0].url + '/commit/' + commithash);
-      } else if(proposal.repository[0].provider === "Bitbucket") {
-        $('#commitLink').text(identifier).attr("href", proposal.repository[0].url + '/commits/' + commithash);
-      }
-      
-      if(proposal.proposer[0].twitter_handle){
-        $('#proposer').text(proposal.proposer[0].twitter_handle);
-        $('#proposerImage > i').removeClass('mdi mdi-account icon-lg');
-        $('#proposerImage > img').attr('src', 'https://avatars.io/twitter/' + proposal.proposer[0].twitter_handle);
-      } else {
-        $('#proposer').text(proposal.proposer[0].address);
-        $('#proposerImage > i').addClass('mdi mdi-account icon-lg');
-        $('#proposerImage > img').attr('src', '');
-      }
-      
-      $('.modal').modal('toggle');
+    if(proposal.accepted){
+      $('#outcomeIcon').removeClass('mdi-close text-danger');
+      $('#outcomeIcon').addClass('mdi-check text-success');
+      $('#outcome').text("Accepted");
+      $('#earnedIcon').removeClass('mdi-fire').addClass('mdi-finance');
+      $('#earnedBG').addClass('bg-success').removeClass('bg-danger');
+      $('#earnedText').text('Earned');
+      $('#stakeText').text('Stake increased');
+    } else {
+      $('#outcomeIcon').removeClass('mdi-check text-success');
+      $('#outcomeIcon').addClass('mdi-close text-danger');
+      $('#outcome').text("Rejected");
+      $('#earnedIcon').removeClass('mdi-finance').addClass('mdi-fire');
+      $('#earnedBG').addClass('bg-danger').removeClass('bg-success');
+      $('#earnedText').text('Burned');
+      $('#stakeText').text('Stake slashed');
     }
+
+    if(!proposal.finalized){
+      $('#votes, #stakes').hide();  
+      $('#totalStake, #timer').show();
+      $('#outcomeIcon').removeClass('mdi-close text-danger mdi-check text-success').addClass('mdi-loading text-info mdi-spin');
+      $('#outcome').text("LIVE");
+      $('#outcomeText').text("Votes are");
+
+      startTimer(proposal.commit_phase_end);
+    } else {
+      $('#votes, #stakes').show();
+      $('#totalStake, #timer').hide();
+      $('#outcomeIcon').removeClass('mdi-loading text-info mdi-spin');
+      $('#outcomeText').text("Outcome");
+    }
+
+    $('#proposerLink').attr("href", "/address/" + proposal.proposer[0].address);
+    $('#repositoryLink').attr("href", "/repositories/" + proposal.repository[0].hash);
+
+    var identifier = proposal.identifier;
+    var commithash = identifier.substring(identifier.indexOf(":") + 1);
+    if(proposal.repository[0].provider === "GitHub" || proposal.repository[0].provider === "GitLab"){
+      $("#commitLink").click(function() {
+        window.open(proposal.repository[0].url + '/commit/' + commithash);
+      });
+      $('#commitLink').text("See commit on " + proposal.repository[0].provider);
+    } else if(proposal.repository[0].provider === "Bitbucket") {
+      $("#commitLink").click(function() {
+        window.open(proposal.repository[0].url + '/commits/' + commithash);
+      });
+      $('#commitLink').text("See commit on " + proposal.repository[0].provider);
+    }
+    
+    if(proposal.proposer[0].twitter_handle){
+      $('#proposer').text(proposal.proposer[0].twitter_handle);
+      $('#proposerImage > i').removeClass('mdi mdi-account icon-lg');
+      $('#proposerImage > img').attr('src', 'https://avatars.io/twitter/' + proposal.proposer[0].twitter_handle);
+    } else {
+      $('#proposer').text(proposal.proposer[0].address);
+      $('#proposerImage > i').addClass('mdi mdi-account icon-lg');
+      $('#proposerImage > img').attr('src', '');
+    }
+    
+    $('.modal').modal('toggle');
   }
