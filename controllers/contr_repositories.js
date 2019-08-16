@@ -16,6 +16,10 @@ var coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_DEMO, 
 
 var controller = {
     getRepositories: function(mode, id, details, callback){
+        if(typeof mode === "undefined"){
+            mode = "demo";
+        }
+
         if(id){
             var stages = mdl_repo.querySingleRepoWithUsersAndProposals(mode, id);
             models.aggregate("repositories_" + mode, stages, function(error, result){
@@ -135,6 +139,9 @@ var controller = {
     },
     checkRepoInit: async function(mode, name, callback){
         console.log('checking repoInit: ', mode, name);
+        if(typeof mode === "undefined"){
+            mode = "demo";
+        }
         if(mode === "live"){
             coordinatorContract = new web3.eth.Contract(config.ABI.ditCoordinator_LIVE, config.CONTRACT.LIVE.ditCoordinator);
         } else if (mode === "demo") {
@@ -166,6 +173,10 @@ var controller = {
         }).on('error', console.error);
     },
     subscribeToRepository: function(repository, update, mode, id, user, callback){
+        if(typeof mode === "undefined"){
+            mode = "demo";
+        }
+        
         repository.notifications = true;
         repository.last_activity_date = new Date();
         repository.earned_knw = new mongo.Double(0.0);

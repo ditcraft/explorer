@@ -3,6 +3,10 @@ var mdl_addr = require('../models/mdl_address');
 
 var controller = {
     getAddress: function(mode, eth_address, callback){
+        if(typeof mode === "undefined"){
+            mode = "demo";
+        }
+
         var stages = mdl_addr.querySingleAddress(mode, eth_address);
         models.aggregate("users_" + mode, stages, function(error, result){
             console.log(error, result);
@@ -20,6 +24,10 @@ var controller = {
         });
     },
     getAddressByTwitterID: function(mode, twitterID, callback){
+        if(typeof mode === "undefined"){
+            mode = "demo";
+        }
+        
         models.findOne("users_" + mode, { "twitter_id": twitterID }, { "address" : 1 }, function(error, result){
             callback(error, result);
         });
