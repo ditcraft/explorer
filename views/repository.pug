@@ -17,7 +17,7 @@ block content
                 | #{repository.hash}
           .row.float-right
             each label, index in repository.knw_labels
-              button.btn.btn-inverse-light.btn-rounded.ml-1.btn-sm(type='button', style='cursor: default;') #{label}
+              button.btn.btn-inverse-light.btn-rounded.ml-1.btn-sm(type='button', style='cursor: default;') #{label.substring(label.indexOf("/") + 1)}
     .col-xl-4.col-lg-4.col-md-4.col-sm-4.grid-margin.stretch-card
       .card.card-statistics(style="height: 100%;")
         .card-body
@@ -118,9 +118,33 @@ block content
             if(data){
               $('#subscribe').addClass('btn-secondary').removeClass('btn-light');
               $('#subscribe').children().addClass('mdi-bell').removeClass('mdi-bell-off');
+              if(update){
+                $.toast({ 
+                  text : "You succesfully subscribed to this repository!", 
+                  showHideTransition : 'slide',
+                  bgColor : '#29b5a8',
+                  textColor : '#eee',
+                  allowToastClose : false,
+                  hideAfter : 5000,
+                  stack : false,
+                  textAlign : 'left',
+                  position : 'bottom-right'
+                });
+              }
             } else {
               $('#subscribe').addClass('btn-light').removeClass('btn-secondary');
               $('#subscribe').children().addClass('mdi-bell-off').removeClass('mdi-bell');
+              if(update){
+                $.toast({ 
+                  text : "You are now unsubscribed.", 
+                  showHideTransition : 'slide',
+                  allowToastClose : false,
+                  hideAfter : 5000,
+                  stack : false,
+                  textAlign : 'left',
+                  position : 'bottom-right'
+                });
+              }
             }
           },
           error: function(error){
