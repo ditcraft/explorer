@@ -220,6 +220,9 @@ script.
     var diffTime = eventTime - currentTime;
     var duration = moment.duration(diffTime*1000, 'milliseconds');
     duration = moment.duration(duration - 1000, 'milliseconds');
+    if(duration.as('milliseconds') === 0){
+      location.reload();
+    }
     $('#timeleft').text(duration.days() + " days " + duration.hours() + ":" + duration.minutes() + ":" + duration.seconds());
   }
 
@@ -229,8 +232,7 @@ script.
     var proposals = !{JSON.stringify(proposals)};
     var proposal = proposals[proposals.findIndex(p => p.knw_vote_id == id)]
     window.location.hash = proposal.knw_vote_id;
-    setCountdown(proposal.commit_phase_end);
-
+    setCountdown(proposal.reveal_phase_end);
 
     $('#proposalID').text(proposal.knw_vote_id);
     $('#repository').text(proposal.repository[0].name);
@@ -269,7 +271,7 @@ script.
       $('#outcome').text("LIVE");
       $('#outcomeText').text("Votes are");
 
-      startTimer(proposal.commit_phase_end);
+      startTimer(proposal.reveal_phase_end);
     } else {
       $('#votes, #stakes').show();
       $('#totalStake, #timer').hide();
@@ -282,6 +284,7 @@ script.
 
     var identifier = proposal.identifier;
     var commithash = identifier.substring(identifier.indexOf(":") + 1);
+    $('#commitLink').unbind( "click" );
     if(proposal.repository[0].provider === "GitHub" || proposal.repository[0].provider === "GitLab"){
       $("#commitLink").click(function() {
         window.open(proposal.repository[0].url + '/commit/' + commithash);
