@@ -103,7 +103,8 @@ var controller = {
             auth: accessToken
         });
         octokit.repos.createForAuthenticatedUser({
-            name
+            name,
+            auto_init: true
         }).then(function (result){
             callback(null, result);
         }).catch(function (error){
