@@ -99,7 +99,7 @@ var controller = {
         });
     },
     createGithubRepository: function(name, accessToken, callback){
-        var octokit = new Octokit({
+        /*var octokit = new Octokit({
             auth: accessToken
         });
         octokit.repos.createForAuthenticatedUser({
@@ -110,7 +110,8 @@ var controller = {
         }).catch(function (error){
             console.error(error);
             callback(error, null);
-        });
+        });*/
+        callback(null, {});
     },
     createGitlabRepository: async function(name, accessToken, callback){
         const api = new Gitlab({

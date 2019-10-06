@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/check', function(req, res){
-  contr_address.checkIfValidAddress(req, function(isValid){
+  contr_address.checkIfValidAddress(req.cookies.mode, req, function(isValid){
     res.send(isValid);
   });
 });

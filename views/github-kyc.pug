@@ -1,0 +1,109 @@
+extends layout
+
+block content
+  .container
+    .row
+      .col-12.grid-margin.stretch-card
+        .card
+          .card-body
+            h4.card-title Know-Your-Coder process
+            p.card-description
+              | It looks like you haven't passed the know-your-coder (KYC) process yet. No worries, you can do that right now! Just let us know your ETH address.
+            .form-group
+              .input-group
+                .input-group-prepend.bg-info
+                  span.input-group-text.bg-primary
+                    i.mdi.mdi-account-card-details.text-white
+                input.form-control#ethAddress(type='text', placeholder='0x0000000000000000000000000000000000000000', aria-label='ETH Address')
+          .card-body#correctNotice
+            hr
+            h4 You have entered a correct ETH address!
+              button.btn.btn-primary.btn-rounded.float-right(type='button', onclick='connect()')
+                i.mdi.mdi-chevron-right
+                | Connect with GitHub
+  script.
+    var typingTimer;
+    var doneTypingInterval = 500;
+    $('#correctNotice, #errorNotice').hide();
+
+    $('#ethAddress').on('keyup', function () {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(doneTyping, doneTypingInterval);
+    });
+
+    $('#ethAddress').on('keydown', function () {
+      clearTimeout(typingTimer);
+    });
+
+    function doneTyping () {
+      if($('#ethAddress').val()) {
+        $('#ethAddress').addClass('loading');
+        $.ajax({
+          type: 'POST',
+          url: '/address/check',
+          contentType: 'application/json',
+          data: JSON.stringify({ address: $('#ethAddress').val() }),
+          dataType: 'json',
+          success: function(data){
+            if(data){
+              $('#ethAddress').addClass('bg-success text-white').removeClass('bg-danger');
+              $('#correctNotice').show();
+            } else {
+              $('#ethAddress').addClass('bg-danger text-white').removeClass('bg-success');
+              $('#correctNotice').hide();
+            }
+            $('#ethAddress').removeClass('loading');
+          },
+          error: function(){
+              console.log('test Error');
+          },
+          processData: false
+        });
+      } else {
+        $('#ethAddress').removeClass('bg-danger bg-success text-white');
+        $('#correctNotice').hide();
+      }
+    }
+
+    var connect = function() {
+      $.ajax({
+          type: 'POST',
+          url: '/login/github/kyc/connect',
+          contentType: 'application/json',
+          data: JSON.stringify({ address: $('#ethAddress').val(), id: getUrlParameter('id') }),
+          dataType: 'json',
+          success: function(data){
+            if(!data.connected){
+              $.toast({ 
+                  text : "This GitHub account is already connected to the address " + data.address + ".", 
+                  showHideTransition : 'slide',
+                  allowToastClose : false,
+                  hideAfter : 5000,
+                  stack : false,
+                  textAlign : 'left',
+                  position : 'bottom-right'
+                });
+            } else {
+              window.location = "/address/" + $('#ethAddress').val();
+            }
+          },
+          error: function(){
+            console.log('Error');
+          },
+          processData: false
+        });
+    }
+
+    var getUrlParameter = function getUrlParameter(sParam) {
+      var sPageURL = window.location.search.substring(1),
+          sURLVariables = sPageURL.split('&'),
+          sParameterName,
+          i;
+      for (i = 0; i < sURLVariables.length; i++) {
+          sParameterName = sURLVariables[i].split('=');
+
+          if (sParameterName[0] === sParam) {
+              return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+          }
+      }
+    };

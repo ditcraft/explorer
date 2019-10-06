@@ -26,17 +26,32 @@ router.get('/twitter/callback', passport.authenticate('twitter', {
     });
 });
 
+router.get('/github', passport.authenticate('github'));
+
 router.get('/github/callback', passport.authenticate('github', {
   failureRedirect : '/repositories/new/fail'
 }), 
   function(req, res){
-    contr_repositories.createGithubRepository(req.query.state, req.user.gitToken, function(err, result){
-      if(!err){
-        res.redirect('/repositories/new/success?provider=GitHub&name=' + req.query.state + '&cloneURL=' + result.data.clone_url);
-      } else {
-        res.redirect('/repositories/new/fail');
-      }
-    });
+    var id = req.user.id;
+    if(req.query.state){
+      contr_repositories.createGithubRepository(req.query.state, req.user.gitToken, function(err, result){
+        if(!err){
+          res.redirect('/repositories/new/success?provider=GitHub&name=' + req.query.state + '&cloneURL=' + result.data.clone_url);
+        } else {
+          res.redirect('/repositories/new/fail');
+        }
+      })
+    } else {
+      contr_address.getAddressByGitHubID(req.cookies.mode, id, function(error, result){
+        if(result && result.address){
+          //res.redirect('/address/' + result.address);
+          res.redirect('/start');
+        } else {
+          req.logout();
+          res.redirect('/login/github/kyc?id=' + id);
+        }
+      });
+    }
 });
 
 router.get('/gitlab/callback', passport.authenticate('gitlab', {
@@ -67,6 +82,16 @@ router.get('/bitbucket/callback', passport.authenticate('bitbucket', {
 
 router.get('/twitter/kyc', function(req, res, next) {
   res.render('twitter-kyc');
+});
+
+router.get('/github/kyc', function(req, res, next) {
+  res.render('github-kyc');
+});
+
+router.post('/github/kyc/connect', function(req, res, next) {
+  contr_address.connectGitHub(req.cookies.mode, req.body.id, req.body.address, function(connected, address){
+    res.send({connected, address});
+  });
 });
 
 module.exports = router;

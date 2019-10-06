@@ -51,12 +51,12 @@ html(lang='en')
                   span.input-group-text.bg-transparent
                     i.mdi.mdi-magnify.text-white
             li.nav-item
-                if user && user.provider === 'twitter'
+                if user && user.provider === 'twitter' || user && user.provider === 'github'
                   li.nav-item.dropdown.d-inline-block
                     a#UserDropdown.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-expanded='false')
                       span.profile-text #{user.displayName}
                       img.img-xs.rounded-circle(src=''+ user.photos[0].value, alt='Twitter profile picture')
-                    .dropdown-menu.dropdown-menu-right.navbar-dropdown(aria-labelledby='UserDropdown')
+                    .dropdown-menu.dropdown-menu-right.navbar-dropdown(aria-labelledby='UserDropdown', style="padding: 0px;")
                       a.dropdown-item.mt-2(href="/address/" + user.eth_address)
                         i.mdi.mdi-account
                         | Profile
@@ -64,9 +64,17 @@ html(lang='en')
                         i.mdi.mdi-logout
                         | Sign Out
                 else
-                  a.btn.btn-light.btn-block(href="/login/twitter")
-                    i.mdi.mdi-twitter
-                    | Log in
+                  li.nav-item.dropdown.d-inline-block
+                    a#UserDropdown.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-expanded='false')
+                      i.mdi.mdi-login
+                      | Log in
+                    .dropdown-menu.dropdown-menu-right.navbar-dropdown(aria-labelledby='UserDropdown', style="padding: 0px;")
+                      a.dropdown-item(href="/login/twitter")
+                        i.mdi.mdi-twitter
+                        | Twitter
+                      a.dropdown-item(href="/login/github")
+                        i.mdi.mdi-github-circle
+                        | GitHub
           button.navbar-toggler.navbar-toggler-right.d-lg-none.align-self-center(type='button', data-toggle='offcanvas')
             span.mdi.mdi-menu
       // partial
@@ -95,7 +103,7 @@ html(lang='en')
                     a.nav-link(href='/discover/contributors')
                       i.menu-icon.mdi.mdi-account-multiple
                       span.menu-title Contributors
-            if user && user.provider === 'twitter'
+            if user && user.provider === 'twitter' || user && user.provider === 'github'
               li.nav-item
                 a.nav-link(href='/start')
                   i.menu-icon.mdi.mdi-play-circle

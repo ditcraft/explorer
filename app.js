@@ -43,9 +43,11 @@ passport.use(new TwitterStrategy({
 
 // Serialize and deserialize user information
 passport.serializeUser(function(user, callback){
+  console.log('serializeUser: ', user);
   callback(null, user);
 });
 passport.deserializeUser(function(object, callback){
+  console.log('deserializeUser: ', object);
   callback(null, object);
 });
 
@@ -56,13 +58,19 @@ passport.use(new GitHubStrategy({
   passReqToCallback: true
 },
   function(req, accessToken, refreshToken, profile, done) {
-    if(req.user && req.user.provider === 'twitter'){
-      req.user.gitToken = accessToken;
-      done(null, req.user);
-    } else {
-      profile.gitToken = accessToken;
-      done(null, profile);
-    }
+    console.log('profile: ', profile);
+    contr_address.getAddressByGitHubID(req.cookies.mode, profile.id, function(err, result){
+      if(result){
+        profile.eth_address = result.address;
+        profile.gitToken = accessToken;
+        done(null, profile);
+      } else if(req.user && req.user.provider === 'twitter'){
+        req.user.gitToken = accessToken;
+        done(null, req.user);
+      } else {
+        done(null, null);
+      }
+    });
   }
 ));
 
