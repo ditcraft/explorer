@@ -22,6 +22,7 @@ var logoutRouter = require('./routes/logout');
 var proposalsRouter = require('./routes/proposals');
 var repositoriesRouter = require('./routes/repositories');
 var startRouter = require('./routes/start');
+//var settingsRouter = require('./routes/settings');
 
 passport.use(new TwitterStrategy({
   consumerKey:    config.TWITTER_API_KEY,
@@ -68,7 +69,7 @@ passport.use(new GitHubStrategy({
         req.user.gitToken = accessToken;
         done(null, req.user);
       } else {
-        done(null, null);
+        done(null, profile);
       }
     });
   }
@@ -144,6 +145,7 @@ app.use('/logout', logoutRouter);
 app.use('/proposals', proposalsRouter);
 app.use('/repositories', repositoriesRouter);
 app.use('/start', startRouter);
+//app.use('/settings', settingsRouter);
 
 app.get('/toggleMode',function(req, res){
   if(req.cookies.mode && req.cookies.mode === "demo"){
