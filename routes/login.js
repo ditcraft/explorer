@@ -47,7 +47,6 @@ router.get('/github/callback', passport.authenticate('github', {
           //res.redirect('/address/' + result.address);
           res.redirect('/start');
         } else {
-          req.logout();
           res.redirect('/login/github/kyc?id=' + id);
         }
       });
@@ -85,10 +84,11 @@ router.get('/twitter/kyc', function(req, res, next) {
 });
 
 router.get('/github/kyc', function(req, res, next) {
-  res.render('github-kyc');
+  res.render('github-kyc', { user: req.user });
 });
 
 router.post('/github/kyc/connect', function(req, res, next) {
+  req.user.eth_address = req.body.address;
   contr_address.connectGitHub(req.cookies.mode, req.body.id, req.body.address, function(connected, address){
     res.send({connected, address});
   });

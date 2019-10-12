@@ -57,9 +57,13 @@ html(lang='en')
                       span.profile-text #{user.displayName}
                       img.img-xs.rounded-circle(src=''+ user.photos[0].value, alt='Twitter profile picture')
                     .dropdown-menu.dropdown-menu-right.navbar-dropdown(aria-labelledby='UserDropdown', style="padding: 0px;")
-                      a.dropdown-item.mt-2(href="/address/" + user.eth_address)
-                        i.mdi.mdi-account
-                        | Profile
+                      if user && user.eth_address
+                        a.dropdown-item(href="/address/" + user.eth_address)
+                          i.mdi.mdi-account
+                          | Profile
+                        a.dropdown-item(href="/settings/")
+                          i.mdi.mdi-settings
+                          | Settings
                       a.dropdown-item(href="/logout")
                         i.mdi.mdi-logout
                         | Sign Out
