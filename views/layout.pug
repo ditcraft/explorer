@@ -141,6 +141,12 @@ html(lang='en')
                 | . All rights reserved.
               span.float-none.float-sm-right.d-block.mt-1.mt-sm-0.text-center
                 a(href='https://ditcraft.io/imprint.html', target='_blank') Imprint
+  .privacy-banner(style='border-top: 2px solid #29b5a8; display: none;')
+    div
+      p
+        | We use cookies to provide and improve our services. By using our site, you consent to cookies.
+        a.banner-accept(href='', style='background: #29b5a8') Accept
+        a.banner-learn(href='https://ditcraft.io/imprint.html', target='_blank') Learn more
           // partial
           // main-panel ends
           // page-body-wrapper ends
@@ -216,4 +222,21 @@ html(lang='en')
 
     function eraseCookie(name) {
       createCookie(name, "", -1);
+    }
+    // Banner Trigger if Not Closed
+    if (!localStorage.bannerClosed) {
+      $('.privacy-banner').css('display', 'inherit');
+    } else {
+      $('.privacy-banner').css('display', 'none');
+    }
+    $('.privacy-banner button').click(function() {
+      $('.privacy-banner').css('display', 'none');
+      localStorage.bannerClosed = 'true';
+    });
+    $('.banner-accept').click(function() {
+      $('.privacy-banner').css('display', 'none');
+      localStorage.bannerClosed = 'true';
+    });
+    if (navigator.userAgent.match(/Opera|OPR\//)) {
+      $('.privacy-banner').css('display', 'inherit');
     }
