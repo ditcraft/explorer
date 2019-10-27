@@ -15,13 +15,14 @@ router.get('/twitter/callback', passport.authenticate('twitter', {
   failureRedirect : '/login/twitter/kyc'
 }), 
   function(req, res){
-    contr_address.getAddressByTwitterID(req.cookies.mode, req.user.id, function(err, result){
-      if(result && result.address){
+    var id = req.user.id;
+    contr_address.getAddressByTwitterID(req.cookies.mode, id, function(err, result){
+      if(result && result.dit_address){
         //res.redirect('/address/' + result.address);
         res.redirect('/start');
       } else {
-        req.logout();
-        res.redirect('/login/twitter/kyc');
+        //req.logout();
+        res.redirect('/login/twitter/kyc?id=' + id);
       }
     });
 });
@@ -43,7 +44,7 @@ router.get('/github/callback', passport.authenticate('github', {
       })
     } else {
       contr_address.getAddressByGitHubID(req.cookies.mode, id, function(error, result){
-        if(result && result.address){
+        if(result && result.dit_address){
           //res.redirect('/address/' + result.address);
           res.redirect('/start');
         } else {
@@ -80,16 +81,23 @@ router.get('/bitbucket/callback', passport.authenticate('bitbucket', {
 });
 
 router.get('/twitter/kyc', function(req, res, next) {
-  res.render('twitter-kyc');
+  res.render('general-kyc', { user: req.user, provider: "Twitter" });
 });
 
 router.get('/github/kyc', function(req, res, next) {
-  res.render('github-kyc', { user: req.user });
+  res.render('general-kyc', { user: req.user, provider: "GitHub" });
 });
 
 router.post('/github/kyc/connect', function(req, res, next) {
   req.user.eth_address = req.body.address;
-  contr_address.connectGitHub(req.cookies.mode, req.body.id, req.body.address, function(connected, address){
+  contr_address.connectAccount(req.cookies.mode, "github", req.body.id, req.body.address, function(connected, address){
+    res.send({connected, address});
+  });
+});
+
+router.post('/twitter/kyc/connect', function(req, res, next) {
+  req.user.eth_address = req.body.address;
+  contr_address.connectAccount(req.cookies.mode, "twitter", req.body.id, req.body.address, function(connected, address){
     res.send({connected, address});
   });
 });

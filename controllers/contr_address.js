@@ -58,7 +58,7 @@ var controller = {
 
         if(web3.utils.isAddress(req.body.address)){
             models.findOne("users", { "dit_address": req.body.address }, {}, function(error, result){
-                if(result){
+                if(result.twitter_id || result.github_id){
                     callback(false);
                 } else {
                     callback(true);
@@ -103,9 +103,43 @@ var controller = {
                             callback(true);
                         });
                     } else if(result.github_id !== null && result.github_id !== '' ){
+                        console.log('test');
                         callback(false);
                     } else {
                         models.update("users", { "_id": ObjectID(result._id)}, { "github_id": githubID}, function(error, result){
+                            callback(true);
+                        });
+                    }
+                });
+            } else {
+                console.log('GitHub account already connected');
+                callback(false, result.dit_address);
+            }   
+        });
+    },
+
+    connectAccount: function(mode, provider, ID, eth_address, callback){
+        if(typeof mode === "undefined"){
+            mode = "demo";
+        }
+
+        var obj = {};
+        var key = provider + "_id";
+        obj[key] = ID;
+
+        models.findOne("users", obj, { "address" : 1 }, function(error, result){
+            if(result === null){
+                models.findOne("users", { "dit_address": eth_address }, { "github_id" : 1, "twitter_id": 1 }, function(error, result){
+                    if (result === null){
+                        userObject.dit_address = eth_address;
+                        userObject[key] = ID;
+                        models.addNew("users", userObject, function(error, result){
+                            callback(true);
+                        });
+                    } else if((result.github_id !== null && result.github_id !== '') || (result.twitter_id !== null && result.twitter_id !== '')){
+                        callback(false);
+                    } else {
+                        models.update("users", { "_id": ObjectID(result._id)}, obj, function(error, result){
                             callback(true);
                         });
                     }

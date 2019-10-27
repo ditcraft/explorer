@@ -22,7 +22,7 @@ var logoutRouter = require('./routes/logout');
 var proposalsRouter = require('./routes/proposals');
 var repositoriesRouter = require('./routes/repositories');
 var startRouter = require('./routes/start');
-//var settingsRouter = require('./routes/settings');
+var settingsRouter = require('./routes/settings');
 
 passport.use(new TwitterStrategy({
   consumerKey:    config.TWITTER_API_KEY,
@@ -33,10 +33,10 @@ passport.use(new TwitterStrategy({
   function(req, token, tokenSecret, profile, done) {
     contr_address.getAddressByTwitterID(req.cookies.mode, profile.id, function(err, result){
       if(result){
-        profile.eth_address = result.address;
+        profile.eth_address = result.dit_address;
         done(null, profile);
       } else {
-        done(null, null);
+        done(null, profile);
       }
     });
   }
@@ -62,7 +62,7 @@ passport.use(new GitHubStrategy({
     console.log('profile: ', profile);
     contr_address.getAddressByGitHubID(req.cookies.mode, profile.id, function(err, result){
       if(result){
-        profile.eth_address = result.address;
+        profile.eth_address = result.dit_address;
         profile.gitToken = accessToken;
         done(null, profile);
       } else if(req.user && req.user.provider === 'twitter'){
@@ -145,7 +145,7 @@ app.use('/logout', logoutRouter);
 app.use('/proposals', proposalsRouter);
 app.use('/repositories', repositoriesRouter);
 app.use('/start', startRouter);
-//app.use('/settings', settingsRouter);
+app.use('/settings', settingsRouter);
 
 app.get('/toggleMode',function(req, res){
   if(req.cookies.mode && req.cookies.mode === "demo"){
