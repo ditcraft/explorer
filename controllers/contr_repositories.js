@@ -23,10 +23,13 @@ var controller = {
         if(id){
             var stages = mdl_repo.querySingleRepoWithUsersAndProposals(mode, id);
             models.aggregate("repositories_" + mode, stages, function(error, result){
-                console.log(result);
                 if(!error){
                     if (result.length > 0) {
-                        var res = _(result[0].contributors).concat(result[0].users).groupBy('address').map(_.spread(_.assign)).value();       
+                        result[0].contributors.forEach(function(obj) {
+                            obj.dit_address = obj.address;
+                            delete obj.address;
+                        });
+                        var res = _(result[0].contributors).concat(result[0].users).groupBy('dit_address').map(_.spread(_.assign)).value();     
                         delete result[0].contributors;
                         delete result[0].users;
                         result[0].contributors = res;    
@@ -43,7 +46,7 @@ var controller = {
             var stages = mdl_repo.queryRepoWithUsers(mode);
             models.aggregate("repositories_" + mode, stages, function(error, result){
                 result.forEach(repo => {
-                    var res = _(repo.contributors).concat(repo.users).groupBy('address').map(_.spread(_.assign)).value();       
+                    var res = _(repo.contributors).concat(repo.users).groupBy('dit_address').map(_.spread(_.assign)).value();       
                     delete repo.contributors;
                     delete repo.users;
                     repo.contributors = res;    

@@ -5,9 +5,9 @@ var mdlProposals = {
                 {
                     $lookup: // Equality Match
                     {
-                        from: "users_" + mode,
+                        from: "users",
                         localField: "proposer",
-                        foreignField: "address",
+                        foreignField: "dit_address",
                         as: "proposer"
                     }
                 },

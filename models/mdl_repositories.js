@@ -8,9 +8,9 @@ var mdlRepositories = {
             {
                 $lookup: // Equality Match
                 {
-                    from: "users_" + mode,
+                    from: "users",
                     localField: "contributors.address",
-                    foreignField: "address",
+                    foreignField: "dit_address",
                     as: "users"
                 }
             },
@@ -36,7 +36,7 @@ var mdlRepositories = {
                 "contributors": {"$first": "$contributors"},
                 "users": {"$push": "$users"},
                     "combinedKNW": { 
-                    "$sum": { "$sum": "$users.knw_tokens.balance" } 
+                    "$sum": { "$sum": "$users.knw_tokens_" + mode + ".balance" } 
                 }
                 }
             }
@@ -53,9 +53,9 @@ var mdlRepositories = {
             {
                 $lookup: // Equality Match
                 {
-                    from: "users_" + mode,
+                    from: "users",
                     localField: "contributors.address",
-                    foreignField: "address",
+                    foreignField: "dit_address",
                     as: "users"
                 }
             },
@@ -87,9 +87,9 @@ var mdlRepositories = {
             {
                 $lookup: // Equality Match
                 {
-                    from: "users_" + mode,
+                    from: "users",
                     localField: "proposals.proposer",
-                    foreignField: "address",
+                    foreignField: "dit_address",
                     as: "proposals.proposer"
                 }
             },
@@ -145,7 +145,7 @@ var mdlRepositories = {
                 "contributors": {"$first": "$contributors"},
                 "users": {"$push": "$users"},
                     "combinedKNW": { 
-                    "$sum": { "$sum": "$users.knw_tokens.balance" } 
+                    "$sum": { "$sum": "$users.knw_tokens_" + mode + ".balance" } 
                 }
                 }
             }

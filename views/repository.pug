@@ -53,8 +53,8 @@ block content
                       | Contributions
                 tbody
                   each contributor, index in repository.contributors
-                    - address = contributor.address
-                    tr.clickable-row(data-href='/address/' + contributor.address, style='cursor: pointer;')
+                    - address = contributor.dit_address
+                    tr.clickable-row(data-href='/address/' + contributor.dit_address, style='cursor: pointer;')
                       td.py-1#twitterImage
                         - var generateIdenticon = function(eth_address){  
                         -   var data = new identicon(eth_address).toString();
@@ -63,13 +63,13 @@ block content
                         if contributor.twitter_handle
                           img(src='https://avatars.io/twitter/' + contributor.twitter_handle, alt='Twitter profile picture' width="37")
                         else
-                          img(src='' + generateIdenticon(contributor.address), alt='User identicon')
+                          img(src='' + generateIdenticon(contributor.dit_address), alt='User identicon')
                       if contributor.twitter_handle
                         td
                           | #{contributor.twitter_handle}
                       else
                         td
-                          | #{contributor.address}
+                          | #{contributor.dit_address}
                       td.d-none.d-md-table-cell= parseFloat(contributor.earned_knw).toFixed(2)
                        |  KNW
                       td= contributor.amount_of_proposals

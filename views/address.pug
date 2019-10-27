@@ -14,14 +14,14 @@ block content
                 if address.twitter_handle
                   img.img-xl.rounded-circle(src='https://avatars.io/twitter/' + address.twitter_handle, alt='Twitter profile picture' width="73")
                 else
-                  img.img-xl.rounded-circle(src='' + generateIdenticon(address.address), alt='User identicon')
+                  img.img-xl.rounded-circle(src='' + generateIdenticon(address.dit_address), alt='User identicon')
             .col-12
               h1
                 if address.twitter_handle 
                   a(href='https://twitter.com/' + address.twitter_handle target="_blank") #{address.twitter_handle}
                 else
                   span Contributor
-              p.text-muted #{address.address}
+              p.text-muted #{address.dit_address}
     .col-xl-4.col-lg-4.col-md-4.col-sm-4.grid-margin.stretch-card
       .card.card-statistics(style="height: 100%;")
         .card-body

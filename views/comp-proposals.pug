@@ -279,7 +279,7 @@ script.
       $('#outcomeText').text("Outcome");
     }
 
-    $('#proposerLink').attr("href", "/address/" + proposal.proposer[0].address);
+    $('#proposerLink').attr("href", "/address/" + proposal.proposer[0].dit_address);
     $('#repositoryLink').attr("href", "/repositories/" + proposal.repository[0].hash);
 
     var identifier = proposal.identifier;
@@ -302,7 +302,7 @@ script.
       $('#proposerImage > i').removeClass('mdi mdi-account icon-lg');
       $('#proposerImage > img').attr('src', 'https://avatars.io/twitter/' + proposal.proposer[0].twitter_handle);
     } else {
-      $('#proposer').text(proposal.proposer[0].address);
+      $('#proposer').text(proposal.proposer[0].dit_address);
       $('#proposerImage > i').addClass('mdi mdi-account icon-lg');
       $('#proposerImage > img').attr('src', '');
     }

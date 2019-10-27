@@ -2,7 +2,7 @@ var MongoClient = require('mongodb').MongoClient;
 const config = require('../config');
 
 const url = config.MONGODB_CONNECTION;
-const dbName = 'ditIndex';
+const dbName = 'ditIndexV2';
 
 var model = {
     findAll: function(collection, query, projection, callback){

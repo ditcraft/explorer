@@ -3,7 +3,7 @@ var mdl_addr = require('../models/mdl_address');
 var ObjectID = require('mongodb').ObjectID
 
 var userObject = {
-    "address": "",
+    "dit_address": "",
     "authorized_addresses": {
       "dit_cli": "",
       "dit_explorer": "",
@@ -27,7 +27,7 @@ var controller = {
         }
 
         var stages = mdl_addr.querySingleAddress(mode, eth_address);
-        models.aggregate("users_" + mode, stages, function(error, result){
+        models.aggregate("users", stages, function(error, result){
             console.log(error, result);
             if(result.length > 0){
                 for(var i = 0; i < result[0].repositories.length; i++){ 
@@ -47,7 +47,7 @@ var controller = {
             mode = "demo";
         }
         
-        models.findOne("users_" + mode, { "twitter_id": twitterID }, { "address" : 1 }, function(error, result){
+        models.findOne("users", { "twitter_id": twitterID }, { "dit_address" : 1 }, function(error, result){
             callback(error, result);
         });
     },
@@ -57,7 +57,7 @@ var controller = {
         }
 
         if(web3.utils.isAddress(req.body.address)){
-            models.findOne("users_" + mode, { "address": req.body.address }, {}, function(error, result){
+            models.findOne("users", { "dit_address": req.body.address }, {}, function(error, result){
                 if(result){
                     callback(false);
                 } else {
@@ -70,7 +70,7 @@ var controller = {
     },
     getTwitterName: function(eth_address){
         return new Promise(function(resolve, reject){
-            models.findOne("users", { "eth_address": eth_address }, { "twitter_screen_name" : 1 }, function(error, result){
+            models.findOne("users", { "dit_address": eth_address }, { "twitter_screen_name" : 1 }, function(error, result){
                 if(!error){
                     resolve(result);
                 } else {
@@ -84,7 +84,7 @@ var controller = {
             mode = "demo";
         }
         
-        models.findOne("users_" + mode, { "github_id": githubID }, { "address" : 1 }, function(error, result){
+        models.findOne("users", { "github_id": githubID }, { "dit_address" : 1 }, function(error, result){
             callback(error, result);
         });
     },
@@ -93,25 +93,25 @@ var controller = {
             mode = "demo";
         }
         
-        models.findOne("users_" + mode, { "github_id": githubID }, { "address" : 1 }, function(error, result){
+        models.findOne("users", { "github_id": githubID }, { "address" : 1 }, function(error, result){
             if(result === null){
-                models.findOne("users_" + mode, { "address": eth_address }, { "github_id" : 1 }, function(error, result){
+                models.findOne("users", { "dit_address": eth_address }, { "github_id" : 1 }, function(error, result){
                     if (result === null){
-                        userObject.address = eth_address;
+                        userObject.dit_address = eth_address;
                         userObject.github_id = githubID;
-                        models.addNew("users_" + mode, userObject, function(error, result){
+                        models.addNew("users", userObject, function(error, result){
                             callback(true);
                         });
                     } else if(result.github_id !== null && result.github_id !== '' ){
                         callback(false);
                     } else {
-                        models.update("users_" + mode, { "_id": ObjectID(result._id)}, { "github_id": githubID}, function(error, result){
+                        models.update("users", { "_id": ObjectID(result._id)}, { "github_id": githubID}, function(error, result){
                             callback(true);
                         });
                     }
                 });
             } else {
-                callback(false, result.address);
+                callback(false, result.dit_address);
             }   
         });
     }
