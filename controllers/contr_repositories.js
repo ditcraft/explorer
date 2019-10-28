@@ -188,22 +188,22 @@ var controller = {
         repository.amount_of_validations = parseInt(0);
 
         if(update){
-            models.findOne("users_" + mode, { address: user.eth_address, "repositories.hash" : id }, { "repositories.$.notifications": 1 }, function(error, result){
-                if(result && result.repositories && result.repositories.length === 1){
-                    var notify = !result.repositories[0].notifications;
-                    models.update("users_" + mode, { address: user.eth_address, "repositories.hash" : id }, { "repositories.$.notifications": notify }, function(error, result){
+            models.findOne("users", { dit_address: user.eth_address, ["repositories_" + mode + ".hash"]: id }, { ["repositories_" + mode + ".$.notifications"]: 1 }, function(error, result){
+                if(result && result['repositories_' + mode] && result['repositories_' + mode].length === 1){
+                    var notify = !result['repositories_' + mode][0].notifications;
+                    models.update("users", { dit_address: user.eth_address, ["repositories_" + mode + ".hash"] : id }, { ["repositories_" + mode + ".$.notifications"]: notify }, function(error, result){
                         callback(notify);
                     });
                 } else {
-                    models.updateAddToSet("users_" + mode, { address: user.eth_address }, { repositories: repository }, function(error, result){
+                    models.updateAddToSet("users", { dit_address: user.eth_address }, { ["repositories_" + mode]: repository }, function(error, result){
                         callback(true);
                     });
                 }
             });
         } else {
-            models.findOne("users_" + mode, { address: user.eth_address, "repositories.hash" : id }, { "repositories.$.notifications": 1 }, function(error, result){
-                if(result && result.repositories && result.repositories.length === 1){
-                    callback(result.repositories[0].notifications);
+            models.findOne("users", { dit_address: user.eth_address, ["repositories_" + mode + ".hash"] : id }, { ["repositories_" + mode + ".$.notifications"]: 1 }, function(error, result){
+                if(result && result['repositories_' + mode] && result['repositories_' + mode].length === 1){
+                    callback(result['repositories_' + mode][0].notifications);
                 } else {
                     callback(false);
                 }
