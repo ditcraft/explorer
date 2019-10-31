@@ -9,6 +9,7 @@ var models = require('../models/mdl_generics');
 var mdl_repo = require('../models/mdl_repositories');
 const _ = require('lodash');
 var mongo = require('mongodb');
+var async = require('async');
 
 web3 = new Web3(new Web3.providers.WebsocketProvider('wss://node.ditcraft.io/ws') || new Web3.providers.WebsocketProvider('wss://dai-trace-ws.blockscout.com/ws'));
 
@@ -32,9 +33,46 @@ var controller = {
                         var res = _(result[0].contributors).concat(result[0].users).groupBy('dit_address').map(_.spread(_.assign)).value();     
                         delete result[0].contributors;
                         delete result[0].users;
-                        result[0].contributors = res;    
-                        console.log('proposals: ', result[0].proposals);
-                        callback(result[0], result[0].proposals);
+
+                        //Add Usernames to contributors
+                        async.each(res, function(contrib, callback) {
+                            if(contrib.twitter_id && contrib.main_account === "twitter"){
+                                contr_address.getTwitterName(contrib.twitter_id, function(error, twitter_name){
+                                    contrib.user_name = twitter_name;
+                                    callback();
+                                });
+                            } else if(contrib.github_id && contrib.main_account === "github"){
+                                contr_address.getGitHubName(contrib.github_id, function(error, github_name){
+                                    contrib.user_name = github_name;
+                                    callback();
+                                });
+                            } else {
+                                callback();
+                            }
+                        }, function(err) {
+                            result[0].contributors = res;
+
+                            //Add usernames to proposers in proposals
+                            async.each(result[0].proposals, function(proposal, callback) {
+                                
+                                if(proposal.proposer[0].twitter_id && proposal.proposer[0].main_account === "twitter"){
+                                    contr_address.getTwitterName(proposal.proposer[0].twitter_id, function(error, twitter_name){
+                                        proposal.proposer[0].user_name = twitter_name;
+                                        callback();
+                                    });
+                                } else if(proposal.proposer[0].github_id && proposal.proposer[0].main_account === "github"){
+                                    contr_address.getGitHubName(proposal.proposer[0].github_id, function(error, github_name){
+                                        proposal.proposer[0].user_name = github_name;
+                                        callback();
+                                    });
+                                } else {
+                                    callback();
+                                }
+                            }, function(err) {
+                                console.log('proposals: ', result[0].proposals[0].proposer);
+                                callback(result[0], result[0].proposals);
+                            });
+                        });
                     } else {
                         callback(null, null);
                     }

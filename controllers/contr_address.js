@@ -1,6 +1,11 @@
 var models = require('../models/mdl_generics');
 var mdl_addr = require('../models/mdl_address');
-var ObjectID = require('mongodb').ObjectID
+var ObjectID = require('mongodb').ObjectID;
+const https = require('https');
+var Twitter = require('twitter');
+var config = require('../config');
+var async = require('async');
+
 
 var userObject = {
     "dit_address": "",
@@ -36,7 +41,36 @@ var controller = {
                         i--;
                     }
                 }
-                callback(error, result);
+
+                async.each(result[0].proposals, function(proposal, callback) {
+                    if(proposal.proposer[0].twitter_id && proposal.proposer[0].main_account === "twitter"){
+                        controller.getTwitterName(proposal.proposer[0].twitter_id, function(error, twitter_name){
+                            proposal.proposer[0].user_name = twitter_name;
+                            callback();
+                        });
+                    } else if(proposal.proposer[0].github_id && proposal.proposer[0].main_account === "github"){
+                        controller.getGitHubName(proposal.proposer[0].github_id, function(error, github_name){
+                            proposal.proposer[0].user_name = github_name;
+                            callback();
+                        });
+                    } else {
+                        callback();
+                    }
+                }, function(err) {
+                    if(result[0].twitter_id && result[0].main_account === "twitter"){
+                        controller.getTwitterName(result[0].twitter_id, function(error, twitter_name){
+                            result[0].user_name = twitter_name;
+                            callback(error, result);
+                        });
+                    } else if (result[0].github_id && result[0].main_account === "github") {
+                        controller.getGitHubName(result[0].github_id, function(error, github_name){
+                            result[0].user_name = github_name;
+                            callback(error, result);
+                        });
+                    } else {
+                        callback(error, result);
+                    }
+                });
             } else {
                 callback("Address not found", null);
             }
@@ -68,15 +102,48 @@ var controller = {
             callback(false);
         }
     },
-    getTwitterName: function(eth_address){
-        return new Promise(function(resolve, reject){
-            models.findOne("users", { "dit_address": eth_address }, { "twitter_screen_name" : 1 }, function(error, result){
-                if(!error){
-                    resolve(result);
-                } else {
-                    reject(error);
-                }
+    getTwitterName: function(twitter_id, callback){
+        var client = new Twitter({
+            consumer_key: config.TWITTER_API_KEY,
+            consumer_secret: config.TWITTER_API_SECRET,
+            access_token_key: config.TWITTER_ACCESS_TOKEN,
+            access_token_secret: config.TWITTER_ACCESS_TOKEN_SECRET
+        });
+        
+        var params = {user_id: twitter_id};
+        client.get('users/show', params, function(error, profile, response) {
+            if (!error) {
+                callback(null, profile.screen_name);
+            } else {
+                callback(error, null);
+            }
+        });
+    },
+    getGitHubName: function(github_id, callback){
+        const options = {
+            hostname: 'api.github.com',
+            path: '/user/' + github_id + '?client_id=' + config.GITHUB_API_KEY + '&client_secret=' + config.GITHUB_API_SECRET,
+            headers: { 'User-Agent': 'Mozilla/5.0' }
+        };
+        
+        https.get(options, (resp) => {
+            let data = '';
+
+            // A chunk of data has been received.
+            resp.on('data', (chunk) => {
+            data += chunk;
             });
+
+            // The whole response has been received. Call back the result.
+            resp.on('end', () => {
+                var obj = JSON.parse(data);
+                console.log('obj: ', obj);
+                callback(null, obj.login);
+            });
+
+        }).on("error", (err) => {
+            console.log("Error: " + err.message);
+            callback(err, null);
         });
     },
     getAddressByGitHubID: function(mode, githubID, callback){
@@ -126,12 +193,14 @@ var controller = {
         var obj = {};
         var key = provider + "_id";
         obj[key] = ID;
+        obj.main_account = provider;
 
         models.findOne("users", obj, { "address" : 1 }, function(error, result){
             if(result === null){
                 models.findOne("users", { "dit_address": eth_address }, { "github_id" : 1, "twitter_id": 1 }, function(error, result){
                     if (result === null){
                         userObject.dit_address = eth_address;
+                        userObject.main_account = provider;
                         userObject[key] = ID;
                         models.addNew("users", userObject, function(error, result){
                             callback(true);

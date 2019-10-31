@@ -60,13 +60,15 @@ block content
                         -   var data = new identicon(eth_address).toString();
                         -   return 'data:image/png;base64,' + data;
                         - }
-                        if contributor.twitter_handle
-                          img(src='https://avatars.io/twitter/' + contributor.twitter_handle, alt='Twitter profile picture' width="37")
+                        if contributor.user_name && contributor.main_account === "twitter"
+                          img(src='https://avatars.io/twitter/' + contributor.user_name, alt='Twitter profile picture' width="37")
+                        else if contributor.user_name && contributor.main_account === "github"
+                          img(src='https://github.com/' + contributor.user_name + '.png' , alt='GitHub profile picture' width="73")
                         else
                           img(src='' + generateIdenticon(contributor.dit_address), alt='User identicon')
-                      if contributor.twitter_handle
+                      if contributor.user_name
                         td
-                          | #{contributor.twitter_handle}
+                          | #{contributor.user_name}
                       else
                         td
                           | #{contributor.dit_address}

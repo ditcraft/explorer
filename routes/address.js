@@ -1,7 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var Web3 = require('web3');
-var config = require('../config');
 var contr_address = require('../controllers/contr_address'); 
 var contr_proposals = require('../controllers/contr_proposals'); 
 var contr_repositories = require('../controllers/contr_repositories'); 

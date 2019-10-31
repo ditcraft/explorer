@@ -231,6 +231,7 @@ script.
     $('#timeleft').text("");
     var proposals = !{JSON.stringify(proposals)};
     var proposal = proposals[proposals.findIndex(p => p.knw_vote_id == id)]
+    console.log('proposal: ', proposal);
     window.location.hash = proposal.knw_vote_id;
     setCountdown(proposal.reveal_phase_end);
 
@@ -297,10 +298,14 @@ script.
       $('#commitLink').text("See commit on " + proposal.repository[0].provider);
     }
     
-    if(proposal.proposer[0].twitter_handle){
-      $('#proposer').text(proposal.proposer[0].twitter_handle);
+    if(proposal.proposer[0].user_name && proposal.proposer[0].main_account === "twitter"){
+      $('#proposer').text(proposal.proposer[0].user_name);
       $('#proposerImage > i').removeClass('mdi mdi-account icon-lg');
-      $('#proposerImage > img').attr('src', 'https://avatars.io/twitter/' + proposal.proposer[0].twitter_handle);
+      $('#proposerImage > img').attr('src', 'https://avatars.io/twitter/' + proposal.proposer[0].user_name);
+    } else if(proposal.proposer[0].user_name && proposal.proposer[0].main_account === "github" ){
+      $('#proposer').text(proposal.proposer[0].user_name);
+      $('#proposerImage > i').removeClass('mdi mdi-account icon-lg');
+      $('#proposerImage > img').attr('src', 'https://github.com/' + proposal.proposer[0].user_name + '.png');
     } else {
       $('#proposer').text(proposal.proposer[0].dit_address);
       $('#proposerImage > i').addClass('mdi mdi-account icon-lg');
