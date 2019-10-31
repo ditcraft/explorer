@@ -1,0 +1,127 @@
+extends layout
+
+block content
+  .content-wrapper
+    .row
+      .col-12
+        .card
+          .card-body
+            h4.card-title Settings
+            p.card-description
+              | Your ditCraft address is #{user.eth_address}
+    //.row.mt-4
+      .col-12
+        .row
+          .col-xl-4.col-lg-4.col-md-4.col-sm-6.grid-margin.stretch-card
+            .card.card-statistics
+              .card-body
+                .clearfix
+                  .float-left
+                    i.mdi.mdi-puzzle.icon.text-secondary
+                  .float-right
+                    p.mb-0.text-right
+                    .fluid-container
+                      h3.font-weight-medium.text-right.mb-0.text-muted MetaMask
+          .col-xl-4.col-lg-4.col-md-4.col-sm-6.grid-margin.stretch-card
+            .card.card-statistics
+              .card-body
+                .clearfix
+                  .float-left
+                    i.mdi.mdi-console.text-info.icon
+                  .float-right
+                    p.mb-0.text-right
+                    .fluid-container
+                      h3.font-weight-medium.text-right.mb-0 ditCLI
+          .col-xl-4.col-lg-4.col-md-4.col-sm-6.grid-margin.stretch-card
+            .card.card-statistics
+              .card-body
+                .clearfix
+                  .float-left
+                    i.mdi.mdi-apps.icon.text-secondary
+                  .float-right
+                    p.mb-0.text-right
+                    .fluid-container
+                      h3.font-weight-medium.text-right.mb-0.text-muted Alice
+    .row.mt-4
+      .col-12
+        .card
+          .card-body
+            h4.card-title Associated accounts
+            p.card-description
+              | Your main account is used to display your user name and profile picture associated with your address.
+    .row.mt-4
+      if data.github_id
+        .col-xl-6.col-lg-6.col-md-6.col-sm-6.grid-margin.stretch-card
+          .card.card-statistics
+            .card-body
+              .clearfix
+                .float-left
+                  i.mdi.mdi-github-circle.icon
+                .float-right
+                  p.mb-0.text-right
+                  .fluid-container
+                    h3.font-weight-medium.text-right.mb-0 GitHub
+                    p.text-right.text-muted.mt-3.mb-0 #{data.github_id}
+                    .form-check.form-check-flat
+                      label.form-check-label
+                        input#github.form-check-input(type='checkbox' onchange="toggleMain('github')")
+                        | Main Account
+                        i.input-helper
+      if data.twitter_id
+        .col-xl-6.col-lg-6.col-md-6.col-sm-6.grid-margin.stretch-card
+          .card.card-statistics
+            .card-body
+              .clearfix
+                .float-left
+                  i.mdi.mdi-twitter.icon.text-primary
+                .float-right
+                  p.mb-0.text-right
+                  .fluid-container
+                    h3.font-weight-medium.text-right.mb-0 Twitter
+                    p.text-right.text-muted.mt-3.mb-0 #{data.twitter_id}
+                    .form-check.form-check-flat
+                      label.form-check-label
+                        input#twitter.form-check-input(type='checkbox' onchange="toggleMain('twitter')")
+                        | Main Account
+                        i.input-helper
+  script.
+    var main_account = '#{data.main_account}';
+    $('##{data.main_account}').prop('checked', true);
+
+    var toggleMain = function(provider){
+      if(provider === "twitter"){
+        $('#twitter').prop('checked', true);
+        $('#github').prop('checked', false);
+        main_account = "twitter";
+      } else if (provider === "github"){
+        $('#twitter').prop('checked', false);
+        $('#github').prop('checked', true);
+        main_account = "github";
+      }
+
+      $.ajax({
+          type: 'POST',
+          url: '/settings/setMain',
+          contentType: 'application/json',
+          data: JSON.stringify({ provider: main_account }),
+          dataType: 'json',
+          success: function(data){
+            $.toast({ 
+                  text : "Changed main account to " + main_account, 
+                  showHideTransition : 'slide',
+                  bgColor : '#29b5a8',
+                  textColor : '#eee',
+                  allowToastClose : false,
+                  hideAfter : 5000,
+                  stack : false,
+                  textAlign : 'left',
+                  position : 'bottom-right'
+                });
+          },
+          error: function(error){
+              console.log('Error: ', error);
+          },
+          processData: false
+        });
+
+    }
