@@ -55,12 +55,12 @@ var controller = {
                             //Add usernames to proposers in proposals
                             async.each(result[0].proposals, function(proposal, callback) {
                                 
-                                if(proposal.proposer[0].twitter_id && proposal.proposer[0].main_account === "twitter"){
+                                if(proposal.proposer[0] && proposal.proposer[0].twitter_id && proposal.proposer[0].main_account === "twitter"){
                                     contr_address.getTwitterName(proposal.proposer[0].twitter_id, function(error, twitter_name){
                                         proposal.proposer[0].user_name = twitter_name;
                                         callback();
                                     });
-                                } else if(proposal.proposer[0].github_id && proposal.proposer[0].main_account === "github"){
+                                } else if(proposal.proposer[0] && proposal.proposer[0].github_id && proposal.proposer[0].main_account === "github"){
                                     contr_address.getGitHubName(proposal.proposer[0].github_id, function(error, github_name){
                                         proposal.proposer[0].user_name = github_name;
                                         callback();

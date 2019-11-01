@@ -11,8 +11,10 @@ var controller = {
         
         var stages = mdl_propo.queryAllProposals(mode);
         models.aggregate("proposals_" + mode, stages, function(error, result){
+            var alreadyChecked = [];
             async.each(result, function(proposal, callback) {
-                if(proposal.proposer[0].twitter_id && proposal.proposer[0].main_account === "twitter"){
+                if(proposal.proposer[0].twitter_id && proposal.proposer[0].main_account === "twitter" && (alreadyChecked.indexOf(proposal.proposer[0].twitter_id !== -1))){
+                    alreadyChecked.push(proposal.proposer[0].twitter_id);
                     contr_address.getTwitterName(proposal.proposer[0].twitter_id, function(error, twitter_name){
                         proposal.proposer[0].user_name = twitter_name;
                         callback();
