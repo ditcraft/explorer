@@ -18,8 +18,8 @@ block content
           .card-body#correctNotice
             hr
             h4 You have entered a correct ETH address!
-              button.btn.btn-primary.btn-rounded.float-right(type='button', onclick='connect()')
-                i.mdi.mdi-chevron-right
+              button.btn.btn-primary.btn-rounded.float-right(type='button', onclick='connect(this)')
+                i.mdi.mdi-chevron-right#buttonIcon
                 | Connect with #{provider}
   script.
     var typingTimer;
@@ -65,7 +65,9 @@ block content
       }
     }
 
-    var connect = function() {
+    var connect = function(button) {
+      $(button).attr('disabled', 'disabled');
+      $('#buttonIcon').addClass('mdi-loading mdi-spin').removeClass('mdi-chevron-right');
       $.ajax({
           type: 'POST',
           url: '/login/#{provider}/kyc/connect',
@@ -88,7 +90,16 @@ block content
             }
           },
           error: function(){
-            console.log('Error');
+            $.toast({ 
+                  text : "There was an error connecting your account...", 
+                  showHideTransition : 'slide',
+                  allowToastClose : false,
+                  hideAfter : 5000,
+                  stack : false,
+                  textAlign : 'left',
+                  position : 'bottom-right',
+                  bgColor : 'red'
+                });
           },
           processData: false
         });

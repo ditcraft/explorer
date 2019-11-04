@@ -203,13 +203,25 @@ var controller = {
                         userObject.main_account = provider;
                         userObject[key] = ID;
                         models.addNew("users", userObject, function(error, result){
-                            callback(true);
+                            controller.passKYC(eth_address, function(error, result){
+                                if(!error){
+                                    callback(true);
+                                } else {
+                                    callback(false);
+                                }
+                            });
                         });
                     } else if((result.github_id !== null && result.github_id !== '') || (result.twitter_id !== null && result.twitter_id !== '')){
                         callback(false);
                     } else {
                         models.update("users", { "_id": ObjectID(result._id)}, obj, function(error, result){
-                            callback(true);
+                            controller.passKYC(eth_address, function(error, result){
+                                if(!error){
+                                    callback(true);
+                                } else {
+                                    callback(false);
+                                }
+                            });
                         });
                     }
                 });
@@ -217,6 +229,40 @@ var controller = {
                 callback(false, result.dit_address);
             }   
         });
+    },
+
+    passKYC: function (address, callback){
+        const data = JSON.stringify({
+            api_key: config.DIT_API_KEY,
+            address: address
+        });
+
+        const options = {
+            hostname: 'server.ditcraft.io',
+            path: '/api/kyc',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': data.length
+            }
+        };
+        
+        const req = https.request(options, (res) => {
+            console.log(`statusCode: ${res.statusCode}`)
+            
+            res.on('data', (d) => {
+                console.log('data: ', d.toString());
+                callback(null, true);
+            });
+        });
+          
+        req.on('error', (error) => {
+            console.error('error: ', error);
+            callback(true, null);
+        });
+          
+        req.write(data);
+        req.end();
     }
 }
 
