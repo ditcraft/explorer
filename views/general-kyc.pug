@@ -21,10 +21,20 @@ block content
               button.btn.btn-primary.btn-rounded.float-right(type='button', onclick='connect(this)')
                 i.mdi.mdi-chevron-right#buttonIcon
                 | Connect with #{provider}
+    .row#wait
+      .col-12.grid-margin.stretch-card
+        .card
+          .card-body
+            h4.card-title#title Waiting for Blockchain...
+            p.card-description
+            .text-center
+              i.mdi.mdi-loading.text-info.icon-xl.mdi-spin#waiting
+              .display-3#confirmation Your address is currently being unlocked! This can take up to 20 seconds... Do not refresh, you will be redirected shortly.
+
   script.
     var typingTimer;
     var doneTypingInterval = 500;
-    $('#correctNotice, #errorNotice').hide();
+    $('#correctNotice, #errorNotice, #wait').hide();
 
     $('#ethAddress').on('keyup', function () {
         clearTimeout(typingTimer);
@@ -67,7 +77,9 @@ block content
 
     var connect = function(button) {
       $(button).attr('disabled', 'disabled');
+      $("input").prop('disabled', true);
       $('#buttonIcon').addClass('mdi-loading mdi-spin').removeClass('mdi-chevron-right');
+      $('#wait').show();
       $.ajax({
           type: 'POST',
           url: '/login/#{provider}/kyc/connect',
