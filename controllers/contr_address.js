@@ -92,7 +92,7 @@ var controller = {
 
         if(web3.utils.isAddress(req.body.address)){
             models.findOne("users", { "dit_address": req.body.address }, {}, function(error, result){
-                if(result.twitter_id || result.github_id){
+                if(result && (result.twitter_id || result.github_id)){
                     callback(false);
                 } else {
                     callback(true);
