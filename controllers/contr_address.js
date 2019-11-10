@@ -20,9 +20,12 @@ var userObject = {
     "main_account": "",
     "xdai_balance" : 0, 
     "xdit_balance" : 0, 
-    "knw_tokens" : [], 
-    "proposals" : [], 
-    "repositories" : []
+    "knw_tokens_live" : [], 
+    "knw_tokens_demo" : [], 
+    "proposals_live" : [], 
+    "proposals_demo" : [], 
+    "repositories_live" : [],
+    "repositories_demo" : []
 }
 
 var controller = {
