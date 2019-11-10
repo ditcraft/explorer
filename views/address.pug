@@ -49,7 +49,7 @@ block content
         .card-body
           .tab-content
             #tokens.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='tokens-tab')
-              if address.knw_tokens.length > 0
+              if address.knw_tokens && address.knw_tokens.length > 0
                 .table-responsive
                   table.table.table-hover
                     thead
@@ -74,7 +74,7 @@ block content
               else
                 blockquote.blockquote This contributor has not yet interacted with any proposals.
             #repositories.tab-pane.fade(role='tabpanel', aria-labelledby='repositories-tab')
-              if (address.repositories.length)
+              if address.repositories
                 ul
                   each repository, index in address.repositories
                     li

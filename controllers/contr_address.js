@@ -35,42 +35,46 @@ var controller = {
         models.aggregate("users", stages, function(error, result){
             console.log(error, result);
             if(result.length > 0){
-                for(var i = 0; i < result[0].repositories.length; i++){ 
-                    if (result[0].repositories[i].amount_of_proposals === 0 && result[0].repositories[i].amount_of_validations === 0) {
-                        result[0].repositories.splice(i, 1); 
-                        i--;
+                if(result[0].repositories){
+                    for(var i = 0; i < result[0].repositories.length; i++){ 
+                        if (result[0].repositories[i].amount_of_proposals === 0 && result[0].repositories[i].amount_of_validations === 0) {
+                            result[0].repositories.splice(i, 1); 
+                            i--;
+                        }
                     }
                 }
 
-                async.each(result[0].proposals, function(proposal, callback) {
-                    if(proposal.proposer[0].twitter_id && proposal.proposer[0].main_account === "twitter"){
-                        controller.getTwitterName(proposal.proposer[0].twitter_id, function(error, twitter_name){
-                            proposal.proposer[0].user_name = twitter_name;
+                if(result[0].proposals){
+                    async.each(result[0].proposals, function(proposal, callback) {
+                        if(proposal.proposer[0] && proposal.proposer[0].twitter_id && proposal.proposer[0].main_account === "twitter"){
+                            controller.getTwitterName(proposal.proposer[0].twitter_id, function(error, twitter_name){
+                                proposal.proposer[0].user_name = twitter_name;
+                                callback();
+                            });
+                        } else if(proposal.proposer[0] && proposal.proposer[0].github_id && proposal.proposer[0].main_account === "github"){
+                            controller.getGitHubName(proposal.proposer[0].github_id, function(error, github_name){
+                                proposal.proposer[0].user_name = github_name;
+                                callback();
+                            });
+                        } else {
                             callback();
-                        });
-                    } else if(proposal.proposer[0].github_id && proposal.proposer[0].main_account === "github"){
-                        controller.getGitHubName(proposal.proposer[0].github_id, function(error, github_name){
-                            proposal.proposer[0].user_name = github_name;
-                            callback();
-                        });
-                    } else {
-                        callback();
-                    }
-                }, function(err) {
-                    if(result[0].twitter_id && result[0].main_account === "twitter"){
-                        controller.getTwitterName(result[0].twitter_id, function(error, twitter_name){
-                            result[0].user_name = twitter_name;
+                        }
+                    }, function(err) {
+                        if(result[0].twitter_id && result[0].main_account === "twitter"){
+                            controller.getTwitterName(result[0].twitter_id, function(error, twitter_name){
+                                result[0].user_name = twitter_name;
+                                callback(error, result);
+                            });
+                        } else if (result[0].github_id && result[0].main_account === "github") {
+                            controller.getGitHubName(result[0].github_id, function(error, github_name){
+                                result[0].user_name = github_name;
+                                callback(error, result);
+                            });
+                        } else {
                             callback(error, result);
-                        });
-                    } else if (result[0].github_id && result[0].main_account === "github") {
-                        controller.getGitHubName(result[0].github_id, function(error, github_name){
-                            result[0].user_name = github_name;
-                            callback(error, result);
-                        });
-                    } else {
-                        callback(error, result);
-                    }
-                });
+                        }
+                    });
+                }
             } else {
                 callback("Address not found", null);
             }
