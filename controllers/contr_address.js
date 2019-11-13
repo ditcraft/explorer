@@ -30,13 +30,13 @@ var userObject = {
 
 var controller = {
     getAddress: function(mode, eth_address, callback){
+        console.log('getAddress: ', eth_address, mode);
         if(typeof mode === "undefined"){
             mode = "demo";
         }
 
         var stages = mdl_addr.querySingleAddress(mode, eth_address);
         models.aggregate("users", stages, function(error, result){
-            console.log(error, result);
             if(result.length > 0){
                 if(result[0].repositories){
                     for(var i = 0; i < result[0].repositories.length; i++){ 
@@ -93,19 +93,26 @@ var controller = {
         });
     },
     checkIfValidAddress: function(mode, req, callback){
+        console.log('Checking if address is valid...');
         if(typeof mode === "undefined"){
             mode = "demo";
         }
+        console.log('Mode: ', mode);
+        console.log('Address: ', req.body.address);
 
         if(web3.utils.isAddress(req.body.address)){
+            console.log('Passed web3 check.');
             models.findOne("users", { "dit_address": req.body.address }, {}, function(error, result){
                 if(result && (result.twitter_id || result.github_id)){
+                    console.log('Address already exists and has already been associated.');
                     callback(false);
                 } else {
+                    console.log('Address is free to take.');
                     callback(true);
                 }
             });
         } else {
+            console.log('Failed web3 check.');
             callback(false);
         }
     },
@@ -192,46 +199,72 @@ var controller = {
     },
 
     connectAccount: function(mode, provider, ID, eth_address, callback){
+        console.log('Trying to connect account...');
+
         if(typeof mode === "undefined"){
             mode = "demo";
         }
+
+        console.log('Mode: ', mode);
+        console.log('Provider: ', provider);
+        console.log('ID: ', ID);
+        console.log('Address: ', eth_address);
 
         var obj = {};
         var key = provider + "_id";
         obj[key] = ID;
         obj.main_account = provider;
 
-        models.findOne("users", obj, { "address" : 1 }, function(error, result){
+
+        models.findOne("users", obj, { "dit_address" : 1 }, function(error, result){
             if(result === null){
+                console.log('Account has not been associated with address before. Now checking for address...');
                 models.findOne("users", { "dit_address": eth_address }, { "github_id" : 1, "twitter_id": 1 }, function(error, result){
                     if (result === null){
                         userObject.dit_address = eth_address;
                         userObject.main_account = provider;
                         userObject[key] = ID;
+
+                        console.log('Address does not exist already. Creating new entry: ', userObject);
+
                         models.addNew("users", userObject, function(error, result){
-                            controller.passKYC(eth_address, function(error, result){
-                                if(!error){
-                                    callback(true);
-                                } else {
-                                    callback(false);
-                                }
-                            });
+                            if(!error){
+                                console.log('Added new user entry. Triggering KYC next.');
+                                controller.passKYC(eth_address, function(error, result){
+                                    if(!error){
+                                        console.log('Succesfully passed KYC.');
+                                        callback(true);
+                                    } else {
+                                        console.log('Error passing KYC.');
+                                        callback(false);
+                                    }
+                                });
+                            }
                         });
                     } else if((result.github_id !== null && result.github_id !== '') || (result.twitter_id !== null && result.twitter_id !== '')){
+                        console.log('Address exists already and has already been associated with another provider');
                         callback(false);
                     } else {
+                        console.log('Address exists already, but has not been associated with a provider. Claiming next...');
+                        console.log('Object to be updated: ', obj);
                         models.update("users", { "_id": ObjectID(result._id)}, obj, function(error, result){
-                            controller.passKYC(eth_address, function(error, result){
-                                if(!error){
-                                    callback(true);
-                                } else {
-                                    callback(false);
-                                }
-                            });
+                            if(!error){
+                                console.log('Successfully claimed address. Triggering KYC next.');
+                                controller.passKYC(eth_address, function(error, result){
+                                    if(!error){
+                                        console.log('Succesfully passed KYC.');
+                                        callback(true);
+                                    } else {
+                                        console.log('Error passing KYC.');
+                                        callback(false);
+                                    }
+                                });
+                            }
                         });
                     }
                 });
             } else {
+                console.log('This ' + provider + ' account has already been associated with the address ', result.dit_address);
                 callback(false, result.dit_address);
             }   
         });
@@ -255,17 +288,23 @@ var controller = {
         };
         
         const req = https.request(options, (res) => {
-            console.log(`statusCode: ${res.statusCode}`)
+            console.log(`KYC Status: ${res.statusCode}`)
             
             res.on('data', (d) => {
-                console.log('data: ', d.toString());
+                console.log('Response: ', d.toString());
                 callback(null, true);
             });
         });
           
         req.on('error', (error) => {
-            console.error('error: ', error);
+            console.error('KYC Error: ', error);
             callback(true, null);
+        });
+
+        req.on('timeout', () => {
+            console.log('KYC timed out!');
+            callback(true, null);
+            req.abort();
         });
           
         req.write(data);

@@ -59,7 +59,6 @@ passport.use(new GitHubStrategy({
   passReqToCallback: true
 },
   function(req, accessToken, refreshToken, profile, done) {
-    console.log('profile: ', profile);
     contr_address.getAddressByGitHubID(req.cookies.mode, profile.id, function(err, result){
       if(result){
         profile.eth_address = result.dit_address;

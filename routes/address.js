@@ -18,7 +18,6 @@ router.get('/:address', function(req, res, next){
   contr_address.getAddress(req.cookies.mode, req.params.address, function(error, result){
     if(!error){
       result.user = req.user;
-      console.log('result: ', result[0].proposals);
       res.render('address', { user: req.user, address: result[0], proposals: result[0].proposals});
     } else {
       console.log('error: ', error);

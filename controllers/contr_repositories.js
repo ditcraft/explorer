@@ -69,7 +69,6 @@ var controller = {
                                     callback();
                                 }
                             }, function(err) {
-                                console.log('proposals: ', result[0].proposals[0].proposer);
                                 callback(result[0], result[0].proposals);
                             });
                         });
