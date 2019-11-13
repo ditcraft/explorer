@@ -44,11 +44,11 @@ passport.use(new TwitterStrategy({
 
 // Serialize and deserialize user information
 passport.serializeUser(function(user, callback){
-  console.log('serializeUser: ', user);
+  console.log('serializeUser: ', user.username);
   callback(null, user);
 });
 passport.deserializeUser(function(object, callback){
-  console.log('deserializeUser: ', object);
+  console.log('deserializeUser: ', object.username);
   callback(null, object);
 });
 

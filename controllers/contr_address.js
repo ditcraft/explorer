@@ -144,7 +144,6 @@ var controller = {
             // The whole response has been received. Call back the result.
             resp.on('end', () => {
                 var obj = JSON.parse(data);
-                console.log('obj: ', obj);
                 callback(null, obj.login);
             });
 
@@ -251,7 +250,8 @@ var controller = {
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': data.length
-            }
+            },
+            timeout: 30000
         };
         
         const req = https.request(options, (res) => {
