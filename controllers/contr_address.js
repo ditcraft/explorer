@@ -2,6 +2,7 @@ var models = require('../models/mdl_generics');
 var mdl_addr = require('../models/mdl_address');
 var ObjectID = require('mongodb').ObjectID;
 const https = require('https');
+const http = require('http');
 var Twitter = require('twitter');
 var config = require('../config');
 var async = require('async');
@@ -278,45 +279,89 @@ var controller = {
     },
 
     passKYC: function (address, callback){
-        const data = JSON.stringify({
-            api_key: config.DIT_API_KEY,
-            address: address
-        });
-
-        const options = {
-            hostname: config.ENDPOINT,
-            port: config.ENDPOINT_PORT,
-            path: '/api/kyc',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            },
-            timeout: 30000
-        };
-        
-        const req = https.request(options, (res) => {
-            console.log(`KYC Status: ${res.statusCode}`)
-            
-            res.on('data', (d) => {
-                console.log('Response: ', d.toString());
-                callback(null, true);
+        if(config.ENDPOINT === "localhost"){
+            const data = JSON.stringify({
+                api_key: config.DIT_API_KEY,
+                address: address
             });
-        });
-          
-        req.on('error', (error) => {
-            console.error('KYC Error: ', error);
-            callback(true, null);
-        });
 
-        req.on('timeout', () => {
-            console.log('KYC timed out!');
-            callback(true, null);
-            req.abort();
-        });
-          
-        req.write(data);
-        req.end();
+            const options = {
+                hostname: config.ENDPOINT,
+                port: config.ENDPOINT_PORT,
+                path: '/api/kyc',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Length': data.length
+                },
+                timeout: 30000
+            };
+            
+            console.log('HTTP request');
+            const req = http.request(options, (res) => {
+                console.log(`KYC Status: ${res.statusCode}`)
+                
+                res.on('data', (d) => {
+                    console.log('Response: ', d.toString());
+                    callback(null, true);
+                });
+            });
+            
+            req.on('error', (error) => {
+                console.error('KYC Error: ', error);
+                callback(true, null);
+            });
+
+            req.on('timeout', () => {
+                console.log('KYC timed out!');
+                callback(true, null);
+                req.abort();
+            });
+            
+            req.write(data);
+            req.end();
+        } else {
+            const data = JSON.stringify({
+                api_key: config.DIT_API_KEY,
+                address: address
+            });
+
+            const options = {
+                hostname: config.ENDPOINT,
+                port: config.ENDPOINT_PORT,
+                path: '/api/kyc',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Length': data.length
+                },
+                timeout: 30000
+            };
+            
+            console.log('HTTPS request');
+            const req = https.request(options, (res) => {
+                console.log(`KYC Status: ${res.statusCode}`)
+                
+                res.on('data', (d) => {
+                    console.log('Response: ', d.toString());
+                    callback(null, true);
+                });
+            });
+            
+            req.on('error', (error) => {
+                console.error('KYC Error: ', error);
+                callback(true, null);
+            });
+
+            req.on('timeout', () => {
+                console.log('KYC timed out!');
+                callback(true, null);
+                req.abort();
+            });
+            
+            req.write(data);
+            req.end();
+        }
     }
 }
 
