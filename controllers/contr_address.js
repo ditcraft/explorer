@@ -224,6 +224,7 @@ var controller = {
                         userObject.dit_address = eth_address;
                         userObject.main_account = provider;
                         userObject[key] = ID;
+                        userObject._id = new ObjectID();
 
                         console.log('Address does not exist already. Creating new entry: ', userObject);
 
@@ -283,7 +284,7 @@ var controller = {
         });
 
         const options = {
-            hostname: 'server.ditcraft.io',
+            hostname: config.ENDPOINT,
             path: '/api/kyc',
             method: 'POST',
             headers: {
