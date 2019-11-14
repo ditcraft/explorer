@@ -88,7 +88,6 @@ var controller = {
                     delete repo.users;
                     repo.contributors = res;    
                 });
-                console.log(error, result);
                 callback(result);
             });
         }

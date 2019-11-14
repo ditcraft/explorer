@@ -239,6 +239,9 @@ var controller = {
                                         callback(false);
                                     }
                                 });
+                            } else {
+                                console.log('Error: ', error);
+                                callback(false);
                             }
                         });
                     } else if((result.github_id !== null && result.github_id !== '') || (result.twitter_id !== null && result.twitter_id !== '')){
@@ -259,6 +262,9 @@ var controller = {
                                         callback(false);
                                     }
                                 });
+                            } else {
+                                console.log('Error: ', error);
+                                callback(false);
                             }
                         });
                     }
