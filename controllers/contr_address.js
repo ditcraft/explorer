@@ -227,6 +227,12 @@ var controller = {
                         userObject[key] = ID;
                         userObject._id = new ObjectID();
 
+                        if(provider === "twitter"){
+                            userObject.github_id = "";
+                        } else if (provider === "github"){
+                            userObject.twitter_id = "";
+                        }
+
                         console.log('Address does not exist already. Creating new entry: ', userObject);
 
                         models.addNew("users", userObject, function(error, result){
@@ -251,6 +257,11 @@ var controller = {
                         callback(false);
                     } else {
                         console.log('Address exists already, but has not been associated with a provider. Claiming next...');
+                        if(provider === "twitter"){
+                            obj.github_id = "";
+                        } else if (provider === "github"){
+                            obj.twitter_id = "";
+                        }
                         console.log('Object to be updated: ', obj);
                         models.update("users", { "_id": ObjectID(result._id)}, obj, function(error, result){
                             if(!error){
