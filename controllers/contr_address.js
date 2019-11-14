@@ -285,6 +285,7 @@ var controller = {
 
         const options = {
             hostname: config.ENDPOINT,
+            port: config.ENDPOINT_PORT,
             path: '/api/kyc',
             method: 'POST',
             headers: {
