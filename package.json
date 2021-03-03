@@ -48,7 +48,7 @@
     "passport-github2": "^0.1.11",
     "passport-gitlab2": "^5.0.0",
     "passport-twitter": "^1.0.4",
-    "pug": "^2.0.3",
+    "pug": "^3.0.1",
     "session-memory-store": "^1.0.0",
     "socket.io": "^2.2.0",
     "twitter": "^1.7.1",
