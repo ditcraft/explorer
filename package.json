@@ -29,7 +29,7 @@
   "dependencies": {
     "@octokit/oauth-login-url": "^2.1.2",
     "@octokit/rest": "^16.28.2",
-    "async": "^3.1.0",
+    "async": "^3.2.2",
     "bignumber.js": "^8.1.1",
     "bitbucket": "^1.15.1",
     "cookie-parser": "~1.4.3",
